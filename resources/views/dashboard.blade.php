@@ -7,7 +7,7 @@
             <div class="mb-3">
                 <h1
                     class="font-mono font-extrabold text-base sm:text-lg md:text-xl text-[#284494] drop-shadow-[0_6px_6px_rgba(37,99,235,0.25)]">
-                    ¡Hola, {{ Auth::user()->name }}!
+                    ¡Hola, {{ Auth::user()->name }} {{ Auth::user()->lastname }}!
                 </h1>
             </div>
             <!-- Grilla principal -->
@@ -101,13 +101,5 @@
         </div>
     </div>
     <!-- Footer -->
-    <footer class="bg-[#f7fafc] border-t border-[#e0e7ff] mt-8 py-6 text-center">
-        <div
-            class="flex flex-col sm:flex-row justify-center items-center gap-0 sm:gap-6 mb-2 font-mono text-xs sm:text-sm space-y-2 sm:space-y-0 sm:space-x-6">
-            <a href="{{ route('terminos') }}" class="text-[#2563eb] hover:underline">Términos y Condiciones</a>
-            <a href="{{ route('privacidad') }}" class="text-[#2563eb] hover:underline">Política de Privacidad</a>
-            <a href="mailto:soporte@quickpay.com" class="text-[#2563eb] hover:underline">Correo de contacto</a>
-        </div>
-        <div class="text-[#222] font-mono text-xs mt-2">&copy; 2025 QuickPay. Todos los derechos reservados.</div>
-    </footer>
+    <x-footer />
 </x-app-layout>
