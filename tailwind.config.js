@@ -12,8 +12,12 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                mono: ['"JetBrains Mono"', 'monospace'],
-                sans: ['"JetBrains Mono"', 'ui-sans-serif', 'system-ui'],
+                primary: ['"Source Code Pro"', 'monospace'],
+                secondary: ['"JetBrains Mono"', 'monospace'],
+            },
+            colors: {
+                primary: '#0F68E2',
+                'background': '#F0F4F4',
             },
         },
     },
