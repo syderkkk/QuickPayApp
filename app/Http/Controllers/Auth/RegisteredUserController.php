@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,6 +49,21 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $currency = match ($user->country) {
+            'PE' => 'PEN',
+            'AR' => 'ARS',
+            'CL' => 'CLP',
+            default => 'USD',
+        };
+
+        Wallet::create([
+            'user_id' => $user->id,
+            'balance' => 0,
+            'currency' => $currency,
+        ]);
+
+
 
         event(new Registered($user));
 

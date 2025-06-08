@@ -22,9 +22,9 @@
                                     Saldo de QuickPay</div>
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <span
-                                        class="text-xl sm:text-2xl md:text-4xl font-extrabold font-mono text-black tracking-widest break-all">PEN</span>
+                                        class="text-xl sm:text-2xl md:text-4xl font-extrabold font-mono text-black tracking-widest break-all">{{ auth()->user()->wallet->currency }}</span>
                                     <span
-                                        class="text-lg sm:text-xl md:text-3xl font-extrabold font-mono text-black tracking-widest break-all">100.00</span>
+                                        class="text-lg sm:text-xl md:text-3xl font-extrabold font-mono text-black tracking-widest break-all">{{ number_format(auth()->user()->wallet->balance, 2) }}</span>
                                 </div>
                                 <div class="text-xs sm:text-sm text-black font-mono">Disponible</div>
                             </div>
@@ -38,7 +38,9 @@
                         <div class="flex flex-col md:flex-row gap-3 md:gap-4 mt-6 w-full">
                             <button
                                 class="flex items-center justify-center gap-2 bg-[#2563eb] text-white font-bold rounded-lg px-5 py-2 font-mono text-base shadow hover:bg-[#1d4ed8] transition w-full md:w-auto border border-[#2563eb]">
-                                <span class="font-extrabold">Q</span><span class="text-lg">⚡</span> Enviar Dinero
+                                <a href="{{ route('transactions.send.step1') }}" <span
+                                    class="font-extrabold">Q</span><span class="text-lg">⚡</span> Enviar Dinero
+                                </a>
                             </button>
                             <button
                                 class="flex items-center justify-center gap-2 bg-[#f7fafc] text-black font-bold rounded-lg px-5 py-2 font-mono text-base shadow border border-[#2563eb] hover:bg-[#e0e7ff] transition w-full md:w-auto">
@@ -66,17 +68,70 @@
                     </div>
                     <!-- Actividad reciente -->
                     <div
-                        class="bg-white rounded-2xl shadow-[0_6px_24px_0_#2563eb50] p-4 sm:p-6 md:p-8 min-h-[170px] flex flex-col justify-between border border-[#e0e7ff] w-full">
+                        class="bg-white rounded-2xl shadow-[0_6px_24px_0_#2563eb50] p-4 sm:p-6 md:p-8 min-h-[170px] flex flex-col border border-[#e0e7ff] w-full">
                         <div>
-                            <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-black mb-2">
-                                Actividad reciente</div>
-                            <div class="text-xs sm:text-sm text-black font-mono mb-4 leading-tight">
-                                Consulte el dinero enviado y recibido. Aquí encontrará sus movimientos recientes con
-                                QuickPay
+                            <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-black mb-4">
+                                Actividad reciente
                             </div>
+                            @if ($transactions->count())
+                                <ul>
+                                    @foreach ($transactions as $transaction)
+                                        <li class="mb-4">
+                                            <div
+                                                class="flex items-center gap-3 bg-[#f6f7fb] border border-[#d1d5db] rounded-2xl px-6 py-4 shadow-[0_4px_24px_0_rgba(37,99,235,0.15)] hover:shadow-[0_8px_32px_0_rgba(37,99,235,0.18)] transition-shadow duration-200">
+                                                <div class="flex-shrink-0">
+                                                    <span
+                                                        class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 shadow-lg">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-8 w-8 text-white" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div class="flex items-center justify-between">
+                                                        <div
+                                                            class="font-extrabold font-mono uppercase text-sm sm:text-base text-black tracking-wide">
+                                                            @if ($transaction->sender_id === auth()->id())
+                                                                {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario #' . $transaction->receiver_id }}
+                                                            @else
+                                                                {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
+                                                            @endif
+                                                        </div>
+                                                        <div
+                                                            class="font-mono font-bold text-base sm:text-lg {{ $transaction->sender_id === auth()->id() ? 'text-red-500' : 'text-green-600' }}">
+                                                            {{ $transaction->sender_id === auth()->id() ? '-' : '+' }}{{ $transaction->currency }}.
+                                                            {{ number_format($transaction->amount, 2) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-xs text-gray-600 font-mono mt-1">
+                                                        {{ $transaction->created_at->format('d M') }}.
+                                                        @if ($transaction->sender_id === auth()->id())
+                                                            Pago enviado
+                                                        @else
+                                                            Pago recibido
+                                                        @endif
+                                                        <br>
+                                                        <span
+                                                            class="text-gray-500">"{{ $transaction->reason ?? '' }}"</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <div class="text-xs sm:text-sm text-black font-mono mb-4 leading-tight">
+                                    Consulte el dinero enviado y recibido. Aquí encontrará sus movimientos recientes con
+                                    QuickPay
+                                </div>
+                            @endif
                         </div>
-                        <a href="#" class="text-[#2563eb] font-mono text-xs sm:text-sm hover:underline">Mostrar
-                            todos</a>
+                        <a href="#"
+                            class="text-[#2563eb] font-mono text-xs sm:text-sm hover:underline mt-2">Mostrar todos</a>
                     </div>
                     <!-- Contactos frecuentes -->
                     <div

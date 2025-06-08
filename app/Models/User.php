@@ -49,4 +49,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(\App\Models\Transaction::class);
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(\App\Models\Wallet::class);
+    }
 }
