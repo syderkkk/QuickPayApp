@@ -1,9 +1,9 @@
 @php
     $navLinks = [
         ['name' => 'Inicio', 'route' => 'dashboard'],
-        ['name' => 'Enviar y Solicitar', 'route' => '#'],
-        ['name' => 'Cartera', 'route' => '#'],
-        ['name' => 'Movimientos', 'route' => '#'],
+        ['name' => 'Enviar y Solicitar', 'route' => 'transactions.send.step1'],
+        ['name' => 'Cartera', 'route' => 'payment-methods.index'],
+        ['name' => 'Movimientos', 'route' => 'transactions.index'],
     ];
 @endphp
 

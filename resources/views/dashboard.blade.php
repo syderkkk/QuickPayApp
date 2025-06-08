@@ -78,7 +78,7 @@
                                     @foreach ($transactions as $transaction)
                                         <li class="mb-4">
                                             <div
-                                                class="flex items-center gap-3 bg-[#f6f7fb] border border-[#d1d5db] rounded-2xl px-6 py-4 shadow-[0_4px_24px_0_rgba(37,99,235,0.15)] hover:shadow-[0_8px_32px_0_rgba(37,99,235,0.18)] transition-shadow duration-200">
+                                                class="flex items-center gap-3 bg-[#ede8f6] border border-[#d1d5db] rounded-2xl px-6 py-4 shadow-[0_4px_24px_0_rgba(37,99,235,0.15)] hover:shadow-[0_8px_32px_0_rgba(37,99,235,0.18)] transition-shadow duration-200">
                                                 <div class="flex-shrink-0">
                                                     <span
                                                         class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 shadow-lg">

@@ -10,6 +10,40 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+        $query = Transaction::query()
+            ->where(function ($q) use ($user) {
+                $q->where('sender_id', $user->id)
+                    ->orWhere('receiver_id', $user->id);
+            });
+
+        // Filtros
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('reason', 'like', "%$search%")
+                    ->orWhere('amount', 'like', "%$search%");
+            });
+        }
+
+        if ($request->filled('currency')) {
+            $query->where('currency', $request->currency);
+        }
+
+        $transactions = $query->latest()->paginate(10);
+
+        return view('transactions.index', compact('transactions'));
+    }
+
+
     public function step1()
     {
         return view('transactions.send.step1');
@@ -22,6 +56,7 @@ class TransactionController extends Controller
         ]);
         $receiver = User::where('email', $request->receiver)->firstOrFail();
         $user = Auth::user();
+
         $wallet = $user->wallet;
         return view('transactions.send.step2', [
             'receiver' => $receiver,

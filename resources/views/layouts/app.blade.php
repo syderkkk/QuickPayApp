@@ -17,6 +17,7 @@
 
 
         <!-- Page Content -->
+        <x-loading />
         <main>
             {{ $slot ?? '' }}
             @yield('content')
