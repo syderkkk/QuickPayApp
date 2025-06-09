@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $transactions = Transaction::where('sender_id', $user->id)
             ->orWhere('receiver_id', $user->id)
             ->latest()
-            ->take(5)
+            ->take(3)
             ->get();
 
         // Contactos frecuentes (ejemplo: usuarios con más transacciones)

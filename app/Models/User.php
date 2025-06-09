@@ -60,4 +60,8 @@ class User extends Authenticatable
         return $this->hasOne(\App\Models\Wallet::class);
     }
 
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
+    }
 }

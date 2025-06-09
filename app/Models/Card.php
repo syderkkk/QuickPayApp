@@ -14,6 +14,7 @@ class Card extends Model
         'expiry_year',
         'brand',
         'last_four',
+        'nickname',
     ];
 
     public function user()

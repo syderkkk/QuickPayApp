@@ -20,7 +20,7 @@
             <ul class="flex gap-8 items-center">
                 @foreach ($navLinks as $link)
                     <li>
-                        <a href="{{ $link['route'] === '#' ? '#' : route($link['route']) }}"
+                        <a href="{{ route($link['route']) }}"
                             class="px-5 py-2 rounded-full transition font-bold uppercase tracking-wide text-base
                             {{ request()->routeIs($link['route'])
                                 ? 'bg-white text-primary shadow-lg'
@@ -34,13 +34,13 @@
         <!-- Iconos y cerrar sesión (desktop) -->
         <div class="hidden md:flex items-center gap-8">
             <!-- Notificaciones -->
-            <a href="#" class="text-white hover:text-yellow-400 transition" title="Notificaciones">
+            <button type="button" class="text-white hover:text-yellow-400 transition" title="Notificaciones">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-            </a>
+            </button>
             <!-- Perfil (tuerca) -->
             <a href="{{ route('profile.edit') }}" class="text-white hover:text-yellow-400 transition" title="Perfil">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@
         <ul class="flex flex-col gap-2 mt-2">
             @foreach ($navLinks as $link)
                 <li>
-                    <a href="{{ $link['route'] === '#' ? '#' : route($link['route']) }}"
+                    <a href="{{ route($link['route']) }}"
                         class="block w-full text-center px-5 py-2 rounded-full transition font-bold uppercase tracking-wide text-base
                         {{ request()->routeIs($link['route'])
                             ? 'bg-white text-primary shadow-lg'
@@ -121,13 +121,13 @@
             @endforeach
         </ul>
         <div class="flex justify-center gap-6 mt-4">
-            <a href="#" class="text-white hover:text-yellow-400 transition" title="Notificaciones">
+            <button type="button" class="text-white hover:text-yellow-400 transition" title="Notificaciones">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-            </a>
+            </button>
             <a href="{{ route('profile.edit') }}" class="text-white hover:text-yellow-400 transition" title="Perfil">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">

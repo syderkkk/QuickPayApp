@@ -2,16 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentMethodController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('payment_methods.index');
+        $cards = Card::where('user_id', Auth::id())->get();
+
+        $selectedCardId = $request->input('selected_card_id');
+        // Si el usuario selecciona una tarjeta, la guardamos en sesión y redirigimos
+        if ($selectedCardId && $cards->where('id', $selectedCardId)->count()) {
+            session(['selected_card_id' => $selectedCardId]);
+            return redirect()->route('payment-methods.index');
+        }
+
+        // Si la seleccionada ya no existe, limpia la sesión
+        if (session('selected_card_id') && !$cards->where('id', session('selected_card_id'))->count()) {
+            session()->forget('selected_card_id');
+        }
+
+        return view('payment_methods.index', compact('cards'));
     }
 
     /**

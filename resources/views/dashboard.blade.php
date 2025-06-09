@@ -50,28 +50,63 @@
                         </div>
                     </div>
                     <!-- Asociar tarjeta -->
-                    <div
-                        class="bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center min-h-[140px] border border-[#e0e7ff] w-full">
-                        <div class="flex items-center justify-center mb-3">
-                            <div class="rounded-full bg-[#dde2ea] w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shadow-xl"
-                                style="box-shadow: 0 8px 32px 0 #0C5CADB3;">
-                                <img src="{{ asset('tarjeta.png') }}" alt="Tarjeta"
-                                    class="w-10 sm:w-12 sm:h-12 max-w-full h-auto select-none pointer-events-none"
-                                    draggable="false">
+                    @if (auth()->user()->cards && auth()->user()->cards->count())
+                        @php
+                            $card = auth()->user()->cards->first();
+                        @endphp
+                        <a href="{{ route('payment-methods.index') }}" class="block focus:outline-none">
+                            <div
+                                class="bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center min-h-[140px] border border-[#e0e7ff] w-full transition hover:scale-105 cursor-pointer">
+                                <div class="flex items-center justify-center mb-3">
+                                    <div class="rounded-full bg-[#dde2ea] w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shadow-xl"
+                                        style="box-shadow: 0 8px 32px 0 #0C5CADB3;">
+                                        <img src="{{ asset('bcp_card.png') }}" alt="Tarjeta"
+                                            class="w-7 sm:w-8 sm:h-8 max-w-full h-auto select-none pointer-events-none"
+                                            draggable="false">
+                                    </div>
+                                </div>
+                                <div
+                                    class="font-extrabold text-base sm:text-lg md:text-xl font-mono text-[#2563eb] mb-2 text-center">
+                                    {{ $card->brand ?? 'Visa de débito' }}-{{ $card->last_four }}
+                                </div>
+                                <span class="inline-block px-4 py-1 text-xs rounded-full font-mono font-bold mb-2"
+                                    style="background:#16a34a; color:#fff;">
+                                    Disponible
+                                </span>
+                                <div class="text-xs sm:text-sm text-black font-mono text-center mt-2">Envíe pagos en
+                                    cuestión de minutos.</div>
                             </div>
+                        </a>
+                    @else
+                        <div class="bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center min-h-[140px] border border-[#e0e7ff] w-full transition hover:scale-105 cursor-pointer"
+                            onclick="window.location='{{ route('cards.create') }}'">
+                            <div class="flex items-center justify-center mb-3">
+                                <div class="rounded-full bg-[#dde2ea] w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shadow-xl"
+                                    style="box-shadow: 0 8px 32px 0 #0C5CADB3;">
+                                    <img src="{{ asset('tarjeta.png') }}" alt="Tarjeta"
+                                        class="w-10 sm:w-12 sm:h-12 max-w-full h-auto select-none pointer-events-none"
+                                        draggable="false">
+                                </div>
+                            </div>
+                            <div
+                                class="font-extrabold text-sm sm:text-base md:text-lg font-mono text-black mb-1 text-center">
+                                Asociar una tarjeta</div>
+                            <div class="text-xs sm:text-sm text-black font-mono text-center">Envíe pagos en cuestión de
+                                minutos.</div>
                         </div>
-                        <div
-                            class="font-extrabold text-sm sm:text-base md:text-lg font-mono text-black mb-1 text-center">
-                            Asociar una tarjeta</div>
-                        <div class="text-xs sm:text-sm text-black font-mono text-center">Envíe pagos en cuestión de
-                            minutos.</div>
-                    </div>
+                    @endif
                     <!-- Actividad reciente -->
                     <div
                         class="bg-white rounded-2xl shadow-[0_6px_24px_0_#2563eb50] p-4 sm:p-6 md:p-8 min-h-[170px] flex flex-col border border-[#e0e7ff] w-full">
                         <div>
-                            <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-black mb-4">
-                                Actividad reciente
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-black">
+                                    Actividad reciente
+                                </div>
+                                <a href="{{ route('transactions.index') }}"
+                                    class="text-[#2563eb] font-mono text-xs sm:text-sm hover:underline">
+                                    Mostrar todos
+                                </a>
                             </div>
                             @if ($transactions->count())
                                 <ul>
@@ -130,8 +165,6 @@
                                 </div>
                             @endif
                         </div>
-                        <a href="#"
-                            class="text-[#2563eb] font-mono text-xs sm:text-sm hover:underline mt-2">Mostrar todos</a>
                     </div>
                     <!-- Contactos frecuentes -->
                     <div

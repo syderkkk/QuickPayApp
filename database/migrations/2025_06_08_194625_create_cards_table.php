@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('brand')->nullable();
             $table->string('last_four', 4);
             $table->boolean('is_default')->default(false);
+            $table->string('nickname')->nullable();
             $table->timestamps();
         });
     }

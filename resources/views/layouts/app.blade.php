@@ -15,7 +15,6 @@
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-[#ffffff]">
 
-
         <!-- Page Content -->
         <x-loading />
         <main>
