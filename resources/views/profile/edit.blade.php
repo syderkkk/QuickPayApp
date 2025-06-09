@@ -10,12 +10,24 @@
                 </h1>
                 <p class="text-gray-500 font-mono text-sm">Actualiza tu información personal, cambia tu contraseña o elimina tu cuenta.</p>
             </div>
+
+            <!-- Botón para agregar contactos -->
+            <div class="flex justify-end mb-6">
+                <a href="{{ route('transactions.contacts.select') }}"
+                   class="inline-flex items-center gap-2 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-bold py-2 px-6 font-mono text-sm transition shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Agregar contacto
+                </a>
+            </div>
+
             <!-- Grilla de formularios -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Información de perfil -->
-                <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-6 border border-[#e0e7ff] flex flex-col justify-between">
+                <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-6 border border-[#e0e7ff] flex flex-col h-full">
                     <h2 class="font-bold text-lg text-[#2563eb] font-mono mb-4">Información personal</h2>
-                    <form method="POST" action="{{ route('profile.update') }}" class="space-y-4">
+                    <form method="POST" action="{{ route('profile.update') }}" class="space-y-4 flex-1 flex flex-col">
                         @csrf
                         @method('PUT')
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -63,9 +75,9 @@
                     </form>
                 </div>
                 <!-- Cambiar contraseña -->
-                <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-6 border border-[#e0e7ff] flex flex-col justify-between">
+                <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-6 border border-[#e0e7ff] flex flex-col h-full">
                     <h2 class="font-bold text-lg text-[#2563eb] font-mono mb-4">Cambiar contraseña</h2>
-                    <div>
+                    <div class="flex-1 flex flex-col justify-between">
                         @include('profile.partials.update-password-form')
                     </div>
                 </div>

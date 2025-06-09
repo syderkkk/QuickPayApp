@@ -24,7 +24,7 @@
                    class="bg-[#2563eb] hover:bg-[#284494] text-white font-mono font-extrabold text-lg py-2 px-8 rounded-xl transition shadow text-center mb-2">
                     Enviar más dinero
                 </a>
-                <a href="#" class="text-[#2563eb] font-mono underline text-base text-center">
+                <a href="{{ route('transactions.index') }}" class="text-[#2563eb] font-mono underline text-base text-center">
                     Ir a movimientos
                 </a>
             </div>

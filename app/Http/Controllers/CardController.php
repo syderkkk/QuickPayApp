@@ -46,9 +46,9 @@ class CardController extends Controller
             'card_number' => $request->card_number,
             'expiry_month' => $month,
             'expiry_year' => '20' . $year,
-            'brand' => 'Visa', // Aquí podrías integrar una API para detectar la marca
+            'brand' => 'Visa', // integrar una API para detectar la marca
             'last_four' => substr($request->card_number, -4),
-            'is_default' => false, // Por defecto, no es la tarjeta principal
+            'is_default' => false,
         ]);
 
         return view('payment_methods.cards.confirm');

@@ -64,7 +64,6 @@
                     </div>
                 </form>
                 <!-- Filtro Divisa -->
-                <!-- Filtro Divisa -->
                 <form method="GET" class="inline">
                     <input type="hidden" name="search" value="{{ request('search') }}">
                     <input type="hidden" name="type" value="{{ request('type') }}">

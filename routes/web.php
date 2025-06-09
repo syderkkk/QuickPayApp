@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CardController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PaymentMethodController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions/send', [TransactionController::class, 'step1'])->name('transactions.send.step1');
     Route::post('/transactions/send/step2', [TransactionController::class, 'step2'])->name('transactions.send.step2');
     Route::post('/transactions/send/confirm', [TransactionController::class, 'confirm'])->name('transactions.send.confirm');
+    Route::get('/transactions/contacts/select', [TransactionController::class, 'selectContact'])->name('transactions.contacts.select');
+    
+    Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
+
+    // Contactos
+    Route::resource('contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
 });
 
 require __DIR__ . '/auth.php';

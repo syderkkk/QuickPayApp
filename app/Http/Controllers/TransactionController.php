@@ -150,4 +150,42 @@ class TransactionController extends Controller
             'type' => $type,
         ]);
     }
+
+
+    public function selectContact()
+    {
+        $userId = Auth::id();
+
+        // Extrae los contactos directamente con join
+        $contacts = DB::table('contacts')
+            ->join('users', 'contacts.contact_id', '=', 'users.id')
+            ->where('contacts.user_id', $userId)
+            ->select(
+                'contacts.id as contact_relation_id',
+                'contacts.alias',
+                'users.id as user_id',
+                'users.name',
+                'users.lastname',
+                'users.email' // <-- Agrega este campo
+            )
+            ->get();
+
+        return view('transactions.contacts.select', compact('contacts'));
+    }
+
+    public function sendToContact($receiverId)
+    {
+        $receiver = User::findOrFail($receiverId);
+
+        // Aquí puedes cargar el saldo, cuentas, etc. según tu lógica actual
+        $wallet_balance = Auth::user()->wallet->balance ?? 0;
+        $wallet_currency = 'S/.'; // O la moneda que uses
+
+        return view('transactions.send.step2', [
+            'receiver' => $receiver,
+            'wallet_balance' => $wallet_balance,
+            'wallet_currency' => $wallet_currency,
+            // ...otros datos necesarios...
+        ]);
+    }
 }
