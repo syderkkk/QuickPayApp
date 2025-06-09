@@ -6,7 +6,7 @@
             <div class="flex flex-col gap-8 w-full md:w-1/2">
                 <div class="flex flex-row gap-6 justify-center flex-wrap">
                     <!-- Asociar cuenta bancaria -->
-                    <a href="#" class="flex flex-col items-center group">
+                    <a href="{{ route('banks.create') }}" class="flex flex-col items-center group">
                         <div class="rounded-full bg-[#dde2ea] flex items-center justify-center group-hover:scale-105 transition-all duration-200"
                             style="width:60px; height:60px; box-shadow: 0 8px 32px 0 #083B7080;">
                             <img src="{{ asset('bank.png') }}" alt="Banco"

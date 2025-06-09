@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
@@ -35,6 +36,9 @@ Route::middleware('auth')->group(function () {
 
     // Tarjetas (solo index, create, store)
     Route::resource('cards', CardController::class)->only(['index', 'create', 'store', 'destroy', 'update', 'edit']);
+
+    // Cuenta bancaria (index)
+    Route::resource('banks', BankController::class)->only(['create']);
 
     // Confirmación de tarjeta
     Route::view('/cards/confirm', 'payment_methods.cards.confirm')->name('cards.confirm');
