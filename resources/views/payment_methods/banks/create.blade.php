@@ -13,51 +13,90 @@
             <h1 class="text-2x1 font-extrabold text-center mb-8 font-mono">
                 Asociar una cuenta bancaria
             </h1>
-            <form class="w-full flex flex-col gap-4 text-[13px] text-[#4a4a4a]">
-                <input class="w-full rounded border border-gray-400 bg-[#f0f4fa] px-3 py-2 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Nombre del banco" type="text"/>
-                <input class="w-full rounded border border-gray-400 bg-[#f0f4fa] px-3 py-2 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Código SWIFT" type="text"/>
-                <div>
-                <p class="font-bold mb-1 text-[13px] text-black">
-                Tipo de cuenta
-                </p>
-                <label class="inline-flex items-center text-[11px] mb-1 cursor-pointer">
-                <input checked="" class="form-radio text-blue-600" name="tipoCuenta" type="radio" value="corriente"/>
-                <span class="ml-2">
-                Cuenta corriente
-                </span>
-                </label>
-                <label class="inline-flex items-center text-[11px] cursor-pointer">
-                <input class="form-radio text-blue-600" name="tipoCuenta" type="radio" value="ahorros"/>
-                <span class="ml-2">
-                de ahorros
-                </span>
-                </label>
+            <!-- Verificar si hay errores -->
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm mb-4">
+                    <strong class="font-bold">¡Error!</strong>
+                    <ul class="mt-1 list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-                <input class="w-full rounded border border-gray-400 bg-[#f0f4fa] px-3 py-2 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Número de cuenta" type="text"/>
-                <p class="text-[9px] mb-2">
-                Elija la divisa en la que desea recibir pagos al transferir de PayPal a su cuenta bancaria.
-                </p>
-                <div>
-                <p class="font-bold mb-1 text-[13px] text-black">
-                Divisa
-                </p>
-                <label class="inline-flex items-center text-[11px] mb-1 cursor-pointer">
-                <input checked="" class="form-radio text-blue-600" name="divisa" type="radio" value="sol"/>
-                <span class="ml-2">
-                Nuevo sol peruano
-                </span>
-                </label>
-                <label class="inline-flex items-center text-[11px] cursor-pointer">
-                <input checked="" class="form-radio text-blue-600" name="divisa" type="radio" value="dolar"/>
-                <span class="ml-2">
-                Dólar estadounidense
-                </span>
-                </label>
+            @endif
+
+            <!-- Formulario -->
+            <form method="POST" action="{{ route('banks.store')}}" class="w-full flex flex-col gap-4 text-[13px] text-[#4a4a4a]">
+                @csrf
+                <!-- Nombre del banco -->
+                <input name="bank_name" class="w-full font-mono rounded border border-gray-400 bg-[#f0f4fa] px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" 
+                    placeholder="Nombre del banco" type="text" required/>
+
+                <!-- Codigo swift -->
+                <input name="swift_code" class="w-full font-mono rounded border border-gray-400 bg-[#f0f4fa] px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" 
+                    placeholder="Código SWIFT" type="text" maxlength="11" minlength="8" required/>
+                @error('swift_code')
+                    <div class="text-red-500 text-xs">{{ $message }}</div>
+                @enderror
+
+                <!-- Tipo de cuenta -->
+                <div class="w-full">
+                    <h1 class="text-2x1 font-extrabold mb-2 font-mono text-black">Tipo de cuenta</h1>
+                    <x-input-label for="account_type" :value="__('Tipo de cuenta')" class="sr-only" />
+                    <select id="account_type" name="account_type" required
+                        class="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 font-mono text-sm text-gray-500 placeholder-gray-400 focus:ring-2 focus:ring-[#2563eb] focus:border-[#2563eb]">
+                        <option value="" disabled {{ old('account_type') ? '' : 'selected' }}>Seleccione el tipo</option>
+                        <option value="corriente" {{ old('account_type') == 'corriente' ? 'selected' : '' }}>Corriente</option>
+                        <option value="ahorros" {{ old('account_type') == 'ahorros' ? 'selected' : '' }}>Ahorros</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('account_type')" class="mt-1" />
                 </div>
-                <input class="w-full rounded border border-gray-400 bg-[#f0f4fa] px-3 py-2 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Documento de identidad" type="text"/>
-                <input class="w-full rounded border border-gray-400 bg-[#f0f4fa] px-3 py-2 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Número de teléfono" type="text"/>
-                <input class="w-full rounded border border-gray-400 bg-[#f0f4fa] px-3 py-2 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Dirección de facturación" type="text"/>
-                <button class="mt-4 bg-blue-600 text-white font-extrabold text-sm rounded-full py-2 px-6 w-max mx-auto" type="submit">
+
+                <!-- Numero de cuenta -->
+                <input name="account_number" class="w-full font-mono rounded border border-gray-400 bg-[#f0f4fa] px-3 py-2 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" 
+                    placeholder="Número de cuenta" type="text" maxlength="19" required/>
+                @error('account_number')
+                    <div class="text-red-500 text-xs">{{ $message }}</div>
+                @enderror
+
+                <!-- Tipo de divisa -->
+                <div class="w-full">
+                    <p class="text-[10px] mb-2 font-mono">
+                    Elija la divisa en la que desea recibir pagos al transferir de PayPal a su cuenta bancaria.
+                    </p>
+                    <h1 class="text-2x1 font-extrabold mb-2 font-mono text-black">Divisa</h1>
+                    <x-input-label for="currency" :value="__('Divisa')" class="sr-only" />
+                    <select name="currency" id="currency" required
+                        class="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 font-mono text-sm text-gray-500 placeholder-gray-400 focus:ring-2 focus:ring-[#2563eb] focus:border-[#2563eb]">
+                        <option value="" disabled {{ old('currency') ? '' : 'selected' }}>Seleccione la divisa</option>
+                        <option value="PEN" {{ old('currency') == 'soles' ? 'selected' : '' }}>Nuevo sol peruano</option>
+                        <option value="USD" {{ old('currency') == 'dolares' ? 'selected' : '' }}>Dolar estadounidense</option>
+                    </select>
+                </div>
+
+                <!-- Documento de identidad -->
+                <input name="document_number" class="w-full font-mono rounded border border-gray-400 bg-[#f0f4fa] px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" 
+                    placeholder="Documento de identidad" type="text" minlength="8" maxlength="8" required/>
+                @error('document_number')
+                    <div class="text-red-500 text-xs">{{ $message }}</div>
+                @enderror
+
+                <!-- Numero de celular -->
+                <input name="phone" class="w-full font-mono rounded border border-gray-400 bg-[#f0f4fa] px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" 
+                    placeholder="Número de teléfono" type="text" required/>
+                @error('phone')
+                    <div class="text-red-500 text-xs">{{ $message }}</div>
+                @enderror
+
+                <!-- Direccion de facturacion -->
+                <input name="billing_address" class="w-full font-mono rounded border border-gray-400 bg-[#f0f4fa] px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600" 
+                    placeholder="Dirección de facturación" type="text" required/>
+                @error('billing_address')
+                    <div class="text-red-500 text-xs">{{ $message }}</div>
+                @enderror
+
+                <!-- Boton -->
+                <button class="mt-4 bg-blue-600 text-white font-extrabold text-sm rounded-full py-2 px-6 w-max mx-auto font-mono" type="submit">
                 Asociar cuenta
                 </button>
             </form>
