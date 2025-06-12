@@ -6,7 +6,7 @@
             <div class="flex flex-col gap-8 w-full md:w-1/2">
                 <div class="flex flex-row gap-6 justify-center flex-wrap">
                     <!-- Asociar cuenta bancaria -->
-                    <a href="#" class="flex flex-col items-center group">
+                    <a href="{{ route('banks.create') }}" class="flex flex-col items-center group">
                         <div class="rounded-full bg-[#dde2ea] flex items-center justify-center group-hover:scale-105 transition-all duration-200"
                             style="width:60px; height:60px; box-shadow: 0 8px 32px 0 #083B7080;">
                             <img src="{{ asset('bank.png') }}" alt="Banco"
@@ -87,6 +87,41 @@
                         @empty
                             <div class="text-gray-400 font-mono text-sm"></div>
                         @endforelse
+
+                        <!-- Cuenta bancaria asociada -->
+                        @forelse($banks as $bank)
+                            <form action="{{ route('payment-methods.index') }}" method="POST"
+                                class="w-full max-w-xs sm:max-w-md md:max-w-lg">
+                                @csrf
+                                <input type="hidden" name="selected_bank_id" value="{{ $bank->id }}">
+                                <button type="submit" class="w-full text-left focus:outline-none">
+                                    <div
+                                        class="bg-white border border-[#bcb7c2] rounded-xl px-3 sm:px-5 md:px-8 py-4 flex items-center gap-3 sm:gap-4 w-full transition hover:scale-105 {{ session('selected_bank_id') == $bank->id ? 'ring-2 ring-[#2563eb]' : '' }}">
+                                        <span
+                                            class="font-extrabold text-xl sm:text-2xl md:text-3xl font-mono text-[#2563eb] flex items-center gap-1">
+                                            <img src="{{ asset('bank.png') }}" alt="Banco"
+                                                class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" draggable="false">
+                                        </span>
+                                        <div class="flex flex-col items-start">
+                                            <span class="font-mono text-sm sm:text-base md:text-lg text-[#2563eb]">
+                                                {{ $bank->bank_name }} - {{ $bank->account_type }}
+                                            </span>
+                                            <span
+                                                class="inline-block mt-1 px-2 py-0.5 text-xs rounded-full bg-blue-200 text-blue-700 font-mono font-bold">
+                                                {{ $bank->currency }}
+                                            </span>
+                                            <div class="flex gap-2 mt-1">
+                                                <span
+                                                    class="inline-block px-4 py-1 text-xs rounded-full font-mono font-bold"
+                                                    style="background:#16a34a; color:#fff;">Disponible</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </form>
+                        @empty 
+                        <div class="text-gray-400 font-mono text-sm"></div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -95,6 +130,7 @@
             <div class="flex flex-col items-center justify-start w-full md:w-1/2 mt-8 md:mt-0">
                 @php
                     $selectedCard = $cards->where('id', session('selected_card_id'))->first();
+                    $selectedBank = $banks->where('id', session('selected_bank_id'))->first();
                 @endphp
                 @if ($selectedCard)
                     <div class="w-full flex flex-col items-center">
@@ -119,6 +155,34 @@
                             <button type="submit"
                                 class="text-[#d32f2f] font-mono text-sm mt-2 hover:underline bg-transparent border-0 p-0">
                                 Eliminar cuenta asociada
+                            </button>
+                        </form>
+                    </div>
+                @elseif ($selectedBank)
+                    <div class="w-full flex flex-col items-center mt-8">
+                        <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] border border-[#bcb7c2] p-4 sm:p-6 md:p-8 flex flex-col items-center mb-2 transition hover:scale-105"
+                            style="box-shadow: 0 8px 32px 0 #083B7080;">
+                            <img src="{{ asset('banco.png') }}" alt="Banco"
+                                class="w-24 max-w-full h-auto select-none pointer-events-none" draggable="false">
+                        </div>
+                        <div class="font-mono text-base md:text-lg text-black font-bold text-center mt-2">
+                            {{ $selectedBank->bank_name }} - {{ strtoupper($selectedBank->account_type) }}
+                        </div>
+                        <span class="font-mono text-sm text-gray-600">Cuenta terminada en {{ substr($selectedBank->account_number, -4) }}</span>
+
+                         <!-- Botón Editar tarjeta -->
+                        <a href="{{ route('banks.edit', $selectedBank->id) }}"
+                            class="text-[#2563eb] font-mono text-sm mt-2 hover:underline bg-transparent border-0 p-0">
+                            Editar tarjeta
+                        </a>
+                        <!-- Botón Eliminar cuenta bancaria -->
+                        <form action="{{ route('banks.destroy', $selectedBank->id) }}" method="POST"
+                            onsubmit="return confirm('¿Seguro que deseas eliminar esta cuenta bancaria?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="text-[#d32f2f] font-mono text-sm mt-2 hover:underline bg-transparent border-0 p-0">
+                                Eliminar cuenta bancaria
                             </button>
                         </form>
                     </div>
