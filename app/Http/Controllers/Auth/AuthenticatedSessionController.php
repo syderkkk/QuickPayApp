@@ -29,6 +29,15 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
+
+        // Validar si el usuario está bloqueado
+        if ($user && $user->is_blocked) {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => '¡Tu cuenta ha sido bloqueada!',
+            ]);
+        }
+        // Redirigir según el rol del usuario
         if ($user && $user->role === 'admin') {
             return redirect()->intended(route('admin.dashboard', absolute: false));
         }
