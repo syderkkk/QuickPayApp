@@ -41,9 +41,9 @@
                     <span class="ml-4">Transacciones</span>
                 </a>
             </li>
-            <li class="relative px-6 py-3">
+            {{-- <li class="relative px-6 py-3">
                 <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
-                    href="{{-- {{ route('admin.payment-methods.index') }} --}}">
+                    href="{{ route('admin.payment-methods.index') }}">
                     <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
                         stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M21 10H7a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2z" />
@@ -51,8 +51,8 @@
                     </svg>
                     <span class="ml-4">Métodos de pago</span>
                 </a>
-            </li>
-            <li class="relative px-6 py-3">
+            </li> --}}
+            {{-- <li class="relative px-6 py-3">
                 <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
                     href="#">
                     <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
@@ -78,7 +78,7 @@
             </li>
             <li class="relative px-6 py-3">
                 <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
-                    href="{{-- {{ route('admin.banks.index') }} --}}">
+                    href="{{ route('admin.banks.index') }}">
                     <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
                         stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M3 10v6a2 2 0 002 2h14a2 2 0 002-2v-6"></path>
@@ -97,7 +97,19 @@
                     </svg>
                     <span class="ml-4">Charts</span>
                 </a>
-            </li>
+            </li> --}}
         </ul>
+        <form method="POST" action="{{ route('logout') }}" class="absolute bottom-0 left-0 w-full px-6 pb-6">
+            @csrf
+            <button type="submit"
+                class="w-full flex items-center gap-2 justify-center bg-[#d32f2f] hover:bg-[#b91c1c] text-white font-bold py-2 rounded-full font-mono text-base transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m4-8V5a2 2 0 10-4 0v1" />
+                </svg>
+                Cerrar sesión
+            </button>
+        </form>
     </div>
 </aside>

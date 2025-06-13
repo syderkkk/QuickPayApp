@@ -10,6 +10,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
 
 // Rutas públicas
@@ -36,17 +37,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
     Route::post('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
 
-
-    // Tarjetas (solo index, create, store)
+    // Tarjetas
     Route::resource('cards', CardController::class)->only(['index', 'create', 'store', 'destroy', 'update', 'edit']);
 
-    // Cuenta bancaria (create, store, edit)
+    // Cuentas bancarias
     Route::resource('banks', BankController::class)->only(['index', 'create', 'store', 'destroy', 'update', 'edit']);
 
-    // Confirmación de tarjeta
+    // Confirmaciones
     Route::view('/cards/confirm', 'payment_methods.cards.confirm')->name('cards.confirm');
-
-    // Confirmación de cuenta bancaria
     Route::view('/banks/confirm', 'payment_methods.banks.confirm')->name('banks.confirm');
 
     // Transacciones
@@ -56,36 +54,32 @@ Route::middleware('auth')->group(function () {
     Route::post('/transactions/send/confirm', [TransactionController::class, 'confirm'])->name('transactions.send.confirm');
     Route::get('/transactions/contacts/select', [TransactionController::class, 'selectContact'])->name('transactions.contacts.select');
 
-    Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
-
     // Contactos
     Route::resource('contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
 
+    Route::middleware([IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
+        // Dashboard admin
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
+        // Transacciones admin
+        Route::get('/transactions', [AdminTransactionController::class, 'index'])->name('transactions.index');
+        Route::get('/transactions/{transaction}', [AdminTransactionController::class, 'show'])->name('transactions.show');
 
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        // Usuarios admin
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
+        Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
+        Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 
-
-    Route::get('/admin/transactions', [AdminTransactionController::class, 'index'])->name('admin.transactions.index');
-    Route::get('/admin/transactions/{transaction}', [AdminTransactionController::class, 'show'])->name('admin.transactions.show');
-
-
-    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');         // Listar usuarios
-    Route::get('/admin/users/create', [AdminUserController::class, 'create'])->name('admin.users.create'); // Formulario de nuevo usuario
-    Route::post('/admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');         // Guardar nuevo usuario
-    Route::get('/admin/users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');     // Ver detalle
-    Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit'); // Editar usuario
-    Route::put('/admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update'); // Actualizar usuario
-    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy'); // Eliminar usuario
-
-    Route::get('/admin/users/{user}/contacts', [AdminUserController::class, 'contacts'])->name('admin.users.contacts');
-    Route::get('/admin/users/{user}/payment-methods', [AdminUserController::class, 'paymentMethods'])->name('admin.users.payment_methods');
-    Route::get('/admin/users/{user}/transactions', [AdminUserController::class, 'transactions'])->name('admin.users.transactions');
-
-
-    Route::get('/admin/users/{user}/contacts', [AdminUserController::class, 'contacts'])->name('admin.users.contacts');
-    Route::get('/admin/users/{user}/payment-methods', [AdminUserController::class, 'paymentMethods'])->name('admin.users.payment-methods');
-    Route::get('/admin/users/{user}/transactions', [AdminUserController::class, 'transactions'])->name('admin.users.transactions');
+        // Relaciones de usuario admin
+        Route::get('/users/{user}/contacts', [AdminUserController::class, 'contacts'])->name('users.contacts');
+        Route::get('/users/{user}/payment-methods', [AdminUserController::class, 'paymentMethods'])->name('users.payment-methods');
+        Route::get('/users/{user}/transactions', [AdminUserController::class, 'transactions'])->name('users.transactions');
+    });
 });
 
 require __DIR__ . '/auth.php';

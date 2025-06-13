@@ -1,71 +1,170 @@
 <x-app-layout>
     <div class="flex min-h-screen bg-[#F0F4F4] font-primary">
-        <!-- Sidebar personalizado -->
         <x-admin-sidebar />
         <div class="flex flex-col flex-1 w-full">
-            <!-- Header -->
-            <x-admin-header />
-
             <main class="h-full overflow-y-auto">
-                <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 pt-8">
-                    <h2
-                        class="mb-6 text-2xl font-extrabold text-[#284494] tracking-tight text-center drop-shadow-[0_6px_6px_rgba(37,99,235,0.10)]">
-                        Transacciones
-                    </h2>
-                    <form method="GET" class="mb-4 flex gap-2">
-                        <input type="text" name="search" placeholder="Buscar motivo..." value="{{ request('search') }}"
-                            class="border rounded px-2 py-1">
-                        <select name="status" class="border rounded px-2 py-1">
-                            <option value="">Estado</option>
-                            <option value="pending" @selected(request('status') == 'pending')>Pendiente</option>
-                            <option value="completed" @selected(request('status') == 'completed')>Aprobada</option>
-                            <option value="failed" @selected(request('status') == 'failed')>Rechazada</option>
-                        </select>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-1 rounded">Filtrar</button>
-                    </form>
-                    <div
-                        class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 border border-[#e0e7ff] overflow-x-auto">
-                        <table class="min-w-full">
+                <div class="max-w-4xl mx-auto px-2 sm:px-4 pt-8">
+                    <!-- Título y botón -->
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-6">
+                        <h2 class="text-2xl font-extrabold text-[#284494] font-mono">Transacciones</h2>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="mb-6 flex flex-col sm:flex-row items-center gap-4">
+                        <form method="GET" class="flex-1 flex items-center gap-2 w-full">
+                            <div class="relative w-full sm:w-72">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-[#2563eb]">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+                                    </svg>
+                                </span>
+                                <input type="text" name="search" placeholder="Buscar por ID de transacción"
+                                    value="{{ request('search') }}"
+                                    class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#c7d2fe] text-xs bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition" />
+                            </div>
+                            <select name="type"
+                                class="rounded-lg border border-[#c7d2fe] text-xs py-2 px-3 bg-white">
+                                <option value="">Tipo</option>
+                                <option value="send" {{ request('type') == 'send' ? 'selected' : '' }}>Enviados
+                                </option>
+                                <option value="receive" {{ request('type') == 'receive' ? 'selected' : '' }}>Recibidos
+                                </option>
+                            </select>
+                            <select name="status"
+                                class="rounded-lg border border-[#c7d2fe] text-xs py-2 px-3 bg-white">
+                                <option value="">Estado</option>
+                                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
+                                    Completado</option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pendiente
+                                </option>
+                                <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Rechazado
+                                </option>
+                            </select>
+                            <select name="currency"
+                                class="rounded-lg border border-[#c7d2fe] text-xs py-2 px-3 bg-white w-36">
+                                <option value="" disabled {{ old('currency') ? '' : 'selected' }}>Divisa</option>
+                                <option value="PEN" {{ request('currency') == 'PEN' ? 'selected' : '' }}>PEN</option>
+                                <option value="USD" {{ request('currency') == 'USD' ? 'selected' : '' }}>USD</option>
+                                <option value="MXN" {{ request('currency') == 'MXN' ? 'selected' : '' }}>MXN
+                                </option>
+                            </select>
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition text-xs flex items-center gap-1">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+                                </svg>
+                                Buscar
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tabla de transacciones -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-[#e0e7ff] overflow-x-auto">
+                        <table class="w-full min-w-[600px] divide-y divide-[#e0e7ff] text-xs">
                             <thead>
-                                <tr
-                                    class="text-xs font-bold tracking-wide text-left text-[#284494] uppercase border-b bg-[#ede8f6]">
-                                    <th class="px-4 py-2">ID</th>
-                                    <th class="px-4 py-2">Enviado por</th>
-                                    <th class="px-4 py-2">Recibido por</th>
-                                    <th class="px-4 py-2">Monto</th>
-                                    <th class="px-4 py-2">Motivo</th>
-                                    <th class="px-4 py-2">Estado</th>
-                                    <th class="px-4 py-2">Fecha</th>
-                                    <th class="px-4 py-2">Acciones</th>
+                                <tr class="font-bold text-[#284494] uppercase bg-[#ede8f6]">
+                                    <th class="px-3 py-2 text-left">ID</th>
+                                    <th class="px-3 py-2 text-left">Enviado por</th>
+                                    <th class="px-3 py-2 text-left">Recibido por</th>
+                                    <th class="px-3 py-2 text-left">Monto</th>
+                                    <th class="px-3 py-2 text-left">Estado</th>
+                                    <th class="px-3 py-2 text-left">Fecha</th>
+                                    <th class="px-3 py-2 text-left">Acciones</th> <!-- Nueva columna -->
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-[#e0e7ff]">
                                 @forelse($transactions as $transaction)
-                                    <tr>
-                                        <td class="border px-4 py-2">{{ $transaction->id }}</td>
-                                        <td class="border px-4 py-2">{{ $transaction->sender->name ?? '-' }}</td>
-                                        <td class="border px-4 py-2">{{ $transaction->receiver->name ?? '-' }}</td>
-                                        <td class="border px-4 py-2">S/. {{ number_format($transaction->amount, 2) }}
+                                    <tr class="hover:bg-[#f5f7fa] transition">
+                                        <td class="px-3 py-2 font-mono text-gray-700">{{ $transaction->id }}</td>
+                                        <td class="px-3 py-2 font-semibold text-gray-800">
+                                            {{ $transaction->sender->name ?? '-' }} (ID:
+                                            {{ $transaction->sender->id ?? '-' }})
                                         </td>
-                                        <td class="border px-4 py-2">{{ $transaction->reason }}</td>
-                                        <td class="border px-4 py-2">{{ ucfirst(__($transaction->status)) }}</td>
-                                        <td class="border px-4 py-2">{{ $transaction->created_at->format('d/m/Y H:i') }}
+                                        <td class="px-3 py-2 font-semibold text-gray-800">
+                                            {{ $transaction->receiver->name ?? '-' }} (ID:
+                                            {{ $transaction->receiver->id ?? '-' }})
                                         </td>
-                                        <td class="border px-4 py-2">
-                                            <a href="{{ route('admin.transactions.show', $transaction) }}"
-                                                class="text-blue-600 underline">Ver</a>
+                                        <td class="px-3 py-2 text-gray-700">
+                                            {{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}
+                                        </td>
+                                        <td class="px-3 py-2">
+                                            @if ($transaction->status === 'completed')
+                                                <span
+                                                    class="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 font-bold text-xs">Completado</span>
+                                            @elseif($transaction->status === 'pending')
+                                                <span
+                                                    class="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 font-bold text-xs">Pendiente</span>
+                                            @else
+                                                <span
+                                                    class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-700 font-bold text-xs">Rechazado</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-3 py-2 text-gray-700">
+                                            {{ $transaction->created_at->format('d/m/Y H:i') }}</td>
+                                        <td class="px-3 py-2">
+                                            <a href="{{ route('admin.transactions.show', $transaction->id) }}"
+                                                class="inline-flex items-center px-2 py-1 rounded bg-blue-100 text-blue-700 font-bold text-[10px] hover:bg-blue-200 transition"
+                                                title="Ver transacción">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                </svg>
+                                                Ver
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center py-4">No hay transacciones.</td>
+                                        <td colspan="7" class="text-center py-6 text-gray-400">No hay transacciones.
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
-                        <div class="mt-4">
-                            {{ $transactions->links() }}
-                        </div>
+                        <!-- Paginación personalizada -->
+                        @if ($transactions->hasPages())
+                            <div class="py-4 flex justify-center">
+                                <nav class="inline-flex rounded-md shadow-sm font-mono text-sm" aria-label="Pagination">
+                                    {{-- Botón anterior --}}
+                                    @if ($transactions->onFirstPage())
+                                        <span
+                                            class="px-4 py-2 bg-gray-200 text-gray-400 rounded-l-full cursor-not-allowed">Anterior</span>
+                                    @else
+                                        <a href="{{ $transactions->previousPageUrl() }}"
+                                            class="px-4 py-2 bg-white text-[#2563eb] border border-gray-200 hover:bg-blue-50 rounded-l-full transition">Anterior</a>
+                                    @endif
+
+                                    {{-- Números de página --}}
+                                    @php
+                                        $start = max($transactions->currentPage() - 2, 1);
+                                        $end = min($transactions->currentPage() + 2, $transactions->lastPage());
+                                    @endphp
+                                    @for ($i = $start; $i <= $end; $i++)
+                                        @if ($i == $transactions->currentPage())
+                                            <span
+                                                class="px-4 py-2 bg-[#2563eb] text-white font-bold">{{ $i }}</span>
+                                        @else
+                                            <a href="{{ $transactions->url($i) }}"
+                                                class="px-4 py-2 bg-white text-[#2563eb] border border-gray-200 hover:bg-blue-50 transition">{{ $i }}</a>
+                                        @endif
+                                    @endfor
+
+                                    {{-- Botón siguiente --}}
+                                    @if ($transactions->hasMorePages())
+                                        <a href="{{ $transactions->nextPageUrl() }}"
+                                            class="px-4 py-2 bg-white text-[#2563eb] border border-gray-200 hover:bg-blue-50 rounded-r-full transition">Siguiente</a>
+                                    @else
+                                        <span
+                                            class="px-4 py-2 bg-gray-200 text-gray-400 rounded-r-full cursor-not-allowed">Siguiente</span>
+                                    @endif
+                                </nav>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </main>
