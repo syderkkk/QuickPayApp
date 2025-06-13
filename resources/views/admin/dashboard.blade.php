@@ -5,10 +5,8 @@
 
         <div class="flex flex-col flex-1 w-full">
 
-
             <!-- Header -->
             <x-admin-header />
-
 
             <main class="h-full overflow-y-auto">
                 <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 pt-8">
@@ -29,8 +27,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="mb-2 text-sm font-bold text-[#284494]">Usuarios Totales</p>
-                                <p class="text-lg font-extrabold text-[#222]">6389</p>
+                                <p class="mb-2 text-sm font-bold text-[#284494]">Usuarios registrados</p>
+                                <p class="text-lg font-extrabold text-[#222]">{{ $totalUsers }}</p>
                             </div>
                         </div>
                         <!-- Card -->
@@ -45,7 +43,7 @@
                             </div>
                             <div>
                                 <p class="mb-2 text-sm font-bold text-[#284494]">Balance Plataforma</p>
-                                <p class="text-lg font-extrabold text-[#222]">$ 46,760.89</p>
+                                <p class="text-lg font-extrabold text-[#222]">$ {{ number_format($totalBalance, 2) }}</p>
                             </div>
                         </div>
                         <!-- Card -->
@@ -59,8 +57,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="mb-2 text-sm font-bold text-[#284494]">Nuevas Transacciones</p>
-                                <p class="text-lg font-extrabold text-[#222]">376</p>
+                                <p class="mb-2 text-sm font-bold text-[#284494]">Transacciones totales</p>
+                                <p class="text-lg font-extrabold text-[#222]">{{ $totalTransactions }}</p>
                             </div>
                         </div>
                         <!-- Card -->

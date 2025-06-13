@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -59,7 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
 
 
-    Route::view('/admin/dashboard', 'admin.dashboard')->name('admin.dashboard');
+
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 });
 
 require __DIR__ . '/auth.php';

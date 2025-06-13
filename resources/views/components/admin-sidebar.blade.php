@@ -21,6 +21,27 @@
             </li>
             <li class="relative px-6 py-3">
                 <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
+                    href="{{-- {{ route('admin.transactions.index') }} --}}">
+                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M17 9V7a5 5 0 00-10 0v2a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2z" />
+                    </svg>
+                    <span class="ml-4">Transacciones</span>
+                </a>
+            </li>
+            <li class="relative px-6 py-3">
+                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
+                    href="{{-- {{ route('admin.payment-methods.index') }} --}}">
+                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M21 10H7a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2z" />
+                        <path d="M3 6h18" />
+                    </svg>
+                    <span class="ml-4">Métodos de pago</span>
+                </a>
+            </li>
+            <li class="relative px-6 py-3">
+                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
                     href="#">
                     <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
                         stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
