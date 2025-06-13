@@ -43,7 +43,8 @@
                             </div>
                             <div>
                                 <p class="mb-2 text-sm font-bold text-[#284494]">Balance Plataforma</p>
-                                <p class="text-lg font-extrabold text-[#222]">$ {{ number_format($totalBalance, 2) }}</p>
+                                <p class="text-lg font-extrabold text-[#222]">$ {{ number_format($totalBalance, 2) }}
+                                </p>
                             </div>
                         </div>
                         <!-- Card -->
@@ -73,182 +74,18 @@
                             </div>
                             <div>
                                 <p class="mb-2 text-sm font-bold text-[#284494]">Reembolsos pendientes</p>
-                                <p class="text-lg font-extrabold text-[#222]">35</p>
+                                <p class="text-lg font-extrabold text-[#ff0c0c]">Proximamente</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Tabla -->
-                    <div
-                        class="w-full overflow-hidden rounded-2xl shadow-[0_6px_12px_0_#2563eb30] border border-[#e0e7ff] bg-white mb-8">
-                        <div class="w-full overflow-x-auto">
-                            <table class="w-full whitespace-no-wrap font-secondary">
-                                <thead>
-                                    <tr
-                                        class="text-xs font-bold tracking-wide text-left text-[#284494] uppercase border-b bg-[#ede8f6]">
-                                        <th class="px-4 py-3">Cliente</th>
-                                        <th class="px-4 py-3">Monto</th>
-                                        <th class="px-4 py-3">Estado</th>
-                                        <th class="px-4 py-3">Fecha</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y">
-                                    <tr class="text-[#222]">
-                                        <td class="px-4 py-3">
-                                            <div class="flex items-center text-sm">
-                                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                    <img class="object-cover w-full h-full rounded-full"
-                                                        src="{{ asset('avatar-2.jpg') }}" alt=""
-                                                        loading="lazy" />
-                                                    <div class="absolute inset-0 rounded-full shadow-inner"
-                                                        aria-hidden="true"></div>
-                                                </div>
-                                                <div>
-                                                    <p class="font-bold">Hans Burger</p>
-                                                    <p class="text-xs text-[#284494]">10x Developer</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-3 text-sm">$ 863.45</td>
-                                        <td class="px-4 py-3 text-xs">
-                                            <span
-                                                class="px-2 py-1 font-bold leading-tight text-green-700 bg-green-100 rounded-full">
-                                                Aprobado
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3 text-sm">6/10/2020</td>
-                                    </tr>
-                                    <tr class="text-[#222]">
-                                        <td class="px-4 py-3">
-                                            <div class="flex items-center text-sm">
-                                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                    <img class="object-cover w-full h-full rounded-full"
-                                                        src="{{ asset('avatar-2.jpg') }}" alt=""
-                                                        loading="lazy" />
-                                                    <div class="absolute inset-0 rounded-full shadow-inner"
-                                                        aria-hidden="true"></div>
-                                                </div>
-                                                <div>
-                                                    <p class="font-bold">Jolina Angelie</p>
-                                                    <p class="text-xs text-[#284494]">Unemployed</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-3 text-sm">$ 369.95</td>
-                                        <td class="px-4 py-3 text-xs">
-                                            <span
-                                                class="px-2 py-1 font-bold leading-tight text-orange-700 bg-orange-100 rounded-full">
-                                                Pendiente
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3 text-sm">6/10/2020</td>
-                                    </tr>
-                                    <tr class="text-[#222]">
-                                        <td class="px-4 py-3">
-                                            <div class="flex items-center text-sm">
-                                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                    <img class="object-cover w-full h-full rounded-full"
-                                                        src="{{ asset('avatar-2.jpg') }}" alt=""
-                                                        loading="lazy" />
-                                                    <div class="absolute inset-0 rounded-full shadow-inner"
-                                                        aria-hidden="true"></div>
-                                                </div>
-                                                <div>
-                                                    <p class="font-bold">Sarah Curry</p>
-                                                    <p class="text-xs text-[#284494]">Designer</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-3 text-sm">$ 86.00</td>
-                                        <td class="px-4 py-3 text-xs">
-                                            <span
-                                                class="px-2 py-1 font-bold leading-tight text-red-700 bg-red-100 rounded-full">
-                                                Denegado
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3 text-sm">6/10/2020</td>
-                                    </tr>
-                                    <tr class="text-[#222]">
-                                        <td class="px-4 py-3">
-                                            <div class="flex items-center text-sm">
-                                                <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                    <img class="object-cover w-full h-full rounded-full"
-                                                        src="{{ asset('avatar-2.jpg') }}" alt=""
-                                                        loading="lazy" />
-                                                    <div class="absolute inset-0 rounded-full shadow-inner"
-                                                        aria-hidden="true"></div>
-                                                </div>
-                                                <div>
-                                                    <p class="font-bold">Wenzel Dashington</p>
-                                                    <p class="text-xs text-[#284494]">Actor</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-3 text-sm">$ 863.45</td>
-                                        <td class="px-4 py-3 text-xs">
-                                            <span
-                                                class="px-2 py-1 font-bold leading-tight text-[#222] bg-[#e0e7ff] rounded-full">
-                                                Expirado
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3 text-sm">6/10/2020</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div
-                            class="grid px-4 py-3 text-xs font-bold tracking-wide text-[#284494] uppercase border-t bg-[#ede8f6] sm:grid-cols-9">
-                            <span class="flex items-center col-span-3">
-                                Mostrando 21-30 de 100
-                            </span>
-                            <span class="col-span-2"></span>
-                            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                                <nav aria-label="Table navigation">
-                                    <ul class="inline-flex items-center">
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple bg-[#ede8f6] text-[#284494]">‹</button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple bg-white text-[#284494]">1</button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple bg-white text-[#284494]">2</button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 text-white transition-colors duration-150 bg-[#2563eb] border border-r-0 border-[#2563eb] rounded-md focus:outline-none focus:shadow-outline-purple">3</button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple bg-white text-[#284494]">4</button>
-                                        </li>
-                                        <li>
-                                            <span class="px-3 py-1">...</span>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple bg-white text-[#284494]">8</button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple bg-white text-[#284494]">9</button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple bg-[#ede8f6] text-[#284494]">›</button>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </span>
-                        </div>
-                    </div>
+                    <h2 class="my-6 text-2xl font-extrabold text-[#284494] tracking-tight">Últimas transacciones</h2>
+                    <x-admin-table-transacciones :transactions="$transactions" />
 
                     <!-- Charts -->
-                    <h2 class="my-6 text-2xl font-extrabold text-[#284494] tracking-tight">Gráficos</h2>
-                    <x-admin-charts />
+                    {{-- <h2 class="my-6 text-2xl font-extrabold text-[#284494] tracking-tight">Gráficos</h2>
+                    <x-admin-charts :pie-data="$pieData" :line-labels="$lineLabels" :line-data="$lineData" /> --}}
                 </div>
             </main>
         </div>

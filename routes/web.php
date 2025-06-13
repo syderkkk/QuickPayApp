@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -20,7 +22,7 @@ Route::view('/privacidad', 'privacidad')->name('privacidad');
 
 // Rutas protegidas por autenticación
 Route::middleware('auth')->group(function () {
- 
+
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -33,7 +35,7 @@ Route::middleware('auth')->group(function () {
     // Métodos de pago
     Route::get('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
     Route::post('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
-    
+
 
     // Tarjetas (solo index, create, store)
     Route::resource('cards', CardController::class)->only(['index', 'create', 'store', 'destroy', 'update', 'edit']);
@@ -53,7 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/transactions/send/step2', [TransactionController::class, 'step2'])->name('transactions.send.step2');
     Route::post('/transactions/send/confirm', [TransactionController::class, 'confirm'])->name('transactions.send.confirm');
     Route::get('/transactions/contacts/select', [TransactionController::class, 'selectContact'])->name('transactions.contacts.select');
-    
+
     Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
 
     // Contactos
@@ -62,6 +64,19 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+
+    Route::get('/admin/transactions', [AdminTransactionController::class, 'index'])->name('admin.transactions.index');
+    Route::get('/admin/transactions/{transaction}', [AdminTransactionController::class, 'show'])->name('admin.transactions.show');
+
+
+    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');         // Listar usuarios
+    Route::get('/admin/users/create', [AdminUserController::class, 'create'])->name('admin.users.create'); // Formulario de nuevo usuario
+    Route::post('/admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');         // Guardar nuevo usuario
+    Route::get('/admin/users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');     // Ver detalle
+    Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit'); // Editar usuario
+    Route::put('/admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update'); // Actualizar usuario
+    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy'); // Eliminar usuario
 });
 
 require __DIR__ . '/auth.php';

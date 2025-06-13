@@ -16,6 +16,13 @@ class AdminController extends Controller
         $totalBalance = Wallet::sum('balance');
         $totalTransactions = Transaction::count();
 
-        return view('admin.dashboard', compact('totalUsers', 'totalBalance', 'totalTransactions'));
+        $transactions = Transaction::with('sender')->latest()->paginate(10);
+
+        return view('admin.dashboard', compact(
+            'totalUsers',
+            'totalBalance',
+            'totalTransactions',
+            'transactions',
+        ));
     }
 }
