@@ -17,17 +17,22 @@ class UserController extends Controller
         $query = User::query();
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%");
+                if (is_numeric($search)) {
+                    $q->where('id', $search);
+                }
+                $q->orWhere('name', 'ILIKE', "%{$search}%")
+                    ->orWhere('lastname', 'ILIKE', "%{$search}%")
+                    ->orWhere('email', 'ILIKE', "%{$search}%");
             });
         }
 
-        $users = $query->orderBy('created_at', 'desc')->paginate(15);
+        $users = $query->orderBy('id', 'desc')->paginate(15);
 
         return view('admin.users.index', compact('users'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -126,5 +131,47 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado correctamente.');
+    }
+
+
+    // Metodos personalizados para mostrar relaciones
+    public function contacts($id)
+    {
+        $user = User::with('contacts.contact')->findOrFail($id);
+        return view('admin.users.contacts', compact('user'));
+    }
+
+    public function paymentMethods($userId)
+    {
+        $user = User::findOrFail($userId);
+
+        // Ejemplo: si tienes relaciones 'cards' y 'banks'
+        $cards = $user->cards ?? collect();
+        $banks = $user->banks ?? collect();
+
+        // Unificamos ambos tipos en un solo array/colección
+        $methods = $cards->map(function ($card) {
+            $card->type = 'card';
+            return $card;
+        })->concat(
+            $banks->map(function ($bank) {
+                $bank->type = 'bank';
+                return $bank;
+            })
+        );
+
+        return view('admin.users.payment_methods', compact('user', 'methods'));
+    }
+
+    public function transactions($id)
+    {
+        $user = User::findOrFail($id);
+
+        $transactions = \App\Models\Transaction::where('sender_id', $user->id)
+            ->orWhere('receiver_id', $user->id)
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.users.transactions', compact('user', 'transactions'));
     }
 }

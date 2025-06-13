@@ -68,6 +68,11 @@ class User extends Authenticatable
         return $this->hasMany(Card::class);
     }
 
+    public function banks()
+    {
+        return $this->hasMany(Bank::class);
+    }
+
     public function contacts()
     {
         return $this->hasMany(Contact::class, 'user_id');
@@ -76,5 +81,15 @@ class User extends Authenticatable
     public function asContactOf()
     {
         return $this->hasMany(Contact::class, 'contact_id');
+    }
+
+    public function sentTransactions()
+    {
+        return $this->hasMany(\App\Models\Transaction::class, 'sender_id');
+    }
+
+    public function receivedTransactions()
+    {
+        return $this->hasMany(\App\Models\Transaction::class, 'receiver_id');
     }
 }

@@ -77,6 +77,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit'); // Editar usuario
     Route::put('/admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update'); // Actualizar usuario
     Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy'); // Eliminar usuario
+
+    Route::get('/admin/users/{user}/contacts', [AdminUserController::class, 'contacts'])->name('admin.users.contacts');
+    Route::get('/admin/users/{user}/payment-methods', [AdminUserController::class, 'paymentMethods'])->name('admin.users.payment_methods');
+    Route::get('/admin/users/{user}/transactions', [AdminUserController::class, 'transactions'])->name('admin.users.transactions');
+
+
+    Route::get('/admin/users/{user}/contacts', [AdminUserController::class, 'contacts'])->name('admin.users.contacts');
+    Route::get('/admin/users/{user}/payment-methods', [AdminUserController::class, 'paymentMethods'])->name('admin.users.payment-methods');
+    Route::get('/admin/users/{user}/transactions', [AdminUserController::class, 'transactions'])->name('admin.users.transactions');
 });
 
 require __DIR__ . '/auth.php';
