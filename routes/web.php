@@ -79,6 +79,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{user}/contacts', [AdminUserController::class, 'contacts'])->name('users.contacts');
         Route::get('/users/{user}/payment-methods', [AdminUserController::class, 'paymentMethods'])->name('users.payment-methods');
         Route::get('/users/{user}/transactions', [AdminUserController::class, 'transactions'])->name('users.transactions');
+
+
+        // Tarjetas admin
+        /* Route::get('/cards', [AdminUserController::class, 'cards'])->name('cards.index'); */
     });
 });
 

@@ -34,13 +34,40 @@
         <!-- Iconos y cerrar sesión (desktop) -->
         <div class="hidden md:flex items-center gap-8">
             <!-- Notificaciones -->
-            <button type="button" class="text-white hover:text-yellow-400 transition" title="Notificaciones">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-            </button>
+            <div x-data="{ openNotif: false }" class="relative flex items-center">
+                <button type="button" @click="openNotif = !openNotif"
+                    class="text-white hover:text-yellow-400 transition" title="Notificaciones">
+                    <!-- SVG de campana -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                </button>
+                <!-- Dropdown de notificaciones centrado bajo la campana -->
+                <div x-show="openNotif" @click.away="openNotif = false"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 -translate-y-2"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 -translate-y-2"
+                    class="absolute left-1/2 top-full mt-2 w-80 -translate-x-1/2 bg-white rounded-xl shadow-lg border border-[#e0e7ff] z-50"
+                    style="min-width: 18rem;">
+                    <!-- Flecha decorativa -->
+                    <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 overflow-hidden">
+                        <div
+                            class="w-4 h-4 bg-white border-l border-t border-[#e0e7ff] rotate-45 transform origin-bottom-left shadow-md">
+                        </div>
+                    </div>
+                    <div class="p-4 pt-6">
+                        <h3 class="font-bold text-[#2563eb] mb-2">Notificaciones</h3>
+                        <ul class="divide-y divide-gray-200">
+                            <li class="py-2 text-sm text-gray-700">No tienes notificaciones nuevas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             <!-- Perfil (tuerca) -->
             <a href="{{ route('profile.edit') }}" class="text-white hover:text-yellow-400 transition" title="Perfil">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
@@ -96,7 +123,8 @@
             <button @click="open = !open" class="text-white focus:outline-none">
                 <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
                 <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
