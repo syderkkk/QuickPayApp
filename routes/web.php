@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CardController as AdminCardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
 use App\Http\Controllers\User\ContactController as UserContactController;
@@ -82,6 +83,7 @@ Route::middleware('auth')->group(function () {
 
 
         // Tarjetas admin
+        Route::resource('cards', AdminCardController::class);
         
     });
 });
