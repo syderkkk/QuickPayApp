@@ -19,7 +19,7 @@ Route::view('/privacidad', 'privacidad')->name('privacidad');
 
 // Rutas protegidas por autenticación
 Route::middleware('auth')->group(function () {
-
+ 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -57,6 +57,9 @@ Route::middleware('auth')->group(function () {
 
     // Contactos
     Route::resource('contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
+
+
+    Route::view('/admin/dashboard', 'admin.dashboard')->name('admin.dashboard');
 });
 
 require __DIR__ . '/auth.php';
