@@ -3,13 +3,13 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
-use App\Http\Controllers\BankController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\CardController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\User\ContactController as UserContactController;
+use App\Http\Controllers\User\BankController as UserBankController;
+use App\Http\Controllers\User\CardController as UserCardController;
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\User\PaymentMethodController as UserPaymentMethodController;
+use App\Http\Controllers\User\ProfileController as UserProfileController;
+use App\Http\Controllers\User\TransactionController as UserTransactionController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -25,38 +25,38 @@ Route::view('/privacidad', 'privacidad')->name('privacidad');
 Route::middleware('auth')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
     // Perfil
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [UserProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [UserProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Métodos de pago
-    Route::get('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
-    Route::post('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
+    Route::get('/payment-methods', [UserPaymentMethodController::class, 'index'])->name('payment-methods.index');
+    Route::post('/payment-methods', [UserPaymentMethodController::class, 'index'])->name('payment-methods.index');
 
     // Tarjetas
-    Route::resource('cards', CardController::class)->only(['index', 'create', 'store', 'destroy', 'update', 'edit']);
+    Route::resource('cards', UserCardController::class)->only(['index', 'create', 'store', 'destroy', 'update', 'edit']);
 
     // Cuentas bancarias
-    Route::resource('banks', BankController::class)->only(['index', 'create', 'store', 'destroy', 'update', 'edit']);
+    Route::resource('banks', UserBankController::class)->only(['index', 'create', 'store', 'destroy', 'update', 'edit']);
 
     // Confirmaciones
     Route::view('/cards/confirm', 'payment_methods.cards.confirm')->name('cards.confirm');
     Route::view('/banks/confirm', 'payment_methods.banks.confirm')->name('banks.confirm');
 
     // Transacciones
-    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-    Route::get('/transactions/send', [TransactionController::class, 'step1'])->name('transactions.send.step1');
-    Route::post('/transactions/send/step2', [TransactionController::class, 'step2'])->name('transactions.send.step2');
-    Route::post('/transactions/send/confirm', [TransactionController::class, 'confirm'])->name('transactions.send.confirm');
-    Route::get('/transactions/contacts/select', [TransactionController::class, 'selectContact'])->name('transactions.contacts.select');
+    Route::get('/transactions', [UserTransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/send', [UserTransactionController::class, 'step1'])->name('transactions.send.step1');
+    Route::post('/transactions/send/step2', [UserTransactionController::class, 'step2'])->name('transactions.send.step2');
+    Route::post('/transactions/send/confirm', [UserTransactionController::class, 'confirm'])->name('transactions.send.confirm');
+    Route::get('/transactions/contacts/select', [UserTransactionController::class, 'selectContact'])->name('transactions.contacts.select');
 
     // Contactos
-    Route::resource('contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
+    Route::resource('contacts', UserContactController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::get('/contacts/{contact}', [UserContactController::class, 'show'])->name('contacts.show');
 
     Route::middleware([IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
         // Dashboard admin
@@ -82,7 +82,7 @@ Route::middleware('auth')->group(function () {
 
 
         // Tarjetas admin
-        /* Route::get('/cards', [AdminUserController::class, 'cards'])->name('cards.index'); */
+        
     });
 });
 
