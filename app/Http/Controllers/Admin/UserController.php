@@ -170,7 +170,7 @@ class UserController extends Controller
         $transactions = \App\Models\Transaction::where('sender_id', $user->id)
             ->orWhere('receiver_id', $user->id)
             ->latest()
-            ->paginate(10);
+            ->paginate(1);
 
         return view('admin.users.transactions', compact('user', 'transactions'));
     }

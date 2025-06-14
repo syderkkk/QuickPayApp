@@ -42,7 +42,6 @@
                     </div>
                 </form>
                 <!-- Filtro Estado -->
-                <!-- Filtro Estado -->
                 <form method="GET" class="inline">
                     <input type="hidden" name="search" value="{{ request('search') }}">
                     <input type="hidden" name="type" value="{{ request('type') }}">
@@ -125,7 +124,7 @@
             <div class="text-center text-gray-400 py-8 font-mono">No hay transacciones.</div>
         @endforelse
         <div class="mt-6 flex justify-center">
-            {{-- Paginación personalizada --}}
+            {{-- Paginación --}}
             @if ($transactions->hasPages())
                 <nav class="inline-flex rounded-full shadow-sm" aria-label="Pagination">
                     {{-- Botón anterior --}}

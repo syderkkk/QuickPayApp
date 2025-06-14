@@ -166,7 +166,7 @@ class TransactionController extends Controller
                 'users.id as user_id',
                 'users.name',
                 'users.lastname',
-                'users.email' // <-- Agrega este campo
+                'users.email'
             )
             ->get();
 
@@ -177,15 +177,14 @@ class TransactionController extends Controller
     {
         $receiver = User::findOrFail($receiverId);
 
-        // Aquí puedes cargar el saldo, cuentas, etc. según tu lógica actual
+        // Cargar el saldo, cuentas, etc
         $wallet_balance = Auth::user()->wallet->balance ?? 0;
-        $wallet_currency = 'S/.'; // O la moneda que uses
+        $wallet_currency = 'S/.'; // Moneda que se use
 
         return view('transactions.send.step2', [
             'receiver' => $receiver,
             'wallet_balance' => $wallet_balance,
             'wallet_currency' => $wallet_currency,
-            // ...otros datos necesarios...
         ]);
     }
 }

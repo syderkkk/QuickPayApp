@@ -26,8 +26,6 @@
                 </div>
                 {{-- <x-payment-methods :cards="$cards" /> --}}
 
-
-
                 <!-- Saldo QuickPay y tarjetas asociadas -->
                 <div class="w-full mt-8">
                     <div class="flex flex-col gap-6 items-center w-full">

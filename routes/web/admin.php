@@ -20,10 +20,7 @@ Route::middleware(['auth', IsAdmin::class])
         Route::resource('transactions', AdminTransactionController::class)->only(['index', 'show', 'update']);
 
         // Usuarios admin
-        Route::resource('users', AdminUserController::class)->except(['edit', 'update', 'destroy']);
-        Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+        Route::resource('users', AdminUserController::class);
 
         // Relaciones de usuario admin
         Route::get('/users/{user}/contacts', [AdminUserController::class, 'contacts'])->name('users.contacts');

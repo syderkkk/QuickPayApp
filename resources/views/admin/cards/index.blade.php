@@ -9,20 +9,8 @@
                     </div>
 
                     {{-- Mensajes de éxito/error --}}
-                    @if (session('success'))
-                        <div class="mb-4 text-green-700 bg-green-100 rounded p-3 font-mono">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-                    @if ($errors->any())
-                        <div class="mb-4 text-red-600 bg-red-100 rounded p-3 font-mono">
-                            <ul class="list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    <x-alert-sucess />
+                    <x-alert-errors />
 
                     <div class="mb-6 flex flex-col sm:flex-row items-center gap-4">
                         <form method="GET" class="flex-1 flex flex-wrap items-center gap-2 w-full">
@@ -153,7 +141,6 @@
                             </tbody>
                         </table>
                     </div>
-
                     {{-- Paginación --}}
                     <x-admin-pagination :paginator="$cards" />
                 </div>

@@ -4,18 +4,8 @@
         <div class="flex flex-col flex-1 w-full">
             <main class="h-full overflow-y-auto">
                 <div class="max-w-xl mx-auto px-2 sm:px-4 pt-8">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                        <h2 class="text-2xl font-extrabold text-[#284494]">Editar usuario</h2>
-                        <a href="{{ route('admin.users.index') }}"
-                            class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition text-xs">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Volver
-                        </a>
-                    </div>
+
+                    {{-- btn volver --}}
 
                     <x-alert-errors />
 

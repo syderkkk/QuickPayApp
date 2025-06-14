@@ -13,14 +13,7 @@
                             class="text-2xl font-extrabold text-[#284494] tracking-tight text-center font-mono drop-shadow-[0_6px_6px_rgba(37,99,235,0.10)]">
                             Detalle de Transacción
                         </h2>
-                        <a href="{{ route('admin.transactions.index') }}"
-                            class="inline-flex items-center gap-2 bg-[#2563eb] hover:bg-[#1d4ed8] text-white px-4 py-2 rounded-lg font-bold shadow transition text-xs">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Volver
-                        </a>
+                        <x-admin-back-button href="{{ route('admin.transactions.index') }} " />
                     </div>
 
                     <!-- Card principal -->

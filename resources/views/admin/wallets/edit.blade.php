@@ -11,15 +11,7 @@
                     </div>
 
                     <!-- Mensajes de error -->
-                    @if ($errors->any())
-                        <div class="mb-3 text-red-600 bg-red-100 rounded p-2 font-mono text-xs">
-                            <ul class="list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    <x-alert-errors />
 
                     <div class="bg-white rounded-2xl shadow-lg border border-[#e0e7ff] p-6">
                         <form method="POST" action="{{ route('admin.wallets.update', $wallet) }}">

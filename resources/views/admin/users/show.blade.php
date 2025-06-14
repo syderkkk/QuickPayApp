@@ -2,18 +2,9 @@
     <div class="flex min-h-screen bg-[#F0F4F4] font-primary">
         <x-admin-sidebar />
         <div class="flex flex-col flex-1 w-full">
-            <!-- Cabecera fija -->
-            <div class="flex items-center justify-between px-6 py-6 bg-[#F0F4F4] sticky top-0 z-10">
-                <h2 class="text-3xl font-extrabold text-[#284494]">Perfil de usuario</h2>
-                <a href="{{ route('admin.users.index') }}"
-                    class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Volver
-                </a>
-            </div>
+            
+            <x-admin-back-button href="{{ route('admin.users.index') }}" title="Perfil de usuario" text="Volver" />
+
             <main class="flex flex-1 justify-center items-start">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-6xl mx-auto px-4 sm:px-8">
                     <!-- Panel lateral: Acciones rápidas -->

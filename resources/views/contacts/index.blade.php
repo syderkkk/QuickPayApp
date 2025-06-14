@@ -3,19 +3,11 @@
     <div class="bg-[#F0F4F4] min-h-screen pb-0">
         <div class="max-w-3xl mx-auto px-2 sm:px-4 pt-12">
 
-            <!-- Título principal -->
+            <!-- Título -->
             <h1 class="text-2xl sm:text-3xl font-bold font-mono text-[#2563eb] text-center mb-8">Contactos</h1>
 
-            <!-- Mensajes de error -->
-            @if ($errors->any())
-                <div class="mb-4 text-red-600 font-mono bg-red-100 rounded p-3">
-                    <ul class="list-disc list-inside">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            <!-- Error -->
+            <x-alert-errors />
 
             <!-- Formulario agregar contacto -->
             <div id="add-contact-form" class="mt-8 mb-10 flex justify-center">

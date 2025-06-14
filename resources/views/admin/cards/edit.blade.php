@@ -4,26 +4,14 @@
         <div class="flex flex-col flex-1 w-full">
             <main class="h-full overflow-y-auto">
                 <div class="max-w-md mx-auto px-2 sm:px-4 pt-8">
-                    <!-- Título y volver -->
+                    <!-- Título -->
                     <div class="flex items-center mb-6 gap-2">
                         <h1 class="text-xl font-extrabold text-[#284494] font-mono ml-2">Editar tarjeta</h1>
                     </div>
 
                     <!-- Mensajes de éxito/error -->
-                    @if (session('success'))
-                        <div class="mb-3 text-green-700 bg-green-100 rounded p-2 font-mono text-center text-sm">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-                    @if ($errors->any())
-                        <div class="mb-3 text-red-600 bg-red-100 rounded p-2 font-mono text-xs">
-                            <ul class="list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    <x-alert-sucess />
+                    <x-alert-errors />
 
                     <!-- Formulario de edición -->
                     <div class="bg-white rounded-2xl shadow-[0_4px_8px_0_#2563eb20] border border-[#e0e7ff] p-4">

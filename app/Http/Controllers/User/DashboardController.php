@@ -21,19 +21,6 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        // Contactos frecuentes (ejemplo: usuarios con más transacciones)
-        /* $contacts = User::where('id', '!=', $user->id)
-            ->withCount(['sentTransactions' => function ($q) use ($user) {
-                $q->where('sender_id', $user->id);
-            }])
-            ->orderByDesc('sent_transactions_count')
-            ->take(5)
-            ->get(); */
-
-        // Tarjetas asociadas (ajusta según tu modelo)
-        /* $cards = $user->cards ?? []; */
-
-        /* return view('dashboard', compact('transactions', 'contacts', 'cards')); */
         return view('dashboard', compact('transactions'));
     }
 }

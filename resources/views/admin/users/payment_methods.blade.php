@@ -8,12 +8,8 @@
 
 
                 <div class="max-w-4xl mx-auto px-4 py-8">
-                    <h2
-                        class="mb-6 text-2xl font-extrabold text-[#284494] text-center drop-shadow-[0_6px_6px_rgba(37,99,235,0.10)]">
-                        Métodos de pago de {{ $user->name }} {{ $user->lastname }}
-                    </h2>
+                    <x-admin-back-button title="Métodos de pago de {{ $user->name }} {{ $user->lastname }}" href="{{ route('admin.users.show', $user) }} " />
 
-                    
                     @if (($methods ?? collect())->isEmpty())
                         <div class="text-center text-gray-400 py-8 font-mono">No tiene métodos de pago registrados.
                         </div>

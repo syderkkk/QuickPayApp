@@ -4,7 +4,7 @@
         <div class="flex flex-col flex-1 w-full">
             <main class="h-full overflow-y-auto">
                 <div class="max-w-4xl mx-auto px-2 sm:px-4 pt-8">
-                    <!-- Título y botón -->
+                    <!-- Título -->
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-6">
                         <h2 class="text-2xl font-extrabold text-[#284494] font-mono">Transacciones</h2>
                     </div>

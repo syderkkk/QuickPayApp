@@ -39,7 +39,7 @@ class WalletController extends Controller
             $query->where('balance', '<=', $request->max_balance);
         }
 
-        $wallets = $query->paginate(10);
+        $wallets = $query->paginate(5);
 
         return view('admin.wallets.index', compact('wallets'));
     }
@@ -60,7 +60,7 @@ class WalletController extends Controller
     {
         $validated = $request->validate([
             'balance' => 'required|numeric|min:0',
-            'currency' => 'required|in:PEN,USD,MXN', // agrega más si es necesario
+            'currency' => 'required|in:PEN,USD,MXN',
         ]);
 
         $wallet->balance = $validated['balance'];

@@ -22,7 +22,6 @@
                 </a>
             </div>
 
-            <!-- Grilla de formularios -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Información de perfil -->
                 <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-6 border border-[#e0e7ff] flex flex-col h-full">
