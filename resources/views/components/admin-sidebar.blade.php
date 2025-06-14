@@ -1,7 +1,7 @@
 <aside
     class="z-20 hidden md:block flex-shrink-0 w-64 h-screen sticky top-0 left-0 overflow-y-auto bg-[#284494] border-r border-[#e0e7ff]">
     <div class="py-6 text-[#e0e7ff]">
-        <a class="ml-6 text-2xl font-extrabold font-secondary tracking-widest text-white" href="#">
+        <a class="ml-6 text-2xl font-extrabold font-secondary tracking-widest text-white" href="{{ route('admin.dashboard') }}">
             QuickPay⚡
         </a>
         <ul class="mt-10">

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('amount', 15, 2);
             $table->string('currency', 3);
             $table->string('reason')->nullable();
-            $table->enum('status', ['completed', 'failed', 'pending'])->default('pending');
+            $table->enum('status', ['completed', 'failed', 'pending', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }

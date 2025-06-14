@@ -12,35 +12,31 @@ class CardController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cards = Card::with('user')->orderBy('id', 'desc')->paginate(20);
+        $query = Card::with('user');
+
+        // Filtro por usuario (nombre, apellido, correo)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->whereRaw("CONCAT(name, ' ', lastname) LIKE ?", ["%{$search}%"])
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Filtro por estado
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filtro por últimos 4 dígitos
+        if ($request->filled('last_four')) {
+            $query->where('last_four', $request->last_four);
+        }
+
+        $cards = $query->orderBy('id', 'desc')->paginate(20)->appends($request->all());
         return view('admin.cards.index', compact('cards'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $card = Card::with('user')->findOrFail($id);
-        return view('admin.cards.show', compact('card'));
     }
 
     /**
@@ -61,16 +57,10 @@ class CardController extends Controller
         $card = Card::findOrFail($id);
 
         $request->validate([
-            'card_holder' => 'required|string|max:255',
-            'brand' => 'nullable|string|max:50',
-            'is_default' => 'boolean',
-            'nickname' => 'nullable|string|max:50',
+            'status' => 'required|in:enabled,disabled',
         ]);
 
-        $card->card_holder = $request->card_holder;
-        $card->brand = $request->brand;
-        $card->is_default = $request->is_default ?? false;
-        $card->nickname = $request->nickname;
+        $card->status = $request->status;
         $card->save();
 
         return redirect()->route('admin.cards.index')->with('success', 'Tarjeta actualizada correctamente.');

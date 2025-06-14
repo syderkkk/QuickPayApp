@@ -67,6 +67,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/transactions', [AdminTransactionController::class, 'index'])->name('transactions.index');
         Route::get('/transactions/{transaction}', [AdminTransactionController::class, 'show'])->name('transactions.show');
 
+        Route::resource('transactions', AdminTransactionController::class)->only(['index', 'show', 'update']);
+
         // Usuarios admin
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
@@ -84,6 +86,10 @@ Route::middleware('auth')->group(function () {
 
         // Tarjetas admin
         Route::resource('cards', AdminCardController::class);
+
+        // Cuentas bancarias admin
+
+        // Wallet admin
         
     });
 });
