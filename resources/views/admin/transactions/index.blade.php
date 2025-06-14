@@ -70,6 +70,7 @@
                                 <option value="MXN" {{ request('currency') == 'MXN' ? 'selected' : '' }}>MXN
                                 </option>
                             </select>
+
                             <!-- Botón -->
                             <button type="submit"
                                 class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition text-xs flex items-center gap-1">
@@ -80,6 +81,7 @@
                                 </svg>
                                 Buscar
                             </button>
+                            
                         </form>
                     </div>
 

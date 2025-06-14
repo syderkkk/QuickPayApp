@@ -1,13 +1,25 @@
-<header
-    class="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-2 sm:py-3 bg-white shadow gap-2 sm:gap-0">
-    <div class="flex items-center gap-2">
-        <a href="{{ url('/') }}" class="font-bold text-lg sm:text-xl text-[#1a2a3a] hover:underline">QuickPay</a>
-    </div>
-    <nav class="flex flex-col sm:flex-row items-center gap-2 sm:gap-8 w-full sm:w-auto">
-        @if (Request::is('/'))
-            <a href="#beneficios" class="text-[#1a2a3a] font-medium hover:underline text-sm sm:text-base">Cómo funciona</a>
-        @endif
-        <a href="{{ route('login') }}" class="text-[#1a2a3a] font-medium hover:underline text-sm sm:text-base">Iniciar Sesión</a>
-        <a href="{{ route('register') }}" class="bg-[#2563eb] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#1d4ed8] transition text-sm sm:text-base w-full sm:w-auto text-center">Registrarse</a>
+<header>
+    <nav class="fixed w-full bg-white/80 backdrop-blur-md border-b border-[#e0e7ff] z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <a href="{{ url('/') }}"
+                        class="text-2xl font-extrabold text-[#2563eb] hover:text-[#1d4ed8] transition">
+                        Q<span class="text-yellow-400">⚡</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#beneficios" class="text-gray-700 hover:text-[#2563eb] transition font-mono">Beneficios</a>
+                    <a href="#como-funciona" class="text-gray-700 hover:text-[#2563eb] transition font-mono">Cómo
+                        funciona</a>
+                    <a href="{{ route('login') }}"
+                        class="text-gray-700 hover:text-[#2563eb] transition font-mono">Iniciar sesión</a>
+                    <a href="{{ route('register') }}"
+                        class="bg-[#2563eb] text-white px-6 py-2 rounded-xl font-bold hover:bg-[#1d4ed8] transition shadow-lg hover:shadow-xl font-mono">
+                        Crear cuenta
+                    </a>
+                </div>
+            </div>
+        </div>
     </nav>
 </header>
