@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Notifications\PaymentRequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -101,10 +102,17 @@ class TransactionController extends Controller
                     'status' => 'completed',
                 ]);
             });
+
+            return view('transactions.send.confirm', [
+            'receiver' => $request->receiver_id ? User::find($request->receiver_id) : null,
+            'amount' => $request->amount,
+            'currency' => $request->currency,
+            'type' => $type,
+        ]);
         }
 
         if ($type === 'request') {
-            Transaction::create([
+            $transaction = Transaction::create([
                 'type' => 'request',
                 'sender_id' => $sender->id,
                 'receiver_id' => $request->receiver_id,
@@ -113,6 +121,22 @@ class TransactionController extends Controller
                 'reason' => $request->reason,
                 'status' => 'pending',
             ]);
+
+            // Obtener al receptor como objeto
+            $receiver = User::find($request->receiver_id);
+
+            // Enviar notificacion correctamente
+            if ($receiver) {
+                $receiver->notify(new PaymentRequestNotification($transaction));
+            }
+
+            return view('transactions.request.confirm', [
+                'receiver' => $receiver,
+                'amount' => $request->amount,
+                'currency' => $request->currency,
+                'type' => $type,
+                ]
+            );
         }
 
         if ($type === 'withdraw') {
@@ -143,13 +167,6 @@ class TransactionController extends Controller
                 'status' => 'completed',
             ]);
         }
-
-        return view('transactions.send.confirm', [
-            'receiver' => $request->receiver_id ? User::find($request->receiver_id) : null,
-            'amount' => $request->amount,
-            'currency' => $request->currency,
-            'type' => $type,
-        ]);
     }
 
 
@@ -194,7 +211,7 @@ class TransactionController extends Controller
 
 
 
-    
+
 
     // Probando solicitar dinero //
     public function requestStep1()

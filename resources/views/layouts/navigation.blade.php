@@ -63,7 +63,18 @@
                     <div class="p-4 pt-6">
                         <h3 class="font-bold text-[#2563eb] mb-2">Notificaciones</h3>
                         <ul class="divide-y divide-gray-200">
-                            <li class="py-2 text-sm text-gray-700">No tienes notificaciones nuevas.</li>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
+                                @forelse (auth()->user()->unreadNotifications as $notification)
+                                    <li class="py-2 text-sm text-gray-700">
+                                        <span>{{ $notification->data['title'] }}</span><br>
+                                        {{ $notification->data['message'] }} <br>
+                                        <a href="{{ route('transactions.index') }}"
+                                            class="text-blue-500 text-xs hover:underline">Ver solicitud</a>
+                                    </li>
+                                @empty
+                                    <li class="py-2 text-sm text-gray-700">No tienes notifiaciones nuevas</li>
+                                @endforelse
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -156,7 +167,8 @@
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
             </button>
-            <a href="{{ route('profile.edit') }}" class="text-white hover:text-yellow-400 transition" title="Perfil">
+            <a href="{{ route('profile.edit') }}" class="text-white hover:text-yellow-400 transition"
+                title="Perfil">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

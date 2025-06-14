@@ -3,7 +3,7 @@
     <div class="bg-[#F0F4F4] min-h-screen pb-0">
         <!-- Tabs Enviar/Solicitar arriba y separadas -->
         <x-tabs-transacciones activo="solicitar" />
-        
+
         <!-- Formulario centrado más abajo -->
         <div class="w-full flex justify-center">
             <div class="w-full max-w-2xl px-2 sm:px-4 pt-16 sm:pt-20">
