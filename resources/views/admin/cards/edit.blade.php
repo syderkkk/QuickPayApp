@@ -10,7 +10,7 @@
                     </div>
 
                     <!-- Mensajes de éxito/error -->
-                    <x-alert-sucess />
+                    <x-alert-succes />
                     <x-alert-errors />
 
                     <!-- Formulario de edición -->

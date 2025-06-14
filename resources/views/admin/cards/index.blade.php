@@ -9,7 +9,7 @@
                     </div>
 
                     {{-- Mensajes de éxito/error --}}
-                    <x-alert-sucess />
+                    <x-alert-succes />
                     <x-alert-errors />
 
                     <div class="mb-6 flex flex-col sm:flex-row items-center gap-4">
