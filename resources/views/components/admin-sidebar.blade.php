@@ -5,8 +5,7 @@
             href="{{ route('admin.dashboard') }}">
             QuickPay⚡
         </a>
-        <ul class="mt-10">
-
+        <ul class="mt-10" x-data="{ open: false }">
             <li class="relative px-6 py-3">
                 <span class="absolute inset-y-0 left-0 w-1 bg-[#2563eb] rounded-tr-lg rounded-br-lg"
                     aria-hidden="true"></span>
@@ -42,76 +41,61 @@
                     <span class="ml-4">Transacciones</span>
                 </a>
             </li>
-            {{-- <li class="relative px-6 py-3">
-                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
-                    href="{{ route('admin.payment-methods.index') }}">
+            <!-- Nueva sección desplegable -->
+            <li class="relative px-6 py-3" x-data="{ open: false }">
+                <button type="button"
+                    class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb] focus:outline-none"
+                    @click="open = !open">
                     <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
                         stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M21 10H7a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2z" />
                         <path d="M3 6h18" />
                     </svg>
-                    <span class="ml-4">Métodos de pago</span>
-                </a>
-            </li> --}}
-            {{-- <li class="relative px-6 py-3">
-                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
-                    href="#">
-                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
-                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                        <path
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                        </path>
+                    <span class="ml-4 flex-1 text-left">Métodos de pago y retiro</span>
+                    <svg :class="{ 'rotate-90': open }" class="w-4 h-4 ml-auto transition-transform duration-200"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                    <span class="ml-4">Forms</span>
-                </a>
-            </li>
-            --}}
+                </button>
+                <ul x-show="open" x-transition class="mt-2 ml-8 space-y-1">
+                    <li>
+                        <a href="{{ route('admin.cards.index') }}"
+                            class="flex items-center text-sm font-semibold text-[#e0e7ff] hover:text-[#2563eb] transition-colors duration-150">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            Tarjetas
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.banks.index') }}"
+                            class="flex items-center text-sm font-semibold text-[#e0e7ff] hover:text-[#2563eb] transition-colors duration-150">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 10v6a2 2 0 002 2h14a2 2 0 002-2v-6" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 10V6a4 4 0 00-8 0v4" />
+                            </svg>
+                            Cuentas bancarias
+                        </a>
+                    </li>
+                </ul>
             <li class="relative px-6 py-3">
                 <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
-                    href="{{ route('admin.cards.index') }}">
+                    href="{{ route('admin.wallets.index') }}">
                     <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
                         stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                        <path
-                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                        </path>
+                        <path d="M4 7V6a2 2 0 012-2h12a2 2 0 012 2v1" />
+                        <rect width="20" height="12" x="2" y="7" rx="2" />
+                        <path d="M16 11a2 2 0 110 4 2 2 0 010-4z" />
                     </svg>
-                    <span class="ml-4">Tarjetas</span>
+                    <span class="ml-4">Wallets</span>
                 </a>
             </li>
-            <li class="relative px-6 py-3">
-                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
-                    href="{{ route('admin.banks.index') }}">
-                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
-                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                        <path d="M3 10v6a2 2 0 002 2h14a2 2 0 002-2v-6"></path>
-                        <path d="M16 10V6a4 4 0 00-8 0v4"></path>
-                    </svg>
-                    <span class="ml-4">Cuentas bancarias</span>
-                </a>
             </li>
-            {{--
-            <li class="relative px-6 py-3">
-                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
-                    href="{{ route('admin.banks.index') }}">
-                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
-                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                        <path d="M3 10v6a2 2 0 002 2h14a2 2 0 002-2v-6"></path>
-                        <path d="M16 10V6a4 4 0 00-8 0v4"></path>
-                    </svg>
-                    <span class="ml-4">Bancos</span>
-                </a>
-            </li>
-            <li class="relative px-6 py-3">
-                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
-                    href="#">
-                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
-                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                        <path d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
-                        <path d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
-                    </svg>
-                    <span class="ml-4">Charts</span>
-                </a>
-            </li> --}}
+            <!-- Fin sección desplegable -->
         </ul>
         <form method="POST" action="{{ route('logout') }}" class="absolute bottom-0 left-0 w-full px-6 pb-6">
             @csrf

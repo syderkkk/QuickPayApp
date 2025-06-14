@@ -9,6 +9,7 @@
                 <a href="#" class="font-mono text-base text-gray-600 px-4 py-2 ml-2 text-center">Solicitar</a>
             </div>
         </div>
+        
         <!-- Card principal centrada -->
         <div class="flex justify-center items-center w-full min-h-[70vh]">
             <div

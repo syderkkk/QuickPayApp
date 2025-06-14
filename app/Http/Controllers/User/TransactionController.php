@@ -44,7 +44,6 @@ class TransactionController extends Controller
         return view('transactions.index', compact('transactions'));
     }
 
-
     public function step1()
     {
         return view('transactions.send.step1');
