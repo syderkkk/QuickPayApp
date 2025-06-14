@@ -12,6 +12,7 @@ use App\Http\Controllers\User\PaymentMethodController as UserPaymentMethodContro
 use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\TransactionController as UserTransactionController;
 use App\Http\Middleware\IsAdmin;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 // Rutas públicas
@@ -54,6 +55,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/transactions/send/step2', [UserTransactionController::class, 'step2'])->name('transactions.send.step2');
     Route::post('/transactions/send/confirm', [UserTransactionController::class, 'confirm'])->name('transactions.send.confirm');
     Route::get('/transactions/contacts/select', [UserTransactionController::class, 'selectContact'])->name('transactions.contacts.select');
+
+    Route::get('/transactions/request', [UserTransactionController::class, 'requestStep1'])->name('transactions.request.step1');
+    Route::post('/transactions/request/step2', [UserTransactionController::class, 'requestStep2'])->name('transactions.request.step2');
+    Route::post('/transactions/reques/confirm', [UserContactController::class, 'requestConfirm'])->name('transactions.request.confirm');
 
     // Contactos
     Route::resource('contacts', UserContactController::class)->only(['index', 'store', 'update', 'destroy']);

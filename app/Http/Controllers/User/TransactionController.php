@@ -189,4 +189,31 @@ class TransactionController extends Controller
             // ...otros datos necesarios...
         ]);
     }
+
+
+
+
+
+    
+
+    // Probando solicitar dinero //
+    public function requestStep1()
+    {
+        return view('transactions.request.step1');
+    }
+
+    public function requestStep2(Request $request)
+    {
+        $request->validate([
+            'receiver' => 'required|email|exists:users,email',
+        ]);
+        
+        $receiver = User::where('email', $request->receiver)->firstOrFail();
+        $user = Auth::user();
+
+        return view('transactions.request.step2', [
+            'receiver' => $receiver,
+            'wallet_currency' => $user->wallet->currency ?? 'PEN',
+        ]);
+    }
 }

@@ -6,7 +6,7 @@
             <div class="max-w-2xl mx-auto flex flex-row">
                 <a href="#"
                     class="font-mono text-lg font-extrabold text-black px-4 py-2 border-b-4 border-black text-center">Enviar</a>
-                <a href="#" class="font-mono text-base text-gray-600 px-4 py-2 ml-2 text-center">Solicitar</a>
+                <a href="{{ route('transactions.request.step1') }}" class="font-mono text-base text-gray-600 px-4 py-2 ml-2 text-center">Solicitar</a>
             </div>
         </div>
         <!-- Card principal centrada -->

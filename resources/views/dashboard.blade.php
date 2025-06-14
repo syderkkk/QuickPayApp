@@ -44,8 +44,9 @@
                             </button>
                             <button
                                 class="flex items-center justify-center gap-2 bg-[#f7fafc] text-black font-bold rounded-lg px-5 py-2 font-mono text-base shadow border border-[#2563eb] hover:bg-[#e0e7ff] transition w-full md:w-auto">
-                                <span class="font-extrabold text-[#2563eb]">Q</span><span
-                                    class="text-lg text-[#2563eb]">⚡</span> Solicitar Dinero
+                                <a href="{{ route('transactions.request.step1') }}" <span
+                                    class="font-extrabold">Q</span><span class="text-lg">⚡</span> Solicitar Dinero
+                                </a>
                             </button>
                         </div>
                     </div>
@@ -136,11 +137,43 @@
                                                                 {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
                                                             @endif
                                                         </div>
-                                                        <div
-                                                            class="font-mono font-bold text-base sm:text-lg {{ $transaction->sender_id === auth()->id() ? 'text-red-500' : 'text-green-600' }}">
-                                                            {{ $transaction->sender_id === auth()->id() ? '-' : '+' }}{{ $transaction->currency }}.
-                                                            {{ number_format($transaction->amount, 2) }}
+                                                        @php
+                                                            $userId = auth()->id();
+                                                            $isSender = $transaction->sender_id === $userId;
+                                                            $isReceiver = $transaction->receiver_id === $userId;
+
+                                                            $sign = '';
+                                                            $textColor = 'text-gray-700';
+
+                                                            if ($transaction->type === 'send') {
+                                                                $sign = $isSender ? '-' : '+';
+                                                                $textColor = $isSender ? 'text-red-500' : 'text-green-600';
+                                                            } elseif ($transaction->type === 'request') {
+                                                                if ($transaction->status === 'pending') {
+                                                                    $sign = '';
+                                                                    $textColor = 'text-gray-500';
+                                                                } else {
+                                                                    if ($isReceiver) {
+                                                                        $sign = '+';
+                                                                        $textColor = 'text-green-600';
+                                                                    } elseif ($isSender) {
+                                                                        $sign = '';
+                                                                        $textColor = 'text-gray-500';
+                                                                    }
+                                                                }
+                                                            } elseif (in_array($transaction->type, ['withdraw', 'card_payment'])) {
+                                                                $sign = '-';
+                                                                $textColor = 'text-red-500';
+                                                            } else {
+                                                                $sign = '+';
+                                                                $textColor = 'text-green-600';
+                                                            }
+                                                        @endphp
+        
+                                                        <div class="font-mono font-bold text-base sm:text-lg {{ $textColor }}">
+                                                            {{ $sign }}{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
                                                         </div>
+
                                                     </div>
                                                     <div class="text-xs text-gray-600 font-mono mt-1">
                                                         {{ $transaction->created_at->format('d M') }}.

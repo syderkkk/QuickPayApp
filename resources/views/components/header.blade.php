@@ -1,7 +1,7 @@
 <header
     class="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-2 sm:py-3 bg-white shadow gap-2 sm:gap-0">
     <div class="flex items-center gap-2">
-        <a href="{{ url('/') }}" class="font-bold text-lg sm:text-xl text-[#1a2a3a] hover:underline">QuickPay</a>
+        <span class="ml-1 text-yellow-400 text-3xl -mt-1">⚡</span><a href="{{ url('/') }}" class="font-bold text-lg sm:text-xl text-[#1a2a3a] hover:underline">QuickPay</a>
     </div>
     <nav class="flex flex-col sm:flex-row items-center gap-2 sm:gap-8 w-full sm:w-auto">
         @if (Request::is('/'))

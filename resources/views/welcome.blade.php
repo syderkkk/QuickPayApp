@@ -21,11 +21,16 @@
 
     <!-- Hero SOLO con fondo -->
     <section class="flex flex-col items-center justify-start relative overflow-hidden w-full"
-        style="min-height:calc(100vh - 10px);">
+        style="min-height: 90vh;">
         <!-- Imagen de fondo decorativa -->
-        <img src="{{ asset('ilustracion.png') }}" alt="Ilustración Hero"
-            class="absolute inset-0 w-full h-full object-cover object-center opacity-100 pointer-events-none select-none z-0"
-            style="max-height:600px;" />
+        <img src="{{ asset('home.png') }}" alt="Home Hero"
+            class="absolute w-full object-cover object-center opacity-100 pointer-events-none select-none z-0"
+            style="top: 120px; height: 600px;" />
+        <!-- Degradado superior -->
+        <div class="absolute top-[120px] w-full h-32 bg-gradient-to-b from-white to-transparent z-10"></div>
+        <!-- Degradado inferior -->
+        <div class="absolute top-[calc(120px+600px-128px)] w-full h-32 bg-gradient-to-t from-white/90 to-transparent z-10"></div>
+
         <div class="relative z-10 w-full flex flex-col items-center pt-8 pb-12 mt-2 px-2 sm:px-0">
             <h1
                 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-4 mt-0 leading-tight text-[#1a2a3a]">

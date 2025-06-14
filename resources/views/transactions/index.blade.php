@@ -115,10 +115,44 @@
                         {{ $transaction->type == 'send' ? 'enviado' : $transaction->type }}
                     </div>
                 </div>
-                <div
-                    class="text-right font-bold text-base sm:text-lg font-mono {{ $transaction->type == 'send' ? 'text-red-500' : 'text-green-600' }} w-full sm:w-auto mt-2 sm:mt-0">
-                    {{ $transaction->type == 'send' ? '-' : '+' }}{{ $transaction->currency }}.
-                    {{ number_format($transaction->amount, 2) }}
+                @php
+                    $userId= Auth::id();
+                    $isSender = $transaction->sender_id === $userId;
+                    $isReceiver = $transaction->receiver_id === $userId;
+
+                    $showAmount = true;
+                    $sign = '';
+                    $textColor = 'text-gray-700';
+
+                    if ($transaction->type === 'send') {
+                        $sign = $isSender ? '-' : '+';
+                        $textColor = $isSender ? 'text-red-500' : 'text-green-600';
+                    } elseif ($transaction->type === 'request') {
+                        if ($transaction->status === 'pending') {
+                            $showAmount = false;
+                        } else {
+                            if ($isReceiver) {
+                                $sign = '+';
+                                $textColor = 'text-green-600';
+                            } elseif ($isSender) {
+                                $sign = '';
+                                $textColor = 'text-gray-500';
+                            }
+                        }
+                    } elseif (in_array($transaction->type, ['withdraw', 'card_payment'])) {
+                        $sign = '-';
+                        $textColor = 'text-red-500';
+                    } else {
+                        $sign = '+';
+                        $textColor = 'text-green-600';
+                    }
+                @endphp
+                <div class="text-right w-full sm:w-auto mt-2 sm:mt-0 font-mono text-base sm:text-lg font-bold {{ $textColor }}">
+                    @if ($showAmount)
+                        {{ $sign }}{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
+                    @else
+                        <span class="text-gray-500 text-sm">(Solicitud pendiente)</span>
+                    @endif
                 </div>
             </div>
         @empty

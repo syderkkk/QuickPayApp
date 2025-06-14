@@ -6,7 +6,7 @@
            class="font-mono text-lg font-extrabold px-4 py-2 text-center {{ $activo == 'enviar' ? 'text-black border-b-4 border-black' : 'text-gray-600' }}">
             Enviar
         </a>
-        <a href="#"
+        <a href="{{ route('transactions.request.step1') }}"
            class="font-mono text-base px-4 py-2 sm:ml-2 text-center {{ $activo == 'solicitar' ? 'text-black border-b-4 border-black' : 'text-gray-600' }}">
             Solicitar
         </a>
