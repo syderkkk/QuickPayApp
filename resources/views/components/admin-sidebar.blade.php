@@ -1,7 +1,8 @@
 <aside
     class="z-20 hidden md:block flex-shrink-0 w-64 h-screen sticky top-0 left-0 overflow-y-auto bg-[#284494] border-r border-[#e0e7ff]">
     <div class="py-6 text-[#e0e7ff]">
-        <a class="ml-6 text-2xl font-extrabold font-secondary tracking-widest text-white" href="{{ route('admin.dashboard') }}">
+        <a class="ml-6 text-2xl font-extrabold font-secondary tracking-widest text-white"
+            href="{{ route('admin.dashboard') }}">
             QuickPay⚡
         </a>
         <ul class="mt-10">
@@ -75,6 +76,17 @@
                         </path>
                     </svg>
                     <span class="ml-4">Tarjetas</span>
+                </a>
+            </li>
+            <li class="relative px-6 py-3">
+                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
+                    href="{{ route('admin.banks.index') }}">
+                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M3 10v6a2 2 0 002 2h14a2 2 0 002-2v-6"></path>
+                        <path d="M16 10V6a4 4 0 00-8 0v4"></path>
+                    </svg>
+                    <span class="ml-4">Cuentas bancarias</span>
                 </a>
             </li>
             {{--

@@ -78,7 +78,7 @@ class TransactionController extends Controller
             $query->where('currency', $request->currency);
         }
 
-        $transactions = $query->latest()->paginate(9);
+        $transactions = $query->latest()->paginate(5);
 
         return view('admin.transactions.index', compact('transactions'));
     }

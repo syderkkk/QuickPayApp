@@ -4,7 +4,6 @@
         <x-admin-sidebar />
 
         <div class="flex flex-col flex-1 w-full">
-
             <!-- Header -->
             <x-admin-header />
 

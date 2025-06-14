@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('currency');
             $table->string('document_number', 20);
             $table->string('phone');
+            $table->boolean('is_enabled')->default(true);
             $table->string('billing_address');
             $table->timestamps();
         });

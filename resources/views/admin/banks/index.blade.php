@@ -4,26 +4,10 @@
         <div class="flex flex-col flex-1 w-full">
             <main class="h-full overflow-y-auto">
                 <div class="max-w-5xl mx-auto px-2 sm:px-4 pt-8">
+                    <!-- Título y buscador -->
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-6">
-                        <h2 class="text-2xl font-extrabold text-[#284494] font-mono">Tarjetas asociadas</h2>
+                        <h2 class="text-2xl font-extrabold text-[#284494] font-mono">Cuentas bancarias asociadas</h2>
                     </div>
-
-                    {{-- Mensajes de éxito/error --}}
-                    @if (session('success'))
-                        <div class="mb-4 text-green-700 bg-green-100 rounded p-3 font-mono">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-                    @if ($errors->any())
-                        <div class="mb-4 text-red-600 bg-red-100 rounded p-3 font-mono">
-                            <ul class="list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     <div class="mb-6 flex flex-col sm:flex-row items-center gap-4">
                         <form method="GET" class="flex-1 flex flex-wrap items-center gap-2 w-full">
                             <!-- Buscar por usuario -->
@@ -40,35 +24,14 @@
                                     class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#c7d2fe] text-xs bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition" />
                             </div>
                             <!-- Estado -->
-                            <select name="status"
+                            <select name="is_enabled"
                                 class="rounded-lg border border-[#c7d2fe] text-xs py-2 px-3 bg-white">
                                 <option value="">Estado</option>
-                                <option value="enabled" {{ request('status') == 'enabled' ? 'selected' : '' }}>
-                                    Habilitada</option>
-                                <option value="disabled" {{ request('status') == 'disabled' ? 'selected' : '' }}>
+                                <option value="1" {{ request('is_enabled') === '1' ? 'selected' : '' }}>Habilitada
+                                </option>
+                                <option value="0" {{ request('is_enabled') === '0' ? 'selected' : '' }}>
                                     Inhabilitada</option>
                             </select>
-                            <!-- Últimos 4 dígitos -->
-                            <input type="text" name="last_four" maxlength="4" placeholder="Últimos 4 dígitos"
-                                value="{{ request('last_four') }}"
-                                class="rounded-lg border border-[#c7d2fe] text-xs py-2 px-3 bg-white w-28" />
-                            {{-- <!-- ID de tarjeta -->
-                            <input type="number" name="card_id" min="1" placeholder="ID tarjeta"
-                                value="{{ request('card_id') }}"
-                                class="rounded-lg border border-[#c7d2fe] text-xs py-2 px-3 bg-white w-24" />
-                            <!-- Marca -->
-                            <select name="brand"
-                                class="rounded-lg border border-[#c7d2fe] text-xs py-2 px-3 bg-white">
-                                <option value="">Marca</option>
-                                <option value="Visa" {{ request('brand') == 'Visa' ? 'selected' : '' }}>Visa</option>
-                                <option value="Mastercard" {{ request('brand') == 'Mastercard' ? 'selected' : '' }}>
-                                    Mastercard</option>
-                                <option value="American Express"
-                                    {{ request('brand') == 'American Express' ? 'selected' : '' }}>American Express
-                                </option>
-                                <!-- Agrega más marcas si es necesario -->
-                            </select> --}}
-                            <!-- Botón -->
                             <button type="submit"
                                 class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition text-xs flex items-center gap-1">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
@@ -82,30 +45,25 @@
                     </div>
 
                     <div class="bg-white rounded-2xl shadow-lg border border-[#e0e7ff] overflow-x-auto">
-                        <table class="w-full min-w-[600px] divide-y divide-[#e0e7ff] text-xs">
+                        <table class="w-full min-w-[700px] divide-y divide-[#e0e7ff] text-xs">
                             <thead>
                                 <tr class="font-bold text-[#284494] uppercase bg-[#ede8f6]">
-                                    {{-- <th class="px-3 py-2 text-left">ID</th> --}}
                                     <th class="px-3 py-2 text-left">Usuario</th>
-                                    <th class="px-3 py-2 text-left">Número</th>
-                                    <th class="px-3 py-2 text-left">Titular</th>
-                                    <th class="px-3 py-2 text-left">Últimos 4</th>
-                                    <th class="px-3 py-2 text-left">Estado</th> <!-- Nueva columna -->
+                                    <th class="px-3 py-2 text-left">Banco</th>
+                                    <th class="px-3 py-2 text-left">Tipo de Cuenta</th>
+                                    <th class="px-3 py-2 text-left">Estado</th>
                                     <th class="px-3 py-2 text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($cards as $card)
-                                    <tr class="hover:bg-[#f5f7fa] transition">
-                                        {{-- <td class="px-3 py-2 align-middle">{{ $card->id }}</td> --}}
-                                        <td class="px-3 py-2 align-middle">{{ $card->user->name ?? '-' }}
-                                            {{ $card->user->lastname ?? '-' }}</td>
-                                        <td class="px-3 py-2 align-middle font-mono">**** **** ****
-                                            {{ $card->last_four }}</td>
-                                        <td class="px-3 py-2 align-middle">{{ $card->card_holder }}</td>
-                                        <td class="px-3 py-2 align-middle font-mono">{{ $card->last_four }}</td>
-                                        <td class="px-3 py-2 align-middle">
-                                            @if ($card->status === 'enabled' || $card->status === 'habilitada')
+                                @forelse($banks as $bank)
+                                    <tr>
+                                        <td class="px-3 py-2">{{ $bank->user->name ?? '-' }}
+                                            {{ $bank->user->lastname ?? '' }}</td>
+                                        <td class="px-3 py-2">{{ $bank->bank_name }}</td>
+                                        <td class="px-3 py-2">{{ $bank->account_type }}</td>
+                                        <td class="px-3 py-2">
+                                            @if ($bank->is_enabled)
                                                 <span
                                                     class="px-2 py-1 rounded-full bg-green-100 text-green-700 font-bold text-xs font-mono">Habilitada</span>
                                             @else
@@ -114,8 +72,7 @@
                                             @endif
                                         </td>
                                         <td class="px-3 py-2 text-center align-middle flex gap-1 justify-center">
-                                            {{-- Botón Editar --}}
-                                            <a href="{{ route('admin.cards.edit', $card->id) }}"
+                                            <a href="{{ route('admin.banks.edit', $bank) }}"
                                                 class="inline-flex items-center px-2 py-1 rounded bg-yellow-100 text-yellow-700 font-bold text-[10px] hover:bg-yellow-200 transition"
                                                 title="Editar">
                                                 <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor"
@@ -123,12 +80,10 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M15.232 5.232l3.536 3.536M9 13l6-6m2 2l-6 6m-2 2h6" />
                                                 </svg>
-                                                Editar
+                                                Detalles
                                             </a>
-                                            {{-- Botón Eliminar --}}
-                                            <form action="{{ route('admin.cards.destroy', $card->id) }}" method="POST"
-                                                class="inline"
-                                                onsubmit="return confirm('¿Seguro que deseas eliminar esta tarjeta?');">
+                                            <form action="{{ route('admin.banks.destroy', $bank) }}" method="POST"
+                                                class="inline" onsubmit="return confirm('¿Eliminar cuenta bancaria?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
@@ -146,16 +101,15 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center py-6 text-gray-400">No hay tarjetas
-                                            asociadas.</td>
+                                        <td colspan="6" class="text-center py-6 text-gray-400">No hay cuentas
+                                            bancarias registradas.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    {{-- Paginación --}}
-                    <x-admin-pagination :paginator="$cards" />
+                    <x-admin-pagination :paginator="$banks" />
                 </div>
             </main>
         </div>

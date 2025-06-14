@@ -35,7 +35,7 @@ class CardController extends Controller
             $query->where('last_four', $request->last_four);
         }
 
-        $cards = $query->orderBy('id', 'desc')->paginate(20)->appends($request->all());
+        $cards = $query->orderBy('id', 'desc')->paginate(5)->appends($request->all()); // 9
         return view('admin.cards.index', compact('cards'));
     }
 

@@ -22,7 +22,7 @@
                                     </svg>
                                 </span>
                                 <input type="text" name="search"
-                                    placeholder="Buscar por ID, nombre, apellido o correo..."
+                                    placeholder="Buscar por nombre, apellido o correo..."
                                     value="{{ request('search') }}"
                                     class="pl-10 pr-4 py-2 w-full rounded-lg border border-[#c7d2fe] text-xs bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition" />
                             </div>
@@ -51,7 +51,7 @@
                         <table class="w-full min-w-[500px] divide-y divide-[#e0e7ff] text-xs">
                             <thead>
                                 <tr class="font-bold text-[#284494] uppercase bg-[#ede8f6]">
-                                    <th class="px-3 py-2 text-left">ID</th>
+                                    {{-- <th class="px-3 py-2 text-left">ID</th> --}}
                                     <th class="px-3 py-2 text-left">Nombre</th>
                                     <th class="px-3 py-2 text-left">Apellido</th>
                                     <th class="px-3 py-2 text-left">Correo</th>
@@ -63,7 +63,7 @@
                             <tbody class="divide-y divide-[#e0e7ff]">
                                 @forelse($users as $user)
                                     <tr class="hover:bg-[#f5f7fa] transition">
-                                        <td class="px-3 py-2 font-mono text-gray-700">{{ $user->id }}</td>
+                                        {{-- <td class="px-3 py-2 font-mono text-gray-700">{{ $user->id }}</td> --}}
                                         <td class="px-3 py-2 font-semibold text-gray-800">{{ $user->name }}</td>
                                         <td class="px-3 py-2 font-semibold text-gray-800">{{ $user->lastname }}</td>
                                         <td class="px-3 py-2 text-gray-700">{{ $user->email }}</td>
@@ -106,9 +106,8 @@
                                                     </svg>
                                                     Editar
                                                 </a>
-                                                <form action="{{ route('admin.users.destroy', $user) }}"
-                                                    method="POST" class="inline"
-                                                    onsubmit="return confirm('¿Eliminar este usuario?')">
+                                                <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
+                                                    class="inline" onsubmit="return confirm('¿Eliminar este usuario?')">
                                                     @csrf @method('DELETE')
                                                     <button type="submit"
                                                         class="inline-flex items-center px-2 py-1 rounded bg-red-100 text-red-700 font-bold text-[10px] hover:bg-red-200 transition"
@@ -132,10 +131,11 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        <div class="mt-4">
-                            {{ $users->links() }}
-                        </div>
                     </div>
+
+                    <!-- Paginación personalizada -->
+                    <x-admin-pagination :paginator="$users" />
+
                 </div>
             </main>
         </div>

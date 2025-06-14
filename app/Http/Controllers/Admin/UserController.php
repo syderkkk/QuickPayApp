@@ -28,7 +28,7 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->orderBy('id', 'desc')->paginate(15);
+        $users = $query->orderBy('id', 'desc')->paginate(5);
 
         return view('admin.users.index', compact('users'));
     }

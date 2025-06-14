@@ -147,47 +147,11 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        <!-- Paginación personalizada -->
-                        @if ($transactions->hasPages())
-                            <div class="py-4 flex justify-center">
-                                <nav class="inline-flex rounded-md shadow-sm font-mono text-sm"
-                                    aria-label="Pagination">
-                                    {{-- Botón anterior --}}
-                                    @if ($transactions->onFirstPage())
-                                        <span
-                                            class="px-4 py-2 bg-gray-200 text-gray-400 rounded-l-full cursor-not-allowed">Anterior</span>
-                                    @else
-                                        <a href="{{ $transactions->previousPageUrl() }}"
-                                            class="px-4 py-2 bg-white text-[#2563eb] border border-gray-200 hover:bg-blue-50 rounded-l-full transition">Anterior</a>
-                                    @endif
-
-                                    {{-- Números de página --}}
-                                    @php
-                                        $start = max($transactions->currentPage() - 2, 1);
-                                        $end = min($transactions->currentPage() + 2, $transactions->lastPage());
-                                    @endphp
-                                    @for ($i = $start; $i <= $end; $i++)
-                                        @if ($i == $transactions->currentPage())
-                                            <span
-                                                class="px-4 py-2 bg-[#2563eb] text-white font-bold">{{ $i }}</span>
-                                        @else
-                                            <a href="{{ $transactions->url($i) }}"
-                                                class="px-4 py-2 bg-white text-[#2563eb] border border-gray-200 hover:bg-blue-50 transition">{{ $i }}</a>
-                                        @endif
-                                    @endfor
-
-                                    {{-- Botón siguiente --}}
-                                    @if ($transactions->hasMorePages())
-                                        <a href="{{ $transactions->nextPageUrl() }}"
-                                            class="px-4 py-2 bg-white text-[#2563eb] border border-gray-200 hover:bg-blue-50 rounded-r-full transition">Siguiente</a>
-                                    @else
-                                        <span
-                                            class="px-4 py-2 bg-gray-200 text-gray-400 rounded-r-full cursor-not-allowed">Siguiente</span>
-                                    @endif
-                                </nav>
-                            </div>
-                        @endif
                     </div>
+
+                    <!-- Paginación personalizada -->
+                    <x-admin-pagination :paginator="$transactions" />
+
                 </div>
             </main>
         </div>

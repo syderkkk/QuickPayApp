@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BankController as AdminBankController;
 use App\Http\Controllers\Admin\CardController as AdminCardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
@@ -88,6 +89,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('cards', AdminCardController::class);
 
         // Cuentas bancarias admin
+        Route::resource('banks', AdminBankController::class);
 
         // Wallet admin
         
