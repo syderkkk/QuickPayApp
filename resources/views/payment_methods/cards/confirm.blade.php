@@ -4,8 +4,9 @@
         <div class="text-center mb-8">
             <span class="font-mono font-extrabold text-lg sm:text-xl text-black leading-tight block">
                 Ha asociado su tarjeta<br>
-                Banco de Crédito del Perú de<br>
-                ahorros terminada en <span class="tracking-widest">**2869</span>
+                {{ $card->brand ?? 'Tarjeta' }} de<br>
+                {{ $card->card_holder ?? 'Titular desconocido' }} terminada en 
+                <span class="tracking-widest">**{{ $card->last_four ?? '----' }}</span>
             </span>
         </div>
         <div class="mb-8">

@@ -2,12 +2,7 @@
     @include('layouts.navigation')
     <div class="bg-[#F0F4F4] min-h-screen pb-0">
         <!-- Tabs Enviar/Solicitar -->
-        <div class="w-full bg-[#D9D9D9] border-b-2 border-gray-300">
-            <div class="max-w-2xl mx-auto flex flex-row">
-                <a href="#" class="font-mono text-lg font-extrabold text-black px-4 py-2 border-b-4 border-black text-center">Enviar</a>
-                <a href="#" class="font-mono text-base text-gray-600 px-4 py-2 ml-2 text-center">Solicitar</a>
-            </div>
-        </div>
+        <x-tabs-transacciones activo="enviar" />
         <!-- Mensaje de confirmación -->
         <div class="flex flex-col items-center justify-center w-full min-h-[60vh] px-2 pt-12">
             <div class="text-center mb-6">

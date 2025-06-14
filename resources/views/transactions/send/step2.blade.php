@@ -2,18 +2,16 @@
     @include('layouts.navigation')
     <div class="bg-[#F0F4F4] min-h-screen pb-0">
         <!-- Tabs Enviar/Solicitar -->
-        <div class="w-full bg-[#D9D9D9] border-b-2 border-gray-300">
-            <div class="max-w-2xl mx-auto flex flex-row">
-                <a href="#"
-                    class="font-mono text-lg font-extrabold text-black px-4 py-2 border-b-4 border-black text-center">Enviar</a>
-                <a href="#" class="font-mono text-base text-gray-600 px-4 py-2 ml-2 text-center">Solicitar</a>
-            </div>
-        </div>
-        
+        <x-tabs-transacciones activo="enviar" />
+
         <!-- Card principal centrada -->
         <div class="flex justify-center items-center w-full min-h-[70vh]">
             <div
                 class="bg-[#ede8f6] border border-gray-400 rounded-2xl max-w-md w-full mx-2 p-4 sm:p-8 shadow flex flex-col items-center">
+
+                <!-- Mensajes de error -->
+                <x-step-error />
+
                 <!-- Usuario receptor -->
                 <div class="flex items-center gap-4 mb-6 w-full">
                     <div
@@ -41,7 +39,8 @@
                         <label class="font-mono text-sm text-black min-w-max">Enviar desde:</label>
                         <select name="from_account"
                             class="flex-1 px-2 py-1 rounded border border-gray-300 font-mono text-xs bg-white focus:ring-2 focus:ring-[#2563eb]">
-                            <option value="wallet">Saldo QuickPay({{ $wallet_currency }} {{ number_format($wallet_balance, 2) }})</option>
+                            <option value="wallet">Saldo QuickPay({{ $wallet_currency }}
+                                {{ number_format($wallet_balance, 2) }})</option>
                             <!-- Otras opciones de cuentas si las hay -->
                         </select>
                     </div>

@@ -35,7 +35,8 @@ Route::middleware('auth')->group(function () {
     // Transacciones
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::get('/transactions/send', [TransactionController::class, 'step1'])->name('transactions.send.step1');
-    Route::post('/transactions/send/step2', [TransactionController::class, 'step2'])->name('transactions.send.step2');
+    /* Route::post('/transactions/send/step2', [TransactionController::class, 'step2'])->name('transactions.send.step2'); */
+    Route::match(['GET', 'POST'], 'transactions/send/step2', [TransactionController::class, 'step2'])->name('transactions.send.step2');
     Route::post('/transactions/send/confirm', [TransactionController::class, 'confirm'])->name('transactions.send.confirm');
     Route::get('/transactions/contacts/select', [TransactionController::class, 'selectContact'])->name('transactions.contacts.select');
 

@@ -41,7 +41,7 @@ class CardController extends Controller
         [$month, $year] = explode('/', $request->expiry_month);
 
         $user = Auth::user();
-        Card::create([
+        $card = Card::create([
             'user_id' => $user->id,
             'card_holder' => $request->card_holder,
             'card_number' => $request->card_number,
@@ -52,7 +52,7 @@ class CardController extends Controller
             'is_default' => false,
         ]);
 
-        return view('payment_methods.cards.confirm');
+        return view('payment_methods.cards.confirm', ['card' => $card]);
     }
 
     /**
