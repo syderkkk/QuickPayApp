@@ -24,7 +24,7 @@
                             </span>
                             <input type="text" id="receiver" name="receiver"
                                 class="w-full pl-12 pr-4 py-4 border-2 border-[#bcb7c2] rounded-2xl bg-[#ece9f1] font-mono text-base focus:outline-none focus:ring-2 focus:ring-[#2563eb] placeholder:font-mono placeholder:text-gray-400"
-                                placeholder="Nombre, usuario, correo electrónico" required>
+                                placeholder="Correo electrónico" required>
                         </div>
                     </div>
                     <div class="flex flex-col sm:flex-row items-center gap-4">

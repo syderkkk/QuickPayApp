@@ -42,7 +42,8 @@
                                 </a>
                             </button>
                             <button
-                                class="flex items-center justify-center gap-2 bg-[#f7fafc] text-black font-bold rounded-lg px-5 py-2 font-mono text-base shadow border border-[#2563eb] hover:bg-[#e0e7ff] transition w-full md:w-auto">
+                                class="flex items-center justify-center gap-2 bg-[#f7fafc] text-black font-bold rounded-lg px-5 py-2 font-mono text-base shadow border border-[#2563eb] opacity-50 pointer-events-none select-none cursor-not-allowed"
+                                disabled>
                                 <span class="font-extrabold text-[#2563eb]">Q</span><span
                                     class="text-lg text-[#2563eb]">⚡</span> Solicitar Dinero
                             </button>
@@ -167,11 +168,11 @@
                     </div>
                     <!-- Contactos frecuentes -->
                     <div
-                        class="bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 sm:p-6 md:p-8 min-h-[170px] flex flex-col justify-between border border-[#e0e7ff] w-full">
+                        class="bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 sm:p-6 md:p-8 min-h-[170px] flex flex-col justify-between border border-[#e0e7ff] w-full opacity-50 pointer-events-none select-none cursor-not-allowed">
                         <div class="flex items-center justify-between mb-2">
-                            <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-black">Contactos
+                            <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-gray-400">Contactos
                                 frecuentes</div>
-                            <span class="text-[#2563eb] ml-2">
+                            <span class="text-gray-300 ml-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="inline h-6 w-6 sm:h-8 sm:w-8"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <circle cx="11" cy="11" r="7" stroke-width="2" stroke="currentColor"
@@ -181,7 +182,8 @@
                                 </svg>
                             </span>
                         </div>
-                        <div class="text-xs sm:text-sm text-black font-mono mb-4">Buscar</div>
+                        <div class="text-xs sm:text-sm text-gray-400 font-mono mb-4 italic">Funcionalidad inhabilitada
+                            por el momento</div>
                     </div>
                 </div>
             </div>
