@@ -5,8 +5,9 @@ use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\PaymentMethodController;
 use App\Http\Controllers\User\CardController;
 use App\Http\Controllers\User\BankController;
-use App\Http\Controllers\User\TransactionController;
 use App\Http\Controllers\User\ContactController;
+use App\Http\Controllers\User\Transactions\SendController;
+use App\Http\Controllers\User\Transactions\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -32,13 +33,17 @@ Route::middleware('auth')->group(function () {
     Route::view('/cards/confirm', 'payment_methods.cards.confirm')->name('cards.confirm');
     Route::view('/banks/confirm', 'payment_methods.banks.confirm')->name('banks.confirm');
 
-    // Transacciones
+    // Transacciones generales
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-    Route::get('/transactions/send', [TransactionController::class, 'step1'])->name('transactions.send.step1');
-    /* Route::post('/transactions/send/step2', [TransactionController::class, 'step2'])->name('transactions.send.step2'); */
-    Route::match(['GET', 'POST'], 'transactions/send/step2', [TransactionController::class, 'step2'])->name('transactions.send.step2');
-    Route::post('/transactions/send/confirm', [TransactionController::class, 'confirm'])->name('transactions.send.confirm');
-    Route::get('/transactions/contacts/select', [TransactionController::class, 'selectContact'])->name('transactions.contacts.select');
+    
+    // Transacciones - Envío de dinero (nuevas rutas con SendController)
+    Route::prefix('transactions/send')->name('transactions.send.')->group(function () {
+        Route::get('/', [SendController::class, 'step1'])->name('step1');
+        Route::match(['GET', 'POST'], '/step2', [SendController::class, 'step2'])->name('step2');
+        Route::post('/confirm', [SendController::class, 'confirm'])->name('confirm');
+        Route::get('/contacts/select', [SendController::class, 'selectContact'])->name('contacts.select');
+        Route::get('/contacts/{receiverId}', [SendController::class, 'sendToContact'])->name('contacts.send');
+    });
 
     // Contactos
     Route::resource('contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
