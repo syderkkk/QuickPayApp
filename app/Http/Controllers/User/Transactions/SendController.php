@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ExchangeRateService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,7 @@ class SendController extends Controller
         $convertedAmount = null;
 
         if ($wallet->currency !== $receiverWallet->currency) {
-            $exchangeRate = $this->getExchangeRate($wallet->currency, $receiverWallet->currency);
+            $exchangeRate = ExchangeRateService::getExchangeRate($wallet->currency, $receiverWallet->currency);
             if (!$exchangeRate) {
                 return redirect()
                     ->route('transactions.send.step1')
@@ -97,7 +98,7 @@ class SendController extends Controller
         $exchangeRate = 1;
 
         if ($sender->wallet->currency !== $receiver->wallet->currency) {
-            $exchangeRate = $this->getExchangeRate($sender->wallet->currency, $receiver->wallet->currency);
+            $exchangeRate = ExchangeRateService::getExchangeRate($sender->wallet->currency, $receiver->wallet->currency);
 
             if (!$exchangeRate) {
                 return redirect()
@@ -183,23 +184,5 @@ class SendController extends Controller
             'wallet_balance' => $wallet_balance,
             'wallet_currency' => $wallet_currency,
         ]);
-    }
-
-    private function getExchangeRate($fromCurrency, $toCurrency)
-    {
-        try {
-
-            $response = Http::timeout(10)->get("https://api.exchangerate-api.com/v4/latest/{$fromCurrency}");
-
-            if ($response->successful()) {
-                $data = $response->json();
-                if (isset($data['rates'][$toCurrency])) {
-                    return round($data['rates'][$toCurrency], 4);
-                }
-            }
-        } catch (Exception $e) {
-            Log::error('Error getting exchange rate: ' . $e->getMessage());
-        }
-        return null;
     }
 }

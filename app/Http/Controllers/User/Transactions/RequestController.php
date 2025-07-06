@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ExchangeRateService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -134,7 +135,8 @@ class RequestController extends Controller
                 $convertedAmount = $transaction->converted_amount;
                 $exchangeRate = $transaction->exchange_rate;
             } else {
-                $exchangeRate = $this->getExchangeRate($requesterCurrency, $payerCurrency);
+                $exchangeRate = ExchangeRateService::getExchangeRate($requesterCurrency, $payerCurrency);
+                
                 if ($exchangeRate) {
                     $convertedAmount = $transaction->amount * $exchangeRate;
                 }
@@ -153,23 +155,5 @@ class RequestController extends Controller
             'payerCurrency',
             'requesterCurrency'
         ));
-    }
-
-    private function getExchangeRate($fromCurrency, $toCurrency)
-    {
-        try {
-
-            $response = Http::timeout(10)->get("https://api.exchangerate-api.com/v4/latest/{$fromCurrency}");
-
-            if ($response->successful()) {
-                $data = $response->json();
-                if (isset($data['rates'][$toCurrency])) {
-                    return round($data['rates'][$toCurrency], 4);
-                }
-            }
-        } catch (Exception $e) {
-            Log::error('Error getting exchange rate: ' . $e->getMessage());
-        }
-        return null;
     }
 }
