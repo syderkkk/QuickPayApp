@@ -16,7 +16,8 @@ class TransactionController extends Controller
             ->where(function ($q) use ($user) {
                 $q->where('sender_id', $user->id)
                     ->orWhere('receiver_id', $user->id);
-            });
+            })
+            ->where('type', '!=', 'request'); // Excluir solicitudes de pago
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);

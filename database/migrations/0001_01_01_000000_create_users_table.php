@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('role')->default('user');
             $table->string('phone', 15)->nullable();
             $table->string('country', 2)->nullable();
+            $table->string('timezone')->default('America/Lima');
             $table->string('address')->nullable();
             $table->boolean('is_blocked')->default(false);
             $table->rememberToken();

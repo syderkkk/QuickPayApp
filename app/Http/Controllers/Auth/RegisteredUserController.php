@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\TimezoneHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\User;
@@ -42,6 +43,8 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $timezone = TimezoneHelper::getTimezoneByCountry($request->country);
+
         $user = User::create([
             'name' => $request->name,
             'lastname' => $request->lastname,
@@ -49,6 +52,7 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
             'email' => $request->email,
+            'timezone' => $timezone,
             'password' => Hash::make($request->password),
         ]);
 

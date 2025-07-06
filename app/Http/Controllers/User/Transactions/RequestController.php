@@ -66,7 +66,7 @@ class RequestController extends Controller
 
         DB::transaction(function () use ($user, $receiver, $request) {
 
-            Transaction::create([
+            $transaction = Transaction::create([
                 'type' => 'request',
                 'sender_id' => $receiver->id,
                 'receiver_id' => $user->id,
@@ -85,6 +85,7 @@ class RequestController extends Controller
                 'message' => "Has recibido una solicitud de {$request->currency} {$request->amount} de {$user->name} {$user->lastname}.",
                 'type' => 'request',
                 'is_active' => true,
+                'data' => ['request_id' => $transaction->id],
             ]);
         });
 

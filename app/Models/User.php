@@ -20,10 +20,11 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'lastname',
-        'country',
+        'email',
         'phone',
         'address',
-        'email',
+        'country',
+        'timezone',
         'password',
         'role',
         'is_blocked',
@@ -96,6 +97,16 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function getTimezoneAttribute($value)
+    {
+        return $value ?: 'America/Lima';
+    }
+
+    public function toUserTimezone($dateTime)
+    {
+        return $dateTime->setTimezone($this->timezone);
     }
 
 }

@@ -8,10 +8,16 @@ class Notification extends Model
 {
     protected $fillable = [
         'user_id',
+        'transaction_id',
         'title',
         'message',
         'type',
         'is_active',
+        'data',
+    ];
+
+    protected $casts = [
+        'data' => 'array',
     ];
 
     public function user()

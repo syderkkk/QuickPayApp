@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('message');
             $table->enum('type', ['payment', 'request', 'system'])->default('system');
             $table->boolean('is_active')->default(true);
+            $table->json('data')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
