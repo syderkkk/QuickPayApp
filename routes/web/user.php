@@ -7,6 +7,7 @@ use App\Http\Controllers\User\CardController;
 use App\Http\Controllers\User\BankController;
 use App\Http\Controllers\User\ContactController;
 use App\Http\Controllers\User\Transactions\NotificationController;
+use App\Http\Controllers\User\Transactions\RequestController;
 use App\Http\Controllers\User\Transactions\SendController;
 use App\Http\Controllers\User\Transactions\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/confirm', [SendController::class, 'confirm'])->name('confirm');
         Route::get('/contacts/select', [SendController::class, 'selectContact'])->name('contacts.select');
         Route::get('/contacts/{receiverId}', [SendController::class, 'sendToContact'])->name('contacts.send');
+    });
+
+    Route::prefix('transactions/request')->name('transactions.request.')->group(function () {
+        Route::get('/', [RequestController::class, 'step1'])->name('step1');
+        Route::match(['GET', 'POST'], '/step2', [RequestController::class, 'step2'])->name('step2');
+        Route::post('/confirm', [RequestController::class, 'confirm'])->name('confirm');
     });
 
     // Contactos
