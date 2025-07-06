@@ -138,8 +138,11 @@
                                                         </div>
                                                         <div
                                                             class="font-mono font-bold text-base sm:text-lg {{ $transaction->sender_id === auth()->id() ? 'text-red-500' : 'text-green-600' }}">
-                                                            {{ $transaction->sender_id === auth()->id() ? '-' : '+' }}{{ $transaction->currency }}.
-                                                            {{ number_format($transaction->amount, 2) }}
+                                                            @if ($transaction->sender_id === auth()->id())
+                                                                -{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
+                                                            @else
+                                                                +{{ $transaction->receiver_currency }}.{{ number_format($transaction->converted_amount, 2) }}
+                                                            @endif
                                                         </div>
                                                     </div>
                                                     <div class="text-xs text-gray-600 font-mono mt-1">

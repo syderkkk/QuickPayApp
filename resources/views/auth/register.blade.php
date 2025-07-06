@@ -45,11 +45,17 @@
                             class="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 font-mono text-sm text-gray-500 placeholder-gray-400 focus:ring-2 focus:ring-[#2563eb] focus:border-[#2563eb]">
                             <option value="" disabled {{ old('country') ? '' : 'selected' }}>Seleccione su país
                             </option>
-                            <option value="PE" {{ old('country') == 'PE' ? 'selected' : '' }}>Perú</option>
+                            {{-- <option value="PE" {{ old('country') == 'PE' ? 'selected' : '' }}>Perú</option>
                             <option value="AR" {{ old('country') == 'AR' ? 'selected' : '' }}>Argentina</option>
                             <option value="CL" {{ old('country') == 'CL' ? 'selected' : '' }}>Chile</option>
                             <option value="CO" {{ old('country') == 'CO' ? 'selected' : '' }}>Colombia</option>
-                            <option value="MX" {{ old('country') == 'MX' ? 'selected' : '' }}>México</option>
+                            <option value="MX" {{ old('country') == 'MX' ? 'selected' : '' }}>México</option> --}}
+                            @foreach($countries as $country)
+                                <option value="{{ $country->code }}"
+                                    {{ old('country') == $country->code ? 'selected' : '' }}>
+                                    {{ $country->name }}
+                                </option>
+                            @endforeach
                         </select>
                         <x-input-error :messages="$errors->get('country')" class="mt-1" />
                     </div>

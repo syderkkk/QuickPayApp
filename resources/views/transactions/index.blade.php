@@ -107,17 +107,30 @@
                 </div>
                 <div class="ml-0 sm:ml-4 mt-2 sm:mt-0 flex-1 w-full">
                     <div class="font-bold text-base sm:text-lg uppercase tracking-wide font-mono text-[#222]">
-                        {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario desconocido' }}
+                        @if ($transaction->sender_id === auth()->id())
+                            {{-- Yo envié, muestro a quién envié --}}
+                            {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario #' . $transaction->receiver_id }}
+                        @else
+                            {{-- Yo recibí, muestro quién me envió --}}
+                            {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
+                        @endif
                     </div>
                     <div class="text-gray-500 text-xs sm:text-sm font-mono">
-                        {{ $transaction->created_at->format('d M.') }} Pago
-                        {{ $transaction->type == 'send' ? 'enviado' : $transaction->type }}
+                        {{ $transaction->created_at->format('d M.') }}
+                        @if ($transaction->sender_id === auth()->id())
+                            Pago enviado
+                        @else
+                            Pago recibido
+                        @endif
                     </div>
                 </div>
                 <div
-                    class="text-right font-bold text-base sm:text-lg font-mono {{ $transaction->type == 'send' ? 'text-red-500' : 'text-green-600' }} w-full sm:w-auto mt-2 sm:mt-0">
-                    {{ $transaction->type == 'send' ? '-' : '+' }}{{ $transaction->currency }}.
-                    {{ number_format($transaction->amount, 2) }}
+                    class="text-right font-bold text-base sm:text-lg font-mono {{ $transaction->sender_id === auth()->id() ? 'text-red-500' : 'text-green-600' }} w-full sm:w-auto mt-2 sm:mt-0">
+                    @if ($transaction->sender_id === auth()->id())
+                        -{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
+                    @else
+                        +{{ $transaction->receiver_currency }}.{{ number_format($transaction->converted_amount, 2) }}
+                    @endif
                 </div>
             </div>
         @empty
