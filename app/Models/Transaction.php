@@ -13,7 +13,11 @@ class Transaction extends Model
         'amount',
         'currency',
         'reason',
-        'status'
+        'status',
+        'converted_amount',
+        'receiver_currency',
+        'exchange_rate',
+        
     ];
 
     public function sender()

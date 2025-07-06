@@ -5,9 +5,12 @@ namespace App\Http\Controllers\User\Transactions;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SendController extends Controller
 {
@@ -33,10 +36,28 @@ class SendController extends Controller
         }
 
         $wallet = $user->wallet;
+        $receiverWallet = $receiver->wallet;
+
+        $exchangeRate = 1;
+        $convertedAmount = null;
+
+        if ($wallet->currency !== $receiverWallet->currency) {
+            $exchangeRate = $this->getExchangeRate($wallet->currency, $receiverWallet->currency);
+            if (!$exchangeRate) {
+                return redirect()
+                    ->route('transactions.send.step1')
+                    ->withInput()
+                    ->withErrores(['receiver' => 'No se pudo obtener la tasa de cambio. Inténtalo más tarde.']);
+            }
+        }
+
         return view('transactions.send.step2', [
             'receiver' => $receiver,
             'wallet_balance' => $wallet->balance,
             'wallet_currency' => $wallet->currency,
+            'receiver_currency' => $receiverWallet->currency,
+            'exchange_rate' => $exchangeRate,
+            'currencies_different' => $wallet->currency !== $receiverWallet->currency,
         ]);
     }
 
@@ -70,15 +91,40 @@ class SendController extends Controller
                 ->withErrors(['amount' => 'Saldo insuficiente.']);
         }
 
-        DB::transaction(function () use ($sender, $receiver, $request) {
-            $sender->wallet->decrement('balance', $request->amount);
-            $receiver->wallet->increment('balance', $request->amount);
+        $senderAmount = $request->amount;
+        $receiverAmount = $senderAmount;
+        $exchangeRate = 1;
+
+        if ($sender->wallet->currency !== $receiver->wallet->currency) {
+            $exchangeRate = $this->getExchangeRate($sender->wallet->currency, $receiver->wallet->currency);
+
+            if (!$exchangeRate) {
+                return redirect()
+                    ->route('transactions.send.step2', [
+                        'receiver' => $receiver->email,
+                    ])
+                    ->withInput()
+                    ->withErrores(['amount' => 'No se pudo obtener la tasa de cambio. Inténtalo más tarde.']);
+            }
+
+            $receiverAmount = $senderAmount * $exchangeRate;
+        }
+
+        DB::transaction(function () use ($sender, $receiver, $request, $senderAmount, $receiverAmount ,$exchangeRate) {
+            $sender->wallet->decrement('balance', $senderAmount);
+            $receiver->wallet->increment('balance', $receiverAmount);
+
             Transaction::create([
                 'type' => 'send',
                 'sender_id' => $sender->id,
                 'receiver_id' => $receiver->id,
                 'amount' => $request->amount,
                 'currency' => $request->currency,
+
+                'converted_amount' => $receiverAmount,
+                'receiver_currency' => $receiver->wallet->currency,
+                'exchange_rate' => $exchangeRate,
+
                 'reason' => $request->reason,
                 'status' => 'completed',
             ]);
@@ -86,8 +132,13 @@ class SendController extends Controller
 
         return view('transactions.send.confirm', [
             'receiver' => $receiver,
-            'amount' => $request->amount,
-            'currency' => $request->currency,
+
+            'sender_amount' => $senderAmount,
+            'receiver_amount' => $receiverAmount,
+            'sender_currency' => $request->currency,
+            'receiver_currency' => $receiver->wallet->currency,
+            'exchange_rate' => $exchangeRate,
+
             'type' => 'send',
         ]);
     }
@@ -124,5 +175,24 @@ class SendController extends Controller
             'wallet_balance' => $wallet_balance,
             'wallet_currency' => $wallet_currency,
         ]);
+    }
+
+    private function getExchangeRate($fromCurrency, $toCurrency)
+    {
+        try {
+
+            $response = Http::timeout(10)->get("https://api.exchangerate-api.com/v4/latest/{$fromCurrency}");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (isset($data['rates'][$toCurrency])) {
+                    return round($data['rates'][$toCurrency], 4);
+                }
+            }
+
+        } catch (Exception $e) {
+            Log::error('Error getting exchange rate: ' . $e->getMessage());
+        }
+        return null;
     }
 }

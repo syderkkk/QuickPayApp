@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('currency', 3);
             $table->string('reason')->nullable();
             $table->enum('status', ['completed', 'failed', 'pending', 'cancelled'])->default('pending');
+            $table->decimal('converted_amount', 15, 2)->nullable();
+            $table->string('receiver_currency', 3)->nullable();
+            $table->decimal('exchange_rate', 15, 6)->nullable();
             $table->timestamps();
         });
     }
