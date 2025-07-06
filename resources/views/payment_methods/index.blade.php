@@ -57,7 +57,10 @@
                                 class="w-full max-w-xs sm:max-w-md md:max-w-lg">
                                 @csrf
                                 <input type="hidden" name="selected_card_id" value="{{ $card->id }}">
-                                <button type="submit" class="w-full text-left focus:outline-none">
+                                <button type="submit"
+                                    class="w-full text-left focus:outline-none
+                {{ $card->status === 'disabled' || $card->status === 'inhabilitada' ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' }}"
+                                    {{ $card->status === 'disabled' || $card->status === 'inhabilitada' ? 'disabled' : '' }}>
                                     <div
                                         class="bg-white border border-[#bcb7c2] rounded-xl px-3 sm:px-5 md:px-8 py-4 flex items-center gap-3 sm:gap-4 w-full transition hover:scale-105 {{ session('selected_card_id') == $card->id ? 'ring-2 ring-[#2563eb]' : '' }}">
                                         <span
@@ -76,7 +79,9 @@
                                             <div class="flex gap-2 mt-1">
                                                 <span
                                                     class="inline-block px-4 py-1 text-xs rounded-full font-mono font-bold"
-                                                    style="background:#16a34a; color:#fff;">Disponible</span>
+                                                    style="background:{{ $card->status === 'enabled' || $card->status === 'habilitada' ? '#16a34a' : '#d32f2f' }}; color:#fff;">
+                                                    {{ $card->status === 'enabled' || $card->status === 'habilitada' ? 'Disponible' : 'Inhabilitada' }}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -92,7 +97,10 @@
                                 class="w-full max-w-xs sm:max-w-md md:max-w-lg">
                                 @csrf
                                 <input type="hidden" name="selected_bank_id" value="{{ $bank->id }}">
-                                <button type="submit" class="w-full text-left focus:outline-none">
+                                <button type="submit"
+                                    class="w-full text-left focus:outline-none
+                {{ !$bank->is_enabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' }}"
+                                    {{ !$bank->is_enabled ? 'disabled' : '' }}>
                                     <div
                                         class="bg-white border border-[#bcb7c2] rounded-xl px-3 sm:px-5 md:px-8 py-4 flex items-center gap-3 sm:gap-4 w-full transition hover:scale-105 {{ session('selected_bank_id') == $bank->id ? 'ring-2 ring-[#2563eb]' : '' }}">
                                         <span
@@ -111,14 +119,16 @@
                                             <div class="flex gap-2 mt-1">
                                                 <span
                                                     class="inline-block px-4 py-1 text-xs rounded-full font-mono font-bold"
-                                                    style="background:#16a34a; color:#fff;">Disponible</span>
+                                                    style="background:{{ $bank->is_enabled ? '#16a34a' : '#d32f2f' }}; color:#fff;">
+                                                    {{ $bank->is_enabled ? 'Disponible' : 'Inhabilitada' }}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </button>
                             </form>
-                        @empty 
-                        <div class="text-gray-400 font-mono text-sm"></div>
+                        @empty
+                            <div class="text-gray-400 font-mono text-sm"></div>
                         @endforelse
                     </div>
                 </div>
@@ -166,9 +176,10 @@
                         <div class="font-mono text-base md:text-lg text-black font-bold text-center mt-2">
                             {{ $selectedBank->bank_name }} - {{ strtoupper($selectedBank->account_type) }}
                         </div>
-                        <span class="font-mono text-sm text-gray-600">Cuenta terminada en {{ substr($selectedBank->account_number, -4) }}</span>
+                        <span class="font-mono text-sm text-gray-600">Cuenta terminada en
+                            {{ substr($selectedBank->account_number, -4) }}</span>
 
-                         <!-- Botón Editar tarjeta -->
+                        <!-- Botón Editar tarjeta -->
                         <a href="{{ route('banks.edit', $selectedBank->id) }}"
                             class="text-[#2563eb] font-mono text-sm mt-2 hover:underline bg-transparent border-0 p-0">
                             Editar tarjeta

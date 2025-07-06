@@ -15,8 +15,12 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // Transacciones recientes
-        $transactions = Transaction::where('sender_id', $user->id)
-            ->orWhere('receiver_id', $user->id)
+        $transactions = \App\Models\Transaction::where(function ($q) use ($user) {
+            $q->where('sender_id', $user->id)
+                ->orWhere('receiver_id', $user->id);
+        })
+            ->where('status', 'completed')
+            ->where('type', '!=', 'request')
             ->latest()
             ->take(3)
             ->get();

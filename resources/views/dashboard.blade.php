@@ -42,10 +42,12 @@
                                 </a>
                             </button>
                             <button
-                                class="flex items-center justify-center gap-2 bg-[#f7fafc] text-black font-bold rounded-lg px-5 py-2 font-mono text-base shadow border border-[#2563eb] opacity-50 pointer-events-none select-none cursor-not-allowed"
-                                disabled>
-                                <span class="font-extrabold text-[#2563eb]">Q</span><span
-                                    class="text-lg text-[#2563eb]">⚡</span> Solicitar Dinero
+                                class="flex items-center justify-center gap-2 bg-white text-[#2563eb] font-bold rounded-lg px-5 py-2 font-mono text-base shadow hover:bg-[#f0f4ff] transition w-full md:w-auto border border-[#2563eb]">
+                                <span class="font-extrabold text-[#2563eb]">Q</span>
+                                <a href="{{ route('transactions.request.step1') }}" <span
+                                    class="text-lg text-[#2563eb]">⚡</span>
+                                    Solicitar Dinero
+                                </a>
                             </button>
                         </div>
                     </div>
@@ -70,8 +72,8 @@
                                     {{ $card->brand ?? 'Visa de débito' }}-{{ $card->last_four }}
                                 </div>
                                 <span class="inline-block px-4 py-1 text-xs rounded-full font-mono font-bold mb-2"
-                                    style="background:#16a34a; color:#fff;">
-                                    Disponible
+                                    style="background:{{ $card->status === 'enabled' || $card->status === 'habilitada' ? '#16a34a' : '#d32f2f' }}; color:#fff;">
+                                    {{ $card->status === 'enabled' || $card->status === 'habilitada' ? 'Disponible' : 'Inhabilitada' }}
                                 </span>
                                 <div class="text-xs sm:text-sm text-black font-mono text-center mt-2">Envíe pagos en
                                     cuestión de minutos.</div>
