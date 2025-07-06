@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
 
     // Transacciones generales
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-    
+
     // Transacciones - Envío de dinero (nuevas rutas con SendController)
     Route::prefix('transactions/send')->name('transactions.send.')->group(function () {
         Route::get('/', [SendController::class, 'step1'])->name('step1');
@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [RequestController::class, 'step1'])->name('step1');
         Route::match(['GET', 'POST'], '/step2', [RequestController::class, 'step2'])->name('step2');
         Route::post('/confirm', [RequestController::class, 'confirm'])->name('confirm');
+        Route::get('/{id}', [RequestController::class, 'show'])->name('request.show');
     });
 
     // Contactos
