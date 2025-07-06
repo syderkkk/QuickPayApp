@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Transactions;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\User;
 use Exception;
@@ -110,7 +111,7 @@ class SendController extends Controller
             $receiverAmount = $senderAmount * $exchangeRate;
         }
 
-        DB::transaction(function () use ($sender, $receiver, $request, $senderAmount, $receiverAmount ,$exchangeRate) {
+        DB::transaction(function () use ($sender, $receiver, $request, $senderAmount, $receiverAmount, $exchangeRate) {
             $sender->wallet->decrement('balance', $senderAmount);
             $receiver->wallet->increment('balance', $receiverAmount);
 
@@ -120,14 +121,21 @@ class SendController extends Controller
                 'receiver_id' => $receiver->id,
                 'amount' => $request->amount,
                 'currency' => $request->currency,
-
                 'converted_amount' => $receiverAmount,
                 'receiver_currency' => $receiver->wallet->currency,
                 'exchange_rate' => $exchangeRate,
-
                 'reason' => $request->reason,
                 'status' => 'completed',
             ]);
+
+            Notification::create([
+                'user_id' => $receiver->id,
+                'title' => 'Nuevo envío de dinero',
+                'message' => "Has recibido S/.{$receiverAmount} de {$sender->name} {$sender->lastname}.",
+                'type' => 'payment',
+                'is_active' => true,
+            ]);
+            
         });
 
         return view('transactions.send.confirm', [
@@ -189,7 +197,6 @@ class SendController extends Controller
                     return round($data['rates'][$toCurrency], 4);
                 }
             }
-
         } catch (Exception $e) {
             Log::error('Error getting exchange rate: ' . $e->getMessage());
         }

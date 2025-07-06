@@ -6,6 +6,7 @@ use App\Http\Controllers\User\PaymentMethodController;
 use App\Http\Controllers\User\CardController;
 use App\Http\Controllers\User\BankController;
 use App\Http\Controllers\User\ContactController;
+use App\Http\Controllers\User\Transactions\NotificationController;
 use App\Http\Controllers\User\Transactions\SendController;
 use App\Http\Controllers\User\Transactions\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -48,4 +49,7 @@ Route::middleware('auth')->group(function () {
     // Contactos
     Route::resource('contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
+
+    // Notificaciones
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
 });

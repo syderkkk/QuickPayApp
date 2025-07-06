@@ -1,4 +1,7 @@
 @php
+    $user = auth()->user();
+    $notifications = $user->notifications()->where('is_active', true)->latest()->take(5)->get();
+
     $navLinks = [
         ['name' => 'Inicio', 'route' => 'dashboard'],
         ['name' => 'Enviar y Solicitar', 'route' => 'transactions.send.step1'],
@@ -33,6 +36,7 @@
         </div>
         <!-- Iconos y cerrar sesión (desktop) -->
         <div class="hidden md:flex items-center gap-8">
+
             <!-- Notificaciones -->
             <div x-data="{ openNotif: false }" class="relative flex items-center">
                 <button type="button" @click="openNotif = !openNotif"
@@ -60,14 +64,59 @@
                             class="w-4 h-4 bg-white border-l border-t border-[#e0e7ff] rotate-45 transform origin-bottom-left shadow-md">
                         </div>
                     </div>
+                    
                     <div class="p-4 pt-6">
                         <h3 class="font-bold text-[#2563eb] mb-2">Notificaciones</h3>
-                        <ul class="divide-y divide-gray-200">
-                            <li class="py-2 text-sm text-gray-700">No tienes notificaciones nuevas.</li>
+                        <ul class="divide-y divide-gray-200" id="notifications-list">
+                            @forelse($notifications as $notification)
+                                <li class="py-2 text-sm text-gray-700 flex justify-between items-center"
+                                    id="notif-{{ $notification->id }}">
+                                    <div>
+                                        <div class="font-bold">{{ $notification->title }}</div>
+                                        <div class="text-xs text-gray-500">{{ $notification->message }}</div>
+                                    </div>
+                                    <button type="button" title="Marcar como leída"
+                                        onclick="markAsRead({{ $notification->id }})">
+                                        ✔️
+                                    </button>
+                                </li>
+                            @empty
+                                <li class="py-2 text-sm text-gray-700" id="notif-empty">No tienes notificaciones nuevas.
+                                </li>
+                            @endforelse
                         </ul>
+
+                        <script>
+                            function markAsRead(id) {
+                                fetch('/notifications/' + id + '/read', {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Accept': 'application/json'
+                                    }
+                                }).then(response => {
+                                    if (response.ok) {
+                                        document.getElementById('notif-' + id).remove();
+                                        // Si ya no quedan notificaciones, muestra el mensaje vacío
+                                        if (document.querySelectorAll('#notifications-list li[id^="notif-"]').length === 0) {
+                                            let ul = document.getElementById('notifications-list');
+                                            let li = document.createElement('li');
+                                            li.className = "py-2 text-sm text-gray-700";
+                                            li.id = "notif-empty";
+                                            li.innerText = "No tienes notificaciones nuevas.";
+                                            ul.appendChild(li);
+                                        }
+                                    }
+                                });
+                            }
+                        </script>
                     </div>
                 </div>
+
             </div>
+
+
+
             <!-- Perfil (tuerca) -->
             <a href="{{ route('profile.edit') }}" class="text-white hover:text-yellow-400 transition" title="Perfil">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
@@ -156,7 +205,8 @@
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
             </button>
-            <a href="{{ route('profile.edit') }}" class="text-white hover:text-yellow-400 transition" title="Perfil">
+            <a href="{{ route('profile.edit') }}" class="text-white hover:text-yellow-400 transition"
+                title="Perfil">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

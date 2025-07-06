@@ -92,4 +92,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Transaction::class, 'receiver_id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
 }
