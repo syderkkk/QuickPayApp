@@ -60,7 +60,6 @@
                                     <th class="px-3 py-2 text-left">Correo</th>
                                     <th class="px-3 py-2 text-left">Saldo</th>
                                     <th class="px-3 py-2 text-left">Moneda</th>
-                                    <th class="px-3 py-2 text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,18 +72,6 @@
                                         <td class="px-3 py-2 font-semibold">{{ number_format($wallet->balance, 2) }}
                                         </td>
                                         <td class="px-3 py-2 font-semibold">{{ $wallet->currency }}</td>
-                                        <td class="px-3 py-2 text-center">
-                                            <a href="{{ route('admin.wallets.edit', $wallet) }}"
-                                                class="inline-flex items-center px-2 py-1 rounded bg-yellow-100 text-yellow-700 font-bold text-[10px] hover:bg-yellow-200 transition"
-                                                title="Editar saldo">
-                                                <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor"
-                                                    stroke-width="2" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M15.232 5.232l3.536 3.536M9 13l6-6m2 2l-6 6m-2 2h6" />
-                                                </svg>
-                                                Editar
-                                            </a>
-                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
