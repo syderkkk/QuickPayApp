@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
+use App\Services\BankService;
 
 class BankController extends Controller
 {
@@ -41,6 +42,14 @@ class BankController extends Controller
             'billing_address' => 'required|string|max:255'
         ]);
 
+        $bankService = app(BankService::class);
+        try {
+            $availableBankAccount = $bankService->verifyBankAccount($request->account_number);
+        } catch (\Exception $e) {
+            return back()->withErrors(['account_number' => $e->getMessage()])->withInput();
+        }
+
+
         $user = Auth::user();
         Bank::create([
             'user_id' => $user->id,
@@ -57,7 +66,7 @@ class BankController extends Controller
         return view('payment_methods.banks.confirm', ['bankName' => $request->bank_name]);
     }
 
-     /**
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Bank $bank)
@@ -93,5 +102,4 @@ class BankController extends Controller
         $bank->delete();
         return redirect()->route('payment-methods.index')->with('success', 'Tarjeta eliminada correctamente.');
     }
-
 }
