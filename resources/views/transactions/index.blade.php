@@ -122,10 +122,11 @@
                         <div class="flex-shrink-0">
                             <div
                                 class="bg-[#2563eb] rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-white text-xl sm:text-2xl font-bold shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 sm:h-8 sm:w-8" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                    </path>
                                 </svg>
                             </div>
                         </div>
@@ -209,18 +210,29 @@
                                         </div>
                                     </div>
                                     <hr class="my-10">
-                                    <div class="text-sm text-gray-600 font-mono mt-2">
+                                    {{-- <div class="text-sm text-gray-600 font-mono mt-2">
                                         Verá "QuickPay {{ $transaction->sender->name ?? 'USUARIO' }}" En el estado de
                                         cuenta de su tarjeta.
+                                    </div> --}}
+                                    <div class="text-sm text-gray-600 font-mono mt-1">
+                                        Fecha:
+                                        {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'd \d\e F \d\e Y') }}
                                     </div>
                                     <div class="text-sm text-gray-600 font-mono mt-1">
-                                        en {{ $transaction->created_at->format('d \d\e F \d\e Y') }}
+                                        Hora:
+                                        {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'H:i:s') }}
                                     </div>
                                 </div>
 
                                 <!-- Información del receptor -->
                                 <div class="bg-gray-50 rounded-lg p-4">
-                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Información del receptor</h4>
+                                    <h4 class="font-mono text-sm text-gray-600 mb-2">
+                                        @if ($transaction->sender_id === auth()->id())
+                                            Información del receptor
+                                        @else
+                                            Información del remitente
+                                        @endif
+                                    </h4>
                                     <div class="font-mono font-bold text-base text-black mb-1">
                                         @if ($transaction->sender_id === auth()->id())
                                             {{ $transaction->receiver->name ?? 'Usuario' }}
@@ -274,21 +286,26 @@
                             <div class="flex flex-col sm:flex-row gap-6 justify-between">
                                 <button onclick="downloadReceipt({{ $transaction->id }})"
                                     class="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                        </path>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24">
+                                        <g fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1">
+                                            <path d="M5.25 19.5H1.5l-1-8h23l-1 8h-3.75m-1.25-12h3l3 4H.5l3-4h3" />
+                                            <path
+                                                d="M17.5 9.5h-11v-8H15L17.5 4zm-13 0h15m.5 14H4l2.5-8h11zm-13-3h10m-9-2h8m3.5-5h1m-1 2h1" />
+                                        </g>
                                     </svg>
-                                    Descargar comprobante
+                                    <span class="font-semibold text-sm">Descargar comprobante</span>
                                 </button>
 
                                 <button onclick="requestRefund({{ $transaction->id }})"
                                     class="flex items-center gap-2 text-red-600 hover:text-red-800 transition">
-                                    <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="-2 -3 24 24">
+                                        <path fill="currentColor"
+                                            d="m12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.2 3.2 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096M10 14a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0-9a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V6a1 1 0 0 0-1-1" />
                                     </svg>
-                                    Solicitar un reembolso
+                                    <span class="font-semibold text-sm">Solicitar un reembolso</span>
                                 </button>
                             </div>
                         </div>
