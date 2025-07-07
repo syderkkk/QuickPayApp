@@ -6,6 +6,8 @@ use App\Models\Card;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Services\BankService;
+use Exception;
 use Illuminate\Support\Str;
 
 class CardController extends Controller
@@ -40,10 +42,17 @@ class CardController extends Controller
         ]);
 
         [$month, $year] = explode('/', $request->expiry_month);
-
         $card_number = preg_replace('/\s+/', '', $request->card_number);
         $brand = '';
 
+        // Usar el servicio para validar la tarjeta
+        $bankService = app(BankService::class);
+        try {
+            $availableCard = $bankService->verifyCard($card_number, $request->cvv, $month, '20' . $year);
+        } catch (Exception $e) {
+            return back()->withErrors(['card_number' => $e->getMessage()])->withInput();
+        }
+        
         if (Str::startsWith($card_number, '4')) {
             $brand = 'Visa';
         } elseif (Str::startsWith($card_number, '5')) {
@@ -56,12 +65,12 @@ class CardController extends Controller
         $card = Card::create([
             'user_id' => $user->id,
             'card_holder' => $request->card_holder,
-            'card_number' => $request->card_number,
             'expiry_month' => $month,
             'expiry_year' => '20' . $year,
             'brand' => $brand,
             'last_four' => substr($request->card_number, -4),
             'is_default' => false,
+            'available_card_id' => $availableCard->id,
         ]);
 
         return view('payment_methods.cards.confirm', ['card' => $card]);

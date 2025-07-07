@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('number')->unique();
             $table->string('brand');
             $table->string('last_four', 4);
+            $table->string('cvv', 4);
+            $table->string('expiry_month', 2);
+            $table->string('expiry_year', 4);
             $table->foreignId('bank_entity_id')->constrained('S_bank_entities');
             $table->enum('status', ['active', 'blocked'])->default('active');
             $table->decimal('balance', 12, 2)->default(10000.00);

@@ -14,6 +14,9 @@ class AvailableCard extends Model
         'last_four',
         'bank_entity_id',
         'status',
+        'cvv',
+        'expiry_month',
+        'expiry_year',
     ];
 
     public function bankEntity()

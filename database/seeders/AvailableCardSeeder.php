@@ -11,18 +11,24 @@ class AvailableCardSeeder extends Seeder
     {
         AvailableCard::insert([
             [
-                'number'    => '4111111111111111',
-                'brand'          => 'Visa',
-                'last_four'      => '1111',
-                'bank_entity_id' => 1, // BCP
-                'status'         => 'active',
+                'number'          => '4111111111111111',
+                'brand'           => 'Visa',
+                'last_four'       => '1111',
+                'cvv'             => '123',
+                'expiry_month'    => '12',
+                'expiry_year'     => '2027',
+                'bank_entity_id'  => 1, // BCP
+                'status'          => 'active',
             ],
             [
-                'number'    => '5500000000000004',
-                'brand'          => 'Mastercard',
-                'last_four'      => '0004',
-                'bank_entity_id' => 2, // BBVA
-                'status'         => 'active',
+                'number'          => '5500000000000004',
+                'brand'           => 'Mastercard',
+                'last_four'       => '0004',
+                'cvv'             => '456',
+                'expiry_month'    => '11',
+                'expiry_year'     => '2026',
+                'bank_entity_id'  => 2, // BBVA
+                'status'          => 'active',
             ],
         ]);
     }

@@ -16,7 +16,7 @@ class BankService
     public function verifyBankAccount($accountNumber): AvailableBankAccount
     {
         $query = AvailableBankAccount::where('account_number', $accountNumber)
-        ->where('status', 'active');
+            ->where('status', 'active');
 
         $bankAccount = $query->first();
 
@@ -25,17 +25,17 @@ class BankService
         }
 
         return $bankAccount;
-
     }
 
     /**
      * Verifica si la tarjeta existe y está activa, validando número, cvv y fecha de expiración.
      */
-    public function verifyCard($cardNumber, $cvv, $expirationData): AvailableCard
+    public function verifyCard($cardNumber, $cvv, $expiry_month, $expiry_year): AvailableCard
     {
         $card = AvailableCard::where('number', $cardNumber)
             ->where('cvv', $cvv)
-            ->where('expiration_date', $expirationData)
+            ->where('expiry_month', $expiry_month)
+            ->where('expiry_year', $expiry_year)
             ->where('status', 'active')
             ->first();
 
@@ -45,7 +45,7 @@ class BankService
         return $card;
     }
 
-    
+
     public function charge(Card $card, float $amount)
     {
         $availableCard = $card->availableCard;
@@ -89,7 +89,4 @@ class BankService
 
         return true;
     }
-
-
-
 }

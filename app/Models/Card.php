@@ -10,12 +10,12 @@ class Card extends Model
     protected $fillable = [
         'user_id',
         'card_holder',
-        'card_number',
         'expiry_month',
         'expiry_year',
         'brand',
         'last_four',
         'nickname',
+        'available_card_id',
     ];
 
     public function user()

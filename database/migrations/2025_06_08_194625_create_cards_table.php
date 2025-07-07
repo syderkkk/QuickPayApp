@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('card_number'); // En producción cifrar este campo
             $table->string('card_holder');
             $table->string('expiry_month', 2);
             $table->string('expiry_year', 4);
