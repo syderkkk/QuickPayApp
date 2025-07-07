@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
 use App\Services\BankService;
+use App\Services\PaymentGatewayService;
 
 class BankController extends Controller
 {
@@ -42,9 +43,9 @@ class BankController extends Controller
             'billing_address' => 'required|string|max:255'
         ]);
 
-        $bankService = app(BankService::class);
+        $gateway = app(PaymentGatewayService::class);
         try {
-            $availableBankAccount = $bankService->verifyBankAccount($request->account_number);
+            $availableBankAccount = $gateway->verifyBankAccount($request->account_number);
         } catch (\Exception $e) {
             return back()->withErrors(['account_number' => $e->getMessage()])->withInput();
         }

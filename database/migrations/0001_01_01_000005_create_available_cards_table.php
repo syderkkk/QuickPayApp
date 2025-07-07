@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('cvv', 4);
             $table->string('expiry_month', 2);
             $table->string('expiry_year', 4);
-            $table->foreignId('bank_entity_id')->constrained('S_bank_entities');
+            $table->foreignId('available_bank_account_id')->constrained('S_available_bank_accounts');
             $table->enum('status', ['active', 'blocked'])->default('active');
             $table->decimal('balance', 12, 2)->default(10000.00);
             $table->timestamps();

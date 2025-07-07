@@ -17,7 +17,7 @@ class AvailableCardSeeder extends Seeder
                 'cvv'             => '123',
                 'expiry_month'    => '12',
                 'expiry_year'     => '2027',
-                'bank_entity_id'  => 1, // BCP
+                'available_bank_account_id'  => 1, // BCP
                 'status'          => 'active',
             ],
             [
@@ -27,7 +27,7 @@ class AvailableCardSeeder extends Seeder
                 'cvv'             => '456',
                 'expiry_month'    => '11',
                 'expiry_year'     => '2026',
-                'bank_entity_id'  => 2, // BBVA
+                'available_bank_account_id'  => 2, // BBVA
                 'status'          => 'active',
             ],
         ]);

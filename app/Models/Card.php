@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Simulation\AvailableBankAccount;
 use App\Models\Simulation\AvailableCard;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,13 +10,11 @@ class Card extends Model
 {
     protected $fillable = [
         'user_id',
+        'token',
         'card_holder',
-        'expiry_month',
-        'expiry_year',
         'brand',
         'last_four',
         'nickname',
-        'available_card_id',
     ];
 
     public function user()
@@ -23,8 +22,8 @@ class Card extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function availableCard()
+    public function availableBankAccount()
     {
-        return $this->belongsTo(AvailableCard::class, 'available_card_id');
+        return $this->belongsTo(AvailableBankAccount::class, 'available_bank_account_id');
     }
 }

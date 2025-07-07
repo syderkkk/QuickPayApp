@@ -14,15 +14,14 @@ return new class extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('token')->nullable();
             $table->string('card_holder');
-            $table->string('expiry_month', 2);
-            $table->string('expiry_year', 4);
             $table->string('brand')->nullable();
             $table->string('last_four', 4);
-            $table->boolean('is_default')->default(false);
             $table->string('nickname')->nullable();
+            
+            $table->boolean('is_default')->default(false);
             $table->enum('status', ['enabled', 'disabled'])->default('enabled');
-            $table->foreignId('available_card_id')->nullable()->constrained('S_available_cards');
             $table->timestamps();
         });
     }

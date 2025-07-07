@@ -60,6 +60,8 @@
                         <input type="hidden" name="type" value="send">
                         <input type="hidden" name="receiver_id" value="{{ $receiver->id }}">
 
+
+                        {{-- Cuenta --}}
                         <div class="space-y-0.5">
                             <label class="font-mono text-xs font-semibold text-gray-700 flex items-center gap-1">
                                 <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor"
@@ -70,12 +72,25 @@
                                 </svg>
                                 Desde
                             </label>
+
+
+
                             <select name="from_account"
                                 class="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded-lg font-mono text-xs focus:ring-2 focus:ring-[#2563eb] focus:border-transparent">
                                 <option value="wallet">💳 Saldo QuickPay - {{ $wallet_currency }}
                                     {{ number_format($wallet_balance, 2) }}</option>
+                                @foreach ($cards as $card)
+                                    <option value="card_{{ $card->id }}">
+                                        {{ $card->brand }} terminada en {{ $card->last_four }}
+                                    </option>
+                                @endforeach
                             </select>
+
+
                         </div>
+
+
+
 
                         <div class="space-y-0.5">
                             <label class="font-mono text-xs font-semibold text-gray-700 flex items-center gap-1">
