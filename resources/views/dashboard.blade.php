@@ -60,12 +60,24 @@
                             <div
                                 class="bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center min-h-[140px] border border-[#e0e7ff] w-full transition hover:scale-105 cursor-pointer">
                                 <div class="flex items-center justify-center mb-3">
+
                                     <div class="rounded-full bg-[#dde2ea] w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shadow-xl"
                                         style="box-shadow: 0 8px 32px 0 #0C5CADB3;">
-                                        <img src="{{ asset('bcp_card.png') }}" alt="Tarjeta"
-                                            class="w-7 sm:w-8 sm:h-8 max-w-full h-auto select-none pointer-events-none"
-                                            draggable="false">
+                                        @if (strtolower($card->brand) === 'visa')
+                                            <img src="{{ asset('visa.png') }}" alt="Visa"
+                                                class="w-7 sm:w-8 sm:h-8 max-w-full h-auto select-none pointer-events-none"
+                                                draggable="false">
+                                        @elseif (strtolower($card->brand) === 'mastercard')
+                                            <img src="{{ asset('mastercard.png') }}" alt="Mastercard"
+                                                class="w-7 sm:w-8 sm:h-8 max-w-full h-auto select-none pointer-events-none"
+                                                draggable="false">
+                                        @else
+                                            <img src="{{ asset('credit-card.png') }}" alt="Tarjeta"
+                                                class="w-7 sm:w-8 sm:h-8 max-w-full h-auto select-none pointer-events-none"
+                                                draggable="false">
+                                        @endif
                                     </div>
+
                                 </div>
                                 <div
                                     class="font-extrabold text-base sm:text-lg md:text-xl font-mono text-[#2563eb] mb-2 text-center">

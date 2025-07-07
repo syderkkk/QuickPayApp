@@ -65,8 +65,16 @@
                                         class="bg-white border border-[#bcb7c2] rounded-xl px-3 sm:px-5 md:px-8 py-4 flex items-center gap-3 sm:gap-4 w-full transition hover:scale-105 {{ session('selected_card_id') == $card->id ? 'ring-2 ring-[#2563eb]' : '' }}">
                                         <span
                                             class="font-extrabold text-xl sm:text-2xl md:text-3xl font-mono text-[#2563eb] flex items-center gap-1">
-                                            <img src="{{ asset('tarjeta.png') }}" alt="Tarjeta"
-                                                class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" draggable="false">
+                                            @if (strtolower($card->brand) === 'visa')
+                                                <img src="{{ asset('visa.png') }}" alt="Visa"
+                                                    class="w-8 h-8 inline-block" draggable="false">
+                                            @elseif(strtolower($card->brand) === 'mastercard')
+                                                <img src="{{ asset('mastercard.png') }}" alt="Mastercard"
+                                                    class="w-8 h-8 inline-block" draggable="false">
+                                            @else
+                                                <img src="{{ asset('credit-card.png') }}" alt="Tarjeta"
+                                                    class="w-8 h-8 inline-block" draggable="false">
+                                            @endif
                                         </span>
                                         <div class="flex flex-col items-start">
                                             <span class="font-mono text-sm sm:text-base md:text-lg text-[#2563eb]">
@@ -142,10 +150,18 @@
                 @endphp
                 @if ($selectedCard)
                     <div class="w-full flex flex-col items-center">
-                        <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] border border-[#bcb7c2] p-4 sm:p-6 md:p-8 flex flex-col items-center mb-2 transition hover:scale-105"
-                            style="box-shadow: 0 8px 32px 0 #083B7080;">
-                            <img src="{{ asset('bcp_card.png') }}" alt="Tarjeta BCP"
-                                class="w-72 max-w-full h-auto select-none pointer-events-none" draggable="false">
+                        <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] border border-[#bcb7c2] p-2 sm:p-4 md:p-6 flex flex-col items-center transition hover:scale-105"
+                            style="box-shadow: 0 8px 32px 0 #083B7080; max-width: 220px;">
+                            @if (strtolower($selectedCard->brand) === 'visa')
+                                <img src="{{ asset('visa.png') }}" alt="Visa"
+                                    class="w-32 max-w-full h-auto select-none pointer-events-none" draggable="false">
+                            @elseif(strtolower($selectedCard->brand) === 'mastercard')
+                                <img src="{{ asset('mastercard.png') }}" alt="Mastercard"
+                                    class="w-32 max-w-full h-auto select-none pointer-events-none" draggable="false">
+                            @else
+                                <img src="{{ asset('credit-card.png') }}" alt="Tarjeta"
+                                    class="w-32 max-w-full h-auto select-none pointer-events-none" draggable="false">
+                            @endif
                         </div>
                         <div class="font-mono text-base md:text-lg text-black font-bold text-center mt-2">
                             {{ $selectedCard->card_holder ?? 'Sin titular' }}
@@ -170,7 +186,7 @@
                     <div class="w-full flex flex-col items-center mt-8">
                         <div class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] border border-[#bcb7c2] p-4 sm:p-6 md:p-8 flex flex-col items-center mb-2 transition hover:scale-105"
                             style="box-shadow: 0 8px 32px 0 #083B7080;">
-                            <img src="{{ asset('banco.png') }}" alt="Banco"
+                            <img src="{{ asset('bank.png') }}" alt="Banco"
                                 class="w-24 max-w-full h-auto select-none pointer-events-none" draggable="false">
                         </div>
                         <div class="font-mono text-base md:text-lg text-black font-bold text-center mt-2">

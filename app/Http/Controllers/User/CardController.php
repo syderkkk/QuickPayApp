@@ -6,6 +6,7 @@ use App\Models\Card;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 
 class CardController extends Controller
 {
@@ -40,6 +41,17 @@ class CardController extends Controller
 
         [$month, $year] = explode('/', $request->expiry_month);
 
+        $card_number = preg_replace('/\s+/', '', $request->card_number);
+        $brand = '';
+
+        if (Str::startsWith($card_number, '4')) {
+            $brand = 'Visa';
+        } elseif (Str::startsWith($card_number, '5')) {
+            $brand = 'Mastercard';
+        } else {
+            $brand = 'Desconocida';
+        }
+
         $user = Auth::user();
         $card = Card::create([
             'user_id' => $user->id,
@@ -47,7 +59,7 @@ class CardController extends Controller
             'card_number' => $request->card_number,
             'expiry_month' => $month,
             'expiry_year' => '20' . $year,
-            'brand' => 'Visa', // integrar una API para detectar la marca
+            'brand' => $brand,
             'last_four' => substr($request->card_number, -4),
             'is_default' => false,
         ]);
