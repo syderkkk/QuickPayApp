@@ -167,8 +167,10 @@
                                                             Pago recibido
                                                         @endif
                                                         <br>
-                                                        <span
-                                                            class="text-gray-500">"{{ $transaction->reason ?? '' }}"</span>
+                                                        @if (!empty($transaction->reason))
+                                                            <span
+                                                                class="text-gray-500">"{{ $transaction->reason }}"</span>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -215,7 +217,8 @@
                                                     </div>
                                                     <div class="font-mono text-xs text-gray-500">
                                                         {{ $contact->transaction_count }}
-                                                        {{ $contact->transaction_count == 1 ? 'transacción' : 'transacciones' }} •
+                                                        {{ $contact->transaction_count == 1 ? 'transacción' : 'transacciones' }}
+                                                        •
                                                         {{ \Carbon\Carbon::parse($contact->last_transaction)->diffForHumans() }}
                                                     </div>
                                                 </div>

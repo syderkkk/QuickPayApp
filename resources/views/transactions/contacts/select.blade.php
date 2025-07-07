@@ -6,6 +6,19 @@
         <div class="max-w-2xl mx-auto py-8 px-2 sm:px-4">
             <h2 class="text-2xl sm:text-3xl font-mono font-extrabold text-black mb-6 text-center">Selecciona un contacto
             </h2>
+
+            <!-- Buscador / Filtros  -->
+            <!-- Botón para agregar contactos -->
+            <div class="flex justify-end mb-6">
+                <a href="{{ route('contacts.store') }}"
+                    class="inline-flex items-center gap-2 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-bold py-2 px-6 font-mono text-sm transition shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Agregar contacto
+                </a>
+            </div>
             <div class="grid grid-cols-1 gap-4">
                 @forelse($contacts as $contact)
                     <div
@@ -14,8 +27,8 @@
                             <!-- SVG usuario -->
                             <span
                                 class="flex-shrink-0 bg-[#2563eb] rounded-full w-10 h-10 flex items-center justify-center text-white text-xl font-bold">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
@@ -56,12 +69,6 @@
                 @empty
                     <div class="text-center text-gray-400 py-8 font-mono">No tienes contactos guardados.</div>
                 @endforelse
-            </div>
-            <div class="mt-8 flex justify-center">
-                <a href="{{ route('transactions.send.step1') }}"
-                    class="text-[#2563eb] font-mono underline text-base text-center">
-                    Volver
-                </a>
             </div>
         </div>
     </div>

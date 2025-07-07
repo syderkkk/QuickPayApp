@@ -108,12 +108,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Ver contactos bloqueados -->
-            <div class="mt-8 text-center">
-                <a href="#" class="text-[#2563eb] font-mono underline text-base hover:text-[#1d4ed8]">Ver
-                    contactos bloqueados</a>
-            </div>
         </div>
     </div>
 </x-app-layout>
