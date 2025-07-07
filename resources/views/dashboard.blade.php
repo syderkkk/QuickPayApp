@@ -263,7 +263,7 @@
                                 </div>
                                 <a href="{{ route('transactions.send.step1') }}"
                                     class="text-[#2563eb] font-mono text-xs hover:underline">
-                                    Enviar tu primer pago
+                                    Envia tu primer pago
                                 </a>
                             </div>
                         @endif
