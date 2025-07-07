@@ -151,38 +151,4 @@ class SendController extends Controller
             'type' => 'send',
         ]);
     }
-
-    public function selectContact()
-    {
-        $userId = Auth::id();
-
-        $contacts = DB::table('contacts')
-            ->join('users', 'contacts.contact_id', '=', 'users.id')
-            ->where('contacts.user_id', $userId)
-            ->select(
-                'contacts.id as contact_relation_id',
-                'contacts.alias',
-                'users.id as user_id',
-                'users.name',
-                'users.lastname',
-                'users.email'
-            )
-            ->get();
-
-        return view('transactions.contacts.select', compact('contacts'));
-    }
-
-    public function sendToContact($receiverId)
-    {
-        $receiver = User::findOrFail($receiverId);
-
-        $wallet_balance = Auth::user()->wallet->balance ?? 0;
-        $wallet_currency = 'S/.';
-
-        return view('transactions.send.step2', [
-            'receiver' => $receiver,
-            'wallet_balance' => $wallet_balance,
-            'wallet_currency' => $wallet_currency,
-        ]);
-    }
 }

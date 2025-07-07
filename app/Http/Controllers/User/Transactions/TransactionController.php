@@ -4,9 +4,11 @@ namespace App\Http\Controllers\User\Transactions;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -42,6 +44,41 @@ class TransactionController extends Controller
         $transactions = $query->latest()->paginate(10);
 
         return view('transactions.index', compact('transactions'));
+    }
+
+
+    public function selectContact()
+    {
+        $userId = Auth::id();
+
+        $contacts = DB::table('contacts')
+            ->join('users', 'contacts.contact_id', '=', 'users.id')
+            ->where('contacts.user_id', $userId)
+            ->select(
+                'contacts.id as contact_relation_id',
+                'contacts.alias',
+                'users.id as user_id',
+                'users.name',
+                'users.lastname',
+                'users.email'
+            )
+            ->get();
+
+        return view('transactions.contacts.select', compact('contacts'));
+    }
+
+    public function sendToContact($receiverId)
+    {
+        $receiver = User::findOrFail($receiverId);
+
+        $wallet_balance = Auth::user()->wallet->balance ?? 0;
+        $wallet_currency = 'S/.';
+
+        return view('transactions.send.step2', [
+            'receiver' => $receiver,
+            'wallet_balance' => $wallet_balance,
+            'wallet_currency' => $wallet_currency,
+        ]);
     }
 
 

@@ -40,12 +40,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/transactions/{id}/receipt/download', [TransactionController::class, 'downloadReceipt'])->name('transactions.receipt.download');
 
+    Route::get('/transactions/contacts/select', [TransactionController::class, 'selectContact'])->name('transactions.contacts.select');
+
     // Transacciones - Envío de dinero (nuevas rutas con SendController)
     Route::prefix('transactions/send')->name('transactions.send.')->group(function () {
         Route::get('/', [SendController::class, 'step1'])->name('step1');
         Route::match(['GET', 'POST'], '/step2', [SendController::class, 'step2'])->name('step2');
         Route::post('/confirm', [SendController::class, 'confirm'])->name('confirm');
-        Route::get('/contacts/select', [SendController::class, 'selectContact'])->name('contacts.select');
         Route::get('/contacts/{receiverId}', [SendController::class, 'sendToContact'])->name('contacts.send');
     });
 

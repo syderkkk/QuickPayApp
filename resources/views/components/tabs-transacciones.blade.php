@@ -14,7 +14,7 @@
            class="font-mono text-base px-4 py-2 sm:ml-2 text-center {{ $activo == 'solicitar' ? 'text-black border-b-4 border-black' : 'text-gray-600' }}">
             Solicitar
         </a>
-        <a href="{{ route('transactions.send.contacts.select') }}"
+        <a href="{{ route('transactions.contacts.select') }}"
             class="font-mono text-base px-4 py-2 sm:ml-2 text-center {{ $activo == 'contactos' ? 'text-black border-b-4 border-black' : 'text-gray-600' }}">
             Contactos
         </a>
