@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
     // Transacciones generales
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 
+    Route::get('/transactions/{id}/receipt/download', [TransactionController::class, 'downloadReceipt'])->name('transactions.receipt.download');
+
     // Transacciones - Envío de dinero (nuevas rutas con SendController)
     Route::prefix('transactions/send')->name('transactions.send.')->group(function () {
         Route::get('/', [SendController::class, 'step1'])->name('step1');
