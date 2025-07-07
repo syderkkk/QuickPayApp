@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('S_available_bank_accounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bank_entity_id')->constrained('bank_entities');
+            $table->foreignId('bank_entity_id')->constrained('S_bank_entities');
             $table->string('account_number')->unique();
             $table->string('type'); // ahorros/corriente
             $table->string('currency', 3);
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('available_bank_accounts');
+        Schema::dropIfExists('S_available_bank_accounts');
     }
 };

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('number')->unique();
             $table->string('brand');
             $table->string('last_four', 4);
-            $table->foreignId('bank_entity_id')->constrained('bank_entities');
+            $table->foreignId('bank_entity_id')->constrained('S_bank_entities');
             $table->enum('status', ['active', 'blocked'])->default('active');
             $table->decimal('balance', 12, 2)->default(10000.00);
             $table->timestamps();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('available_cards');
+        Schema::dropIfExists('S_available_cards');
     }
 };
