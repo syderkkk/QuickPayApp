@@ -20,30 +20,112 @@ class TransactionController extends Controller
                 $q->where('sender_id', $user->id)
                     ->orWhere('receiver_id', $user->id);
             })
-            ->where('type', '!=', 'request') // Excluir solicitudes de pago
             ->where('status', 'completed'); // Solo transacciones completadas
 
         if ($request->filled('type')) {
-            $query->where('type', $request->type);
+            if ($request->type === 'send') {
+                $query->where('sender_id', $user->id);
+            } elseif ($request->type === 'receive') {
+                $query->where('receiver_id', $user->id);
+            }
+        } else {
+            $query->where(function ($q) use ($user) {
+                $q->where('sender_id', $user->id)
+                    ->orWhere('receiver_id', $user->id);
+            });
         }
+
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('reason', 'like', "%$search%")
-                    ->orWhere('amount', 'like', "%$search%");
+            $query->where(function ($q) use ($search, $user) {
+                $q->orWhereHas('sender', function ($q2) use ($search, $user) {
+                    $q2->where('id', '!=', $user->id)
+                        ->where(function ($q3) use ($search) {
+                            $q3->where('name', 'like', "%$search%")
+                                ->orWhere('email', 'like', "%$search%");
+                        });
+                })
+                    ->orWhereHas('receiver', function ($q2) use ($search, $user) {
+                        $q2->where('id', '!=', $user->id)
+                            ->where(function ($q3) use ($search) {
+                                $q3->where('name', 'like', "%$search%")
+                                    ->orWhere('email', 'like', "%$search%");
+                            });
+                    });
             });
         }
+
+        
 
         if ($request->filled('currency')) {
             $query->where('currency', $request->currency);
         }
 
+        $quickRange = $request->input('quick_range', '90');
+        if ($quickRange === '10s') {
+            $from = now()->subSeconds(10);
+            $query->where('created_at', '>=', $from);
+        } elseif ($quickRange !== 'all') {
+            $from = now()->subDays((int)$quickRange)->startOfDay();
+            $query->where('created_at', '>=', $from);
+        }
+
         $transactions = $query->latest()->paginate(10);
 
-        return view('transactions.index', compact('transactions'));
+        // --- CONSULTA DE SOLICITUDES ---
+        $requestsQuery = Transaction::where('type', 'request')
+            ->where(function ($q) use ($user) {
+                $q->where('sender_id', $user->id)
+                    ->orWhere('receiver_id', $user->id);
+            })
+            ->with(['sender', 'receiver']);
+
+        if ($request->filled('request_type')) {
+            if ($request->request_type === 'send') {
+                $requestsQuery->where('receiver_id', $user->id);
+            } elseif ($request->request_type === 'receive') {
+                $requestsQuery->where('sender_id', $user->id);
+            }
+        }
+
+        // Filtro de estado
+        if ($request->filled('request_status')) {
+            $requestsQuery->where('status', $request->request_status);
+        }
+
+        // Filtro de búsqueda
+        if ($request->filled('request_search')) {
+            $search = $request->request_search;
+            $requestsQuery->where(function ($q) use ($search) {
+                $q->whereHas('sender', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%")
+                        ->orWhere('lastname', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%");
+                })->orWhereHas('receiver', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%")
+                        ->orWhere('lastname', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%");
+                });
+            });
+        }
+
+        // Filtro de rango rápido de fechas
+        $requestQuickRange = $request->input('request_quick_range', '90');
+        if ($requestQuickRange === '10s') {
+            $from = now()->subSeconds(10);
+            $requestsQuery->where('created_at', '>=', $from);
+        } elseif ($requestQuickRange !== 'all') {
+            $from = now()->subDays((int)$requestQuickRange)->startOfDay();
+            $requestsQuery->where('created_at', '>=', $from);
+        }
+
+        $requests = $requestsQuery->latest()->paginate(10);
+
+        return view('transactions.index', compact('transactions', 'requests'));
     }
 
 

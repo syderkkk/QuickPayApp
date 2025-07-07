@@ -4,6 +4,7 @@
         <div class="flex justify-center items-start w-full px-2 mt-4">
             <div class="bg-white rounded-2xl max-w-lg w-full shadow-lg border border-gray-200">
                 <div class="p-5">
+                    <x-alert-succes />
                     <h1 class="text-2xl font-extrabold font-mono text-[#2563eb] mb-4 text-center">
                         Detalle de Solicitud de Pago
                     </h1>
@@ -150,12 +151,38 @@
                     {{-- Botones solo para el PAGADOR y si está pendiente --}}
                     @if ($isPayer && $transaction->status === 'pending')
                         <div class="flex flex-col sm:flex-row gap-3 mt-6">
-                            <form method="POST" {{-- action="{{ route('transactions.requests.accept', $transaction->id) }}" --}} class="flex-1">
+
+                            <form method="POST" action="{{ route('transactions.request.accept', $transaction->id) }}"
+                                class="flex-1">
                                 @csrf
+
+                                <div class="space-y-0.5 mb-3">
+                                    <label
+                                        class="font-mono text-xs font-semibold text-gray-700 flex items-center gap-1">
+                                        <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                            </path>
+                                        </svg>
+                                        Pagar desde
+                                    </label>
+                                    <select name="from_account"
+                                        class="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded-lg font-mono text-xs focus:ring-2 focus:ring-[#2563eb] focus:border-transparent">
+                                        <option value="wallet">💳 Saldo QuickPay - {{ $wallet_currency }}
+                                            {{ number_format($wallet_balance, 2) }}</option>
+                                        @foreach ($cards as $card)
+                                            <option value="card_{{ $card->id }}">
+                                                {{ $card->brand }} terminada en {{ $card->last_four }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <button type="submit"
                                     class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-mono font-bold text-base py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.01] active:scale-[0.99]">
                                     <div class="flex items-center justify-center gap-2">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M5 13l4 4L19 7" />
                                         </svg>
@@ -163,7 +190,8 @@
                                     </div>
                                 </button>
                             </form>
-                            <form method="POST" {{-- action="{{ route('transactions.requests.reject', $transaction->id) }}" --}} class="flex-1">
+                            <form method="POST"
+                                action="{{ route('transactions.request.reject', $transaction->id) }}" class="flex-1">
                                 @csrf
                                 <button type="submit"
                                     class="w-full bg-gradient-to-r from-red-500 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-mono font-bold text-base py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.01] active:scale-[0.99]">

@@ -3,16 +3,14 @@
 namespace App\Http\Controllers\User\Transactions;
 
 use App\Http\Controllers\Controller;
+use App\Models\Card;
 use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\ExchangeRateService;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class RequestController extends Controller
 {
@@ -111,7 +109,6 @@ class RequestController extends Controller
             })
             ->firstOrFail();
 
-        // Definir roles claramente
         $requester = $transaction->receiver; // Quien solicita el dinero
         $payer = $transaction->sender;       // Quien va a pagar el dinero
 
@@ -136,11 +133,21 @@ class RequestController extends Controller
                 $exchangeRate = $transaction->exchange_rate;
             } else {
                 $exchangeRate = ExchangeRateService::getExchangeRate($requesterCurrency, $payerCurrency);
-                
+
                 if ($exchangeRate) {
                     $convertedAmount = $transaction->amount * $exchangeRate;
                 }
             }
+        }
+
+        $wallet_currency = null;
+        $wallet_balance = null;
+        $cards = [];
+
+        if ($isPayer) {
+            $wallet_currency = $payer->wallet->currency ?? 'PEN';
+            $wallet_balance = $payer->wallet->balance ?? 0;
+            $cards = $payer->cards()->where('status', 'active')->get();
         }
 
         return view('transactions.request.show', compact(
@@ -153,7 +160,142 @@ class RequestController extends Controller
             'convertedAmount',
             'exchangeRate',
             'payerCurrency',
-            'requesterCurrency'
+            'requesterCurrency',
+            'wallet_currency',
+            'wallet_balance',
+            'cards',
         ));
+    }
+
+    public function accept(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        $transaction = Transaction::where('id', $id)
+            ->where('type', 'request')
+            ->where('sender_id', $user->id) // Solo el pagador puede aceptar
+            ->where('status', 'pending')
+            ->firstOrFail();
+
+        $request->validate([
+            'from_account' => 'required|string',
+        ]);
+
+        $payer = $user;
+        $requester = $transaction->receiver;
+
+        $payerWallet = $payer->wallet;
+        $requesterWallet = $requester->wallet;
+
+        $amount = $transaction->amount;
+        $currency = $transaction->currency;
+        $payerCurrency = $payerWallet->currency;
+        $exchangeRate = 1;
+        $convertedAmount = $amount;
+
+        // Si las monedas son diferentes, calcula la conversión
+        if ($payerCurrency !== $currency) {
+            $exchangeRate = \App\Services\ExchangeRateService::getExchangeRate($currency, $payerCurrency);
+            if (!$exchangeRate) {
+                return back()->withErrors(['from_account' => 'No se pudo obtener la tasa de cambio. Inténtalo más tarde.']);
+            }
+            $convertedAmount = $amount * $exchangeRate;
+        }
+
+        // Procesar según el método de pago
+        if ($request->from_account === 'wallet') {
+            if ($payerWallet->balance < $convertedAmount) {
+                return back()->withErrors(['from_account' => 'Saldo insuficiente en tu billetera.']);
+            }
+
+            DB::transaction(function () use ($payerWallet, $requesterWallet, $convertedAmount, $amount, $transaction, $exchangeRate, $currency, $payerCurrency) {
+                $payerWallet->decrement('balance', $convertedAmount);
+                $requesterWallet->increment('balance', $amount);
+
+                $transaction->status = 'completed';
+                $transaction->converted_amount = $convertedAmount;
+                $transaction->exchange_rate = $exchangeRate;
+                $transaction->save();
+
+                Notification::create([
+                    'user_id' => $transaction->receiver_id,
+                    'title' => 'Solicitud aceptada',
+                    'message' => "Tu solicitud de {$transaction->currency} {$transaction->amount} fue pagada.",
+                    'type' => 'request',
+                    'is_active' => true,
+                    'data' => ['request_id' => $transaction->id],
+                ]);
+            });
+        } elseif (str_starts_with($request->from_account, 'card_')) {
+            $cardId = (int)str_replace('card_', '', $request->from_account);
+
+            $card = Card::where('id', $cardId)
+                ->where('user_id', $payer->id)
+                ->where('status', 'active')
+                ->first();
+
+            if (!$card) {
+                return back()->withErrors(['from_account' => 'Tarjeta no encontrada o no asociada a tu cuenta.']);
+            }
+
+            // Simula el cobro a la tarjeta (puedes usar tu PaymentGatewayService aquí)
+            $gateway = app(\App\Services\PaymentGatewayService::class);
+            try {
+                $gateway->charge($card->token, $convertedAmount);
+            } catch (\Exception $e) {
+                return back()->withErrors(['from_account' => $e->getMessage()]);
+            }
+
+            DB::transaction(function () use ($requesterWallet, $amount, $transaction, $exchangeRate, $convertedAmount, $cardId) {
+                $requesterWallet->increment('balance', $amount);
+
+                $transaction->status = 'completed';
+                $transaction->converted_amount = $convertedAmount;
+                $transaction->exchange_rate = $exchangeRate;
+                $transaction->card_id = $cardId;
+                $transaction->save();
+
+                Notification::create([
+                    'user_id' => $transaction->receiver_id,
+                    'title' => 'Solicitud aceptada',
+                    'message' => "Tu solicitud de {$transaction->currency} {$transaction->amount} fue pagada.",
+                    'type' => 'request',
+                    'is_active' => true,
+                    'data' => ['request_id' => $transaction->id],
+                ]);
+            });
+        } else {
+            return back()->withErrors(['from_account' => 'Método de pago no válido.']);
+        }
+
+        return redirect()->route('transactions.request.show', $transaction->id)
+            ->with('success', 'Solicitud pagada correctamente.');
+    }
+
+
+    public function reject(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        $transaction = Transaction::where('id', $id)
+            ->where('type', 'request')
+            ->where('sender_id', $user->id)
+            ->where('status', 'pending')
+            ->firstOrFail();
+
+        $transaction->status = 'cancelled';
+        $transaction->save();
+
+        Notification::create([
+            'user_id' => $transaction->receiver_id,
+            'title' => 'Solicitud rechazada',
+            'message' => "Tu solicitud de {$transaction->currency} {$transaction->amount} fue rechazada.",
+            'type' => 'request',
+            'is_active' => true,
+            'data' => ['request_id' => $transaction->id],
+        ]);
+
+        return redirect()->route('transactions.request.show', $transaction->id)
+            ->with('success', 'Solicitud rechazada correctamente.');
     }
 }

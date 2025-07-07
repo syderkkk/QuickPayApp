@@ -44,6 +44,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/frequent-contacts', [ContactController::class, 'frequent'])->name('contacts.frequent');
 
+
+    Route::post('/transactions/request/{id}/reject', [RequestController::class, 'reject'])
+        ->name('transactions.request.reject');
+    Route::post('/transactions/request/{id}/accept', [RequestController::class, 'accept'])
+        ->name('transactions.request.accept');
+
     // Transacciones - Envío de dinero (nuevas rutas con SendController)
     Route::prefix('transactions/send')->name('transactions.send.')->group(function () {
         Route::get('/', [SendController::class, 'step1'])->name('step1');
@@ -56,7 +62,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [RequestController::class, 'step1'])->name('step1');
         Route::match(['GET', 'POST'], '/step2', [RequestController::class, 'step2'])->name('step2');
         Route::post('/confirm', [RequestController::class, 'confirm'])->name('confirm');
-        Route::get('/{id}', [RequestController::class, 'show'])->name('request.show');
+        Route::get('/{id}', [RequestController::class, 'show'])->name('show');
     });
 
     // Contactos

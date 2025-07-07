@@ -135,19 +135,6 @@
 
                         <input type="hidden" name="currency" value="{{ $wallet_currency }}">
 
-                        @error('amount')
-                            <div class="bg-red-50 border border-red-200 rounded-lg p-1.5">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-3 h-3 text-red-500" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <span class="font-mono text-xs text-red-600">{{ $message }}</span>
-                                </div>
-                            </div>
-                        @enderror
-
                         @if (isset($currencies_different) && $currencies_different)
                             <div
                                 class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg p-1.5">
