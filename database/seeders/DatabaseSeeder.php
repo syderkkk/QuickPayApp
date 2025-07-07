@@ -31,5 +31,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Argentina',
             'currency' => 'ARS',
         ]);
+
+        $this->call([
+            BankEntitySeeder::class,
+            AvailableBankAccountSeeder::class,
+            AvailableCardSeeder::class,
+        ]);
     }
 }

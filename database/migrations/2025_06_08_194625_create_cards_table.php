@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('is_default')->default(false);
             $table->string('nickname')->nullable();
             $table->enum('status', ['enabled', 'disabled'])->default('enabled');
+            $table->foreignId('available_card_id')->nullable()->constrained('available_cards');
             $table->timestamps();
         });
     }

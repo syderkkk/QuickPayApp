@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\BankEntity;
+use App\Models\Simulation\BankEntity;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -16,8 +16,6 @@ class BankEntitySeeder extends Seeder
         BankEntity::insert([
             ['nombre' => 'Banco de Crédito del Perú', 'codigo' => 'BCP'],
             ['nombre' => 'BBVA Perú', 'codigo' => 'BBVA'],
-            ['nombre' => 'Interbank', 'codigo' => 'INTERBANK'],
-            ['nombre' => 'Scotiabank Perú', 'codigo' => 'SCOTIABANK'],
         ]);
     }
 }
