@@ -191,12 +191,24 @@
                                             </svg>
                                         </div>
                                         <div>
-                                            <div class="font-mono font-bold text-base">Tarjeta de débito x-2078</div>
-                                            <div class="font-mono text-sm text-gray-600">VISA</div>
+                                            <div class="font-mono font-bold text-base">
+                                                @if ($transaction->card)
+                                                    {{ $transaction->card->brand }} terminada en
+                                                    {{ $transaction->card->last_four }}
+                                                @else
+                                                    Saldo QuickPay
+                                                @endif
+                                            </div>
+                                            <div class="font-mono text-sm text-gray-600">
+                                                @if ($transaction->card)
+                                                    {{ strtoupper($transaction->card->brand) }}
+                                                @else
+                                                    Billetera
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="text-right font-mono font-bold text-lg">{{ $transaction->currency }}.
-                                        {{ number_format($transaction->amount, 2) }}</div>
+                                    <hr class="my-10">
                                     <div class="text-sm text-gray-600 font-mono mt-2">
                                         Verá "QuickPay {{ $transaction->sender->name ?? 'USUARIO' }}" En el estado de
                                         cuenta de su tarjeta.
@@ -226,9 +238,14 @@
                                         @endif
                                     </div>
 
-                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Id. del formato de pago</h4>
+                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Teléfono</h4>
                                     <div class="font-mono text-sm text-black mb-4">
-                                        {{ strtoupper(substr(md5($transaction->id), 0, 16)) }}</div>
+                                        @if ($transaction->sender_id === auth()->id())
+                                            {{ $transaction->receiver->phone ?? 'No registrado' }}
+                                        @else
+                                            {{ $transaction->sender->phone ?? 'No registrado' }}
+                                        @endif
+                                    </div>
 
                                     <h4 class="font-mono text-sm text-gray-600 mb-2">Detalles del pago</h4>
                                     <div class="flex justify-between items-center mb-2">
@@ -249,14 +266,14 @@
                             <div class="bg-gray-50 rounded-lg p-4 mb-6">
                                 <h4 class="font-mono text-sm text-gray-600 mb-2">Id. de transacción</h4>
                                 <div class="font-mono text-sm font-bold">
-                                    {{ strtoupper(substr(md5($transaction->id . $transaction->created_at), 0, 12)) }}
+                                    {{ $transaction->custom_id ?? 'No disponible' }}
                                 </div>
                             </div>
 
                             <!-- Botones de acción -->
-                            <div class="flex flex-col sm:flex-row gap-4">
+                            <div class="flex flex-col sm:flex-row gap-6 justify-between">
                                 <button onclick="downloadReceipt({{ $transaction->id }})"
-                                    class="flex items-center justify-center gap-2 bg-[#2563eb] text-white px-6 py-3 rounded-lg font-mono font-bold hover:bg-[#1d4ed8] transition">
+                                    class="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
@@ -264,11 +281,12 @@
                                     </svg>
                                     Descargar comprobante
                                 </button>
+
                                 <button onclick="requestRefund({{ $transaction->id }})"
-                                    class="flex items-center justify-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg font-mono font-bold hover:bg-red-700 transition">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    class="flex items-center gap-2 text-red-600 hover:text-red-800 transition">
+                                    <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
                                     </svg>
                                     Solicitar un reembolso
                                 </button>

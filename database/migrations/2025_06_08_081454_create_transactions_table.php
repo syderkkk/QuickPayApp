@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->string('custom_id', 16)->unique();
             $table->enum('type', ['send', 'request', 'withdraw', 'card_payment']);
             $table->foreignId('sender_id')->nullable()->constrained('users');
             $table->foreignId('receiver_id')->nullable()->constrained('users');

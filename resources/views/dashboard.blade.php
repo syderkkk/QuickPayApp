@@ -130,13 +130,13 @@
                                                 class="flex items-center gap-3 bg-[#ede8f6] border border-[#d1d5db] rounded-2xl px-6 py-4 shadow-[0_4px_24px_0_rgba(37,99,235,0.15)] hover:shadow-[0_8px_32px_0_rgba(37,99,235,0.18)] transition-shadow duration-200">
                                                 <div class="flex-shrink-0">
                                                     <span
-                                                        class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 shadow-lg">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                            class="h-8 w-8 text-white" fill="none"
-                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                        class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#2563eb] shadow-lg">
+                                                        <svg class="w-6 h-6 text-white" fill="none"
+                                                            stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                                 stroke-width="2"
-                                                                d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                                            </path>
                                                         </svg>
                                                     </span>
                                                 </div>
