@@ -185,27 +185,103 @@
                     </div>
                     <!-- Contactos frecuentes -->
                     <div
-                        class="bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 sm:p-6 md:p-8 min-h-[170px] flex flex-col justify-between border border-[#e0e7ff] w-full opacity-50 pointer-events-none select-none cursor-not-allowed">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-gray-400">Contactos
-                                frecuentes</div>
-                            <span class="text-gray-300 ml-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="inline h-6 w-6 sm:h-8 sm:w-8"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <circle cx="11" cy="11" r="7" stroke-width="2" stroke="currentColor"
-                                        fill="none" />
-                                    <line x1="18" y1="18" x2="15.5" y2="15.5" stroke-width="2"
-                                        stroke="currentColor" stroke-linecap="round" />
-                                </svg>
-                            </span>
+                        class="bg-white rounded-2xl shadow-[0_6px_12px_0_#2563eb30] p-4 sm:p-6 md:p-8 min-h-[170px] flex flex-col border border-[#e0e7ff] w-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-black">
+                                Contactos frecuentes
+                            </div>
+                            <a href="{{ route('transactions.contacts.select') }}"
+                                class="text-[#2563eb] font-mono text-xs sm:text-sm hover:underline">
+                                Ver todos
+                            </a>
                         </div>
-                        <div class="text-xs sm:text-sm text-gray-400 font-mono mb-4 italic">Funcionalidad inhabilitada
-                            por el momento</div>
+
+                        @if ($frequentContacts->count())
+                            <div class="space-y-3">
+                                @foreach ($frequentContacts as $contact)
+                                    <div class="bg-[#ede8f6] rounded-lg p-3 hover:bg-[#e0e6ff] transition">
+                                        <div class="flex items-center justify-between">
+                                            <!-- Información del contacto a la izquierda -->
+                                            <div class="flex items-center gap-3 flex-1">
+                                                <div class="flex-shrink-0">
+                                                    <span
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#2563eb] text-white text-sm font-bold">
+                                                        {{ strtoupper(substr($contact->name, 0, 1)) }}
+                                                    </span>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="font-mono font-bold text-sm text-black">
+                                                        {{ $contact->name }} {{ $contact->lastname }}
+                                                    </div>
+                                                    <div class="font-mono text-xs text-gray-500">
+                                                        {{ $contact->transaction_count }}
+                                                        {{ $contact->transaction_count == 1 ? 'transacción' : 'transacciones' }} •
+                                                        {{ \Carbon\Carbon::parse($contact->last_transaction)->diffForHumans() }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Botones a la derecha -->
+                                            <div class="flex gap-1 ml-3">
+                                                <button onclick="sendToContact('{{ $contact->email }}')"
+                                                    class="flex items-center justify-center gap-1 bg-[#2563eb] text-white font-bold rounded-md px-2 py-1.5 font-mono text-xs hover:bg-[#1d4ed8] transition"
+                                                    title="Enviar dinero">
+                                                    <span class="font-extrabold text-xs">Enviar</span>
+                                                </button>
+                                                <button onclick="requestFromContact('{{ $contact->email }}')"
+                                                    class="flex items-center justify-center gap-1 bg-white text-[#2563eb] font-bold rounded-md px-2 py-1.5 font-mono text-xs border border-[#2563eb] hover:bg-[#f0f4ff] transition"
+                                                    title="Solicitar dinero">
+                                                    <span class="font-extrabold text-xs">Solicitar</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <!-- Formulario oculto para enviar dinero -->
+                            <form id="sendToContactForm" method="POST"
+                                action="{{ route('transactions.send.step2') }}" style="display: none;">
+                                @csrf
+                                <input type="hidden" name="type" value="send">
+                                <input type="hidden" name="receiver" id="contactEmailSend">
+                            </form>
+
+                            <!-- Formulario oculto para solicitar dinero -->
+                            <form id="requestFromContactForm" method="POST"
+                                action="{{ route('transactions.request.step2') }}" style="display: none;">
+                                @csrf
+                                <input type="hidden" name="type" value="request">
+                                <input type="hidden" name="receiver" id="contactEmailRequest">
+                            </form>
+                        @else
+                            <div class="text-center py-6">
+                                <div class="text-gray-400 font-mono text-sm mb-2">No tienes contactos frecuentes aún
+                                </div>
+                                <a href="{{ route('transactions.send.step1') }}"
+                                    class="text-[#2563eb] font-mono text-xs hover:underline">
+                                    Enviar tu primer pago
+                                </a>
+                            </div>
+                        @endif
                     </div>
+
+
                 </div>
             </div>
         </div>
     </div>
     <!-- Footer -->
     <x-footer />
+    <script>
+        function sendToContact(email) {
+            document.getElementById('contactEmailSend').value = email;
+            document.getElementById('sendToContactForm').submit();
+        }
+
+        function requestFromContact(email) {
+            document.getElementById('contactEmailRequest').value = email;
+            document.getElementById('requestFromContactForm').submit();
+        }
+    </script>
 </x-app-layout>

@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/transactions/contacts/select', [TransactionController::class, 'selectContact'])->name('transactions.contacts.select');
 
+    Route::get('/frequent-contacts', [ContactController::class, 'frequent'])->name('contacts.frequent');
+
     // Transacciones - Envío de dinero (nuevas rutas con SendController)
     Route::prefix('transactions/send')->name('transactions.send.')->group(function () {
         Route::get('/', [SendController::class, 'step1'])->name('step1');
