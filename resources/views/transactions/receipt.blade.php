@@ -146,6 +146,12 @@
             margin-top: 8px;
             display: inline-block;
         }
+        .badge.pending { 
+            background: #f59e0b; 
+        }
+        .badge.cancelled { 
+            background: #ef4444; 
+        }
         .section-title { 
             font-size: 16px; 
             font-weight: 700; 
@@ -180,6 +186,17 @@
             color: #888;
             font-style: italic;
         }
+        .transaction-type {
+            background-color: #e0f2fe;
+            border: 1px solid #0891b2;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #0891b2;
+            text-align: center;
+            margin-bottom: 12px;
+        }
     </style>
 </head>
 <body>
@@ -192,36 +209,106 @@
             </div>
             <div class="ruc-box">
                 <div><strong>RUC: 20123456789</strong></div>
-                <div class="badge">OPERACIÓN COMPLETADA</div>
+                <div class="badge {{ $transaction->status === 'completed' ? '' : ($transaction->status === 'pending' ? 'pending' : 'cancelled') }}">
+                    @if($transaction->status === 'completed')
+                        OPERACIÓN COMPLETADA
+                    @elseif($transaction->status === 'pending')
+                        OPERACIÓN PENDIENTE
+                    @else
+                        OPERACIÓN {{ strtoupper($transaction->status) }}
+                    @endif
+                </div>
             </div>
+        </div>
+
+        <!-- Tipo de transacción -->
+        <div class="transaction-type">
+            @if($transaction->type === 'request')
+                @if($transaction->receiver_id === auth()->id())
+                    SOLICITUD DE PAGO RECIBIDA
+                @else
+                    PAGO DE SOLICITUD REALIZADO
+                @endif
+            @else
+                ENVÍO DE DINERO DIRECTO
+            @endif
         </div>
 
         <!-- Datos principales -->
         <div class="title">DETALLES DE LA OPERACIÓN</div>
         <table class="info-table">
             <tr>
-                <td class="label">Remitente:</td>
-                <td class="value">{{ $transaction->sender->name ?? 'USUARIO' }} ({{ $transaction->sender->email ?? 'N/A' }})</td>
-                <td class="label">Destinatario:</td>
-                <td class="value">{{ $transaction->receiver->name ?? 'USUARIO' }} ({{ $transaction->receiver->email ?? 'N/A' }})</td>
+                <td class="label">
+                    @if($transaction->type === 'request')
+                        @if($transaction->receiver_id === auth()->id())
+                            Pagador:
+                        @else
+                            Solicitante:
+                        @endif
+                    @else
+                        Remitente:
+                    @endif
+                </td>
+                <td class="value">
+                    @if($transaction->type === 'request')
+                        @if($transaction->receiver_id === auth()->id())
+                            {{ $transaction->sender->name ?? 'USUARIO' }} {{ $transaction->sender->lastname ?? '' }} ({{ $transaction->sender->email ?? 'N/A' }})
+                        @else
+                            {{ $transaction->receiver->name ?? 'USUARIO' }} {{ $transaction->receiver->lastname ?? '' }} ({{ $transaction->receiver->email ?? 'N/A' }})
+                        @endif
+                    @else
+                        {{ $transaction->sender->name ?? 'USUARIO' }} {{ $transaction->sender->lastname ?? '' }} ({{ $transaction->sender->email ?? 'N/A' }})
+                    @endif
+                </td>
+                <td class="label">
+                    @if($transaction->type === 'request')
+                        @if($transaction->receiver_id === auth()->id())
+                            Solicitante:
+                        @else
+                            Pagador:
+                        @endif
+                    @else
+                        Destinatario:
+                    @endif
+                </td>
+                <td class="value">
+                    @if($transaction->type === 'request')
+                        @if($transaction->receiver_id === auth()->id())
+                            {{ $transaction->receiver->name ?? 'USUARIO' }} {{ $transaction->receiver->lastname ?? '' }} ({{ $transaction->receiver->email ?? 'N/A' }})
+                        @else
+                            {{ $transaction->sender->name ?? 'USUARIO' }} {{ $transaction->sender->lastname ?? '' }} ({{ $transaction->sender->email ?? 'N/A' }})
+                        @endif
+                    @else
+                        {{ $transaction->receiver->name ?? 'USUARIO' }} {{ $transaction->receiver->lastname ?? '' }} ({{ $transaction->receiver->email ?? 'N/A' }})
+                    @endif
+                </td>
             </tr>
             <tr>
                 <td class="label">ID Transacción:</td>
-                <td class="value">{{ strtoupper(substr(md5($transaction->id . $transaction->created_at), 0, 12)) }}</td>
+                <td class="value">{{ $transaction->custom_id ?? strtoupper(substr(md5($transaction->id . $transaction->created_at), 0, 12)) }}</td>
                 <td class="label">Referencia:</td>
                 <td class="value">QP{{ str_pad($transaction->id, 8, '0', STR_PAD_LEFT) }}</td>
             </tr>
             <tr>
                 <td class="label">Fecha y Hora:</td>
-                <td class="value">{{ $transaction->created_at->format('d/m/Y - H:i:s') }}</td>
+                <td class="value">
+                    {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'd/m/Y - H:i:s') }}
+                    <small>({{ auth()->user()->timezone ?? 'UTC' }})</small>
+                </td>
                 <td class="label">Estado:</td>
-                <td class="value"><strong>{{ strtoupper($transaction->status) }}</strong></td>
+                <td class="value"><strong>{{ strtoupper($transaction->status === 'completed' ? 'COMPLETADO' : ($transaction->status === 'pending' ? 'PENDIENTE' : $transaction->status)) }}</strong></td>
             </tr>
             <tr>
                 <td class="label">Canal:</td>
                 <td class="value">QUICKPAY WEB</td>
                 <td class="label">Tipo Operación:</td>
-                <td class="value">TRANSFERENCIA DIGITAL</td>
+                <td class="value">
+                    @if($transaction->type === 'request')
+                        SOLICITUD DE PAGO
+                    @else
+                        TRANSFERENCIA DIGITAL
+                    @endif
+                </td>
             </tr>
         </table>
 
@@ -237,18 +324,50 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><span class="currency-symbol">{{ $transaction->currency }}</span></td>
                     <td>
-                        @if ($transaction->sender_id === auth()->id())
-                            <span class="amount-negative">-{{ number_format($transaction->amount, 2) }}</span>
+                        <span class="currency-symbol">
+                            @if($transaction->type === 'request')
+                                @if($transaction->receiver_id === auth()->id())
+                                    {{-- Yo solicité, muestro la moneda solicitada --}}
+                                    {{ $transaction->currency }}
+                                @else
+                                    {{-- Yo pagué, muestro mi moneda --}}
+                                    {{ auth()->user()->wallet->currency }}
+                                @endif
+                            @else
+                                {{-- Envío directo, muestro moneda del remitente --}}
+                                {{ $transaction->currency }}
+                            @endif
+                        </span>
+                    </td>
+                    <td>
+                        @if($transaction->type === 'request')
+                            @if($transaction->receiver_id === auth()->id())
+                                {{-- Yo solicité (recibo dinero) --}}
+                                <span class="amount-positive">+{{ number_format($transaction->amount, 2) }}</span>
+                            @else
+                                {{-- Yo pagué la solicitud (envío dinero) --}}
+                                <span class="amount-negative">-{{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}</span>
+                            @endif
                         @else
-                            <span class="amount-positive">+{{ number_format($transaction->amount, 2) }}</span>
+                            {{-- Envío directo --}}
+                            @if($transaction->sender_id === auth()->id())
+                                <span class="amount-negative">-{{ number_format($transaction->amount, 2) }}</span>
+                            @else
+                                <span class="amount-positive">+{{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}</span>
+                            @endif
                         @endif
                     </td>
                     <td class="payment-method">
-                        <div class="bank-info">VISA - Tarjeta Débito **** 2078</div>
-                        <div class="bank-info">Banco de Crédito del Perú - BCP</div>
-                        <div class="disclaimer">* Aparecerá como "QUICKPAY {{ strtoupper($transaction->sender->name ?? 'USUARIO') }}" en su estado de cuenta</div>
+                        @if($transaction->card)
+                            <div class="bank-info">{{ strtoupper($transaction->card->brand) }} - Tarjeta {{ $transaction->card->type ?? 'Débito' }} **** {{ $transaction->card->last_four }}</div>
+                            <div class="bank-info">{{ $transaction->card->bank_name ?? 'Banco asociado' }}</div>
+                            <div class="disclaimer">* Aparecerá como "QUICKPAY {{ strtoupper(($transaction->type === 'request' && $transaction->receiver_id !== auth()->id()) ? $transaction->receiver->name : $transaction->sender->name ?? 'USUARIO') }}" en su estado de cuenta</div>
+                        @else
+                            <div class="bank-info">SALDO QUICKPAY</div>
+                            <div class="bank-info">Billetera Digital</div>
+                            <div class="disclaimer">* Operación procesada desde saldo de billetera QuickPay</div>
+                        @endif
                     </td>
                 </tr>
             </tbody>
@@ -258,26 +377,74 @@
         <div class="concepto"><strong>Concepto:</strong> {{ $transaction->reason }}</div>
         @endif
 
-        @if(isset($transaction->converted_amount) && isset($transaction->exchange_rate))
-        <div class="section-title">CONVERSIÓN DE MONEDA</div>
-        <table class="details-table">
-            <tr>
-                <th>Tasa de cambio</th>
-                <th>Monto convertido</th>
-            </tr>
-            <tr>
-                <td><strong>1 {{ $transaction->currency }} = {{ $transaction->exchange_rate }} {{ $transaction->receiver_currency ?? 'USD' }}</strong></td>
-                <td><span class="currency-symbol">{{ $transaction->receiver_currency ?? 'USD' }}</span> <strong>{{ number_format($transaction->converted_amount, 2) }}</strong></td>
-            </tr>
-        </table>
+        {{-- Mostrar conversión si existe --}}
+        @if($transaction->type === 'request' && $transaction->receiver_id !== auth()->id() && $transaction->currency !== auth()->user()->wallet->currency && $transaction->exchange_rate)
+            {{-- Yo pagué una solicitud en diferente moneda --}}
+            <div class="section-title">CONVERSIÓN DE MONEDA</div>
+            <table class="details-table">
+                <tr>
+                    <th>Concepto</th>
+                    <th>Tasa de cambio</th>
+                    <th>Monto convertido</th>
+                </tr>
+                <tr>
+                    <td><strong>Solicitud pagada</strong></td>
+                    <td><strong>1 {{ auth()->user()->wallet->currency }} = {{ number_format(1 / $transaction->exchange_rate, 2) }} {{ $transaction->currency }}</strong></td>
+                    <td><span class="currency-symbol">{{ $transaction->currency }}</span> <strong>{{ number_format($transaction->amount, 2) }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Monto debitado de mi cuenta</strong></td>
+                    <td><strong>1 {{ $transaction->currency }} = {{ number_format($transaction->exchange_rate, 2) }} {{ auth()->user()->wallet->currency }}</strong></td>
+                    <td><span class="currency-symbol amount-negative">{{ auth()->user()->wallet->currency }}</span> <strong>{{ number_format($transaction->converted_amount, 2) }}</strong></td>
+                </tr>
+            </table>
+        @elseif($transaction->type !== 'request' && isset($transaction->converted_amount) && isset($transaction->exchange_rate) && $transaction->currency !== $transaction->receiver_currency)
+            {{-- Envío directo con conversión --}}
+            <div class="section-title">CONVERSIÓN DE MONEDA</div>
+            <table class="details-table">
+                <tr>
+                    <th>Tasa de cambio</th>
+                    <th>Monto convertido</th>
+                </tr>
+                <tr>
+                    <td><strong>1 {{ $transaction->currency }} = {{ number_format($transaction->exchange_rate, 2) }} {{ $transaction->receiver_currency }}</strong></td>
+                    <td><span class="currency-symbol">{{ $transaction->receiver_currency }}</span> <strong>{{ number_format($transaction->converted_amount, 2) }}</strong></td>
+                </tr>
+            </table>
         @endif
 
         <!-- Resumen final -->
         <table class="summary-table">
             <tr>
-                <td class="label">TOTAL PROCESADO:</td>
+                <td class="label">
+                    @if($transaction->type === 'request')
+                        @if($transaction->receiver_id === auth()->id())
+                            MONTO SOLICITADO:
+                        @else
+                            TOTAL PAGADO:
+                        @endif
+                    @else
+                        @if($transaction->sender_id === auth()->id())
+                            TOTAL ENVIADO:
+                        @else
+                            TOTAL RECIBIDO:
+                        @endif
+                    @endif
+                </td>
                 <td class="value">
-                    <span class="currency-symbol">{{ $transaction->currency }}</span> {{ number_format($transaction->amount, 2) }}
+                    @if($transaction->type === 'request')
+                        @if($transaction->receiver_id === auth()->id())
+                            <span class="currency-symbol">{{ $transaction->currency }}</span> {{ number_format($transaction->amount, 2) }}
+                        @else
+                            <span class="currency-symbol">{{ auth()->user()->wallet->currency }}</span> {{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
+                        @endif
+                    @else
+                        @if($transaction->sender_id === auth()->id())
+                            <span class="currency-symbol">{{ $transaction->currency }}</span> {{ number_format($transaction->amount, 2) }}
+                        @else
+                            <span class="currency-symbol">{{ $transaction->receiver_currency ?? $transaction->currency }}</span> {{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
+                        @endif
+                    @endif
                 </td>
             </tr>
         </table>
@@ -286,7 +453,7 @@
         <div class="footer">
             <strong>QUICKPAY S.A.C.</strong> | RUC: 20123456789 | Lima, Perú<br>
             Soporte: support@quickpay.com | +51 1 234-5678<br>
-            Documento generado el {{ now()->format('d/m/Y H:i:s') }}<br>
+            Documento generado el {{ \App\Helpers\TimezoneHelper::formatForUser(now(), 'd/m/Y H:i:s') }}<br>
             <strong>Comprobante electrónico válido - Operación protegida</strong>
         </div>
     </div>

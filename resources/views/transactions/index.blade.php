@@ -132,29 +132,63 @@
                         </div>
                         <div class="ml-0 sm:ml-4 mt-2 sm:mt-0 flex-1 w-full">
                             <div class="font-bold text-base sm:text-lg uppercase tracking-wide font-mono text-[#222]">
-                                @if ($transaction->sender_id === auth()->id())
-                                    {{-- Yo envié, muestro a quién envié --}}
-                                    {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario #' . $transaction->receiver_id }}
+                                @if ($transaction->type === 'request')
+                                    {{-- Para solicitudes --}}
+                                    @if ($transaction->receiver_id === auth()->id())
+                                        {{-- Yo solicité dinero --}}
+                                        {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
+                                    @else
+                                        {{-- Yo pagué una solicitud --}}
+                                        {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario #' . $transaction->receiver_id }}
+                                    @endif
                                 @else
-                                    {{-- Yo recibí, muestro quién me envió --}}
-                                    {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
+                                    {{-- Para envíos directos (lógica original) --}}
+                                    @if ($transaction->sender_id === auth()->id())
+                                        {{-- Yo envié, muestro a quién envié --}}
+                                        {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario #' . $transaction->receiver_id }}
+                                    @else
+                                        {{-- Yo recibí, muestro quién me envió --}}
+                                        {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
+                                    @endif
                                 @endif
                             </div>
                             <div class="text-gray-500 text-xs sm:text-sm font-mono">
                                 {{ $transaction->created_at->format('d M.') }}
-                                @if ($transaction->sender_id === auth()->id())
-                                    Pago enviado
+                                @if ($transaction->type === 'request')
+                                    {{-- Para solicitudes --}}
+                                    @if ($transaction->receiver_id === auth()->id())
+                                        Solicitud recibida
+                                    @else
+                                        Solicitud pagada
+                                    @endif
                                 @else
-                                    Pago recibido
+                                    {{-- Para envíos directos --}}
+                                    @if ($transaction->sender_id === auth()->id())
+                                        Pago enviado
+                                    @else
+                                        Pago recibido
+                                    @endif
                                 @endif
                             </div>
                         </div>
                         <div
-                            class="text-right font-bold text-base sm:text-lg font-mono {{ $transaction->sender_id === auth()->id() ? 'text-red-500' : 'text-green-600' }} w-full sm:w-auto mt-2 sm:mt-0">
-                            @if ($transaction->sender_id === auth()->id())
-                                -{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
+                            class="text-right font-bold text-base sm:text-lg font-mono {{ ($transaction->type === 'request' ? ($transaction->receiver_id === auth()->id() ? 'text-green-600' : 'text-red-500') : ($transaction->sender_id === auth()->id() ? 'text-red-500' : 'text-green-600')) }} w-full sm:w-auto mt-2 sm:mt-0">
+                            @if ($transaction->type === 'request')
+                                {{-- Para solicitudes, mostrar según quién recibe/envía realmente --}}
+                                @if ($transaction->receiver_id === auth()->id())
+                                    {{-- Yo soy quien solicitó (recibo dinero) --}}
+                                    +{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
+                                @else
+                                    {{-- Yo soy quien pagó la solicitud (envío dinero) --}}
+                                    -{{ auth()->user()->wallet->currency }}.{{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
+                                @endif
                             @else
-                                +{{ $transaction->receiver_currency ?? $transaction->currency }}.{{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
+                                {{-- Lógica original para envíos directos --}}
+                                @if ($transaction->sender_id === auth()->id())
+                                    -{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
+                                @else
+                                    +{{ $transaction->receiver_currency ?? $transaction->currency }}.{{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
+                                @endif
                             @endif
                         </div>
                         <div class="ml-3">
@@ -204,97 +238,189 @@
                                                 @if ($transaction->card)
                                                     {{ strtoupper($transaction->card->brand) }}
                                                 @else
-                                                    Billetera {{ $transaction->sender->wallet->currency }}
+                                                    @if ($transaction->type === 'request')
+                                                        @if ($transaction->receiver_id === auth()->id())
+                                                            Billetera {{ $transaction->sender->wallet->currency ?? 'N/A' }}
+                                                        @else
+                                                            Billetera {{ auth()->user()->wallet->currency }}
+                                                        @endif
+                                                    @else
+                                                        Billetera {{ $transaction->sender->wallet->currency ?? $transaction->currency }}
+                                                    @endif
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
                                     <hr class="my-2">
 
-
                                     <h4 class="font-mono text-sm text-gray-600 mb-2">Detalles del pago</h4>
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="font-mono text-sm">Importe enviado</span>
-                                        <span class="font-mono text-sm font-bold">
-                                            {{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}
-                                        </span>
-                                    </div>
-                                    @if (isset($transaction->converted_amount) && isset($transaction->exchange_rate))
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="font-mono text-sm">Tasa de cambio</span>
-                                            <span class="font-mono text-sm">
-                                                1 {{ $transaction->currency }} = {{ number_format($transaction->exchange_rate, 2) }}
-                                                {{ $transaction->receiver_currency }}
-                                            </span>
-                                        </div>
-                                        <hr class="my-2">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-mono text-base font-bold">Importe Total</span>
-                                            <span class="font-mono text-base font-bold text-green-700">
-                                                {{ $transaction->receiver_currency }}
-                                                {{ number_format($transaction->converted_amount, 2) }}
-                                            </span>
-                                        </div>
+                                    @if ($transaction->type === 'request')
+                                        {{-- Para solicitudes --}}
+                                        @if ($transaction->receiver_id === auth()->id())
+                                            {{-- Yo solicité --}}
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="font-mono text-sm">Monto solicitado</span>
+                                                <span class="font-mono text-sm font-bold">
+                                                    {{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            {{-- Yo pagué la solicitud --}}
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="font-mono text-sm">Monto pagado</span>
+                                                <span class="font-mono text-sm font-bold">
+                                                    {{ auth()->user()->wallet->currency }} {{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
+                                                </span>
+                                            </div>
+                                            @if ($transaction->currency !== auth()->user()->wallet->currency && $transaction->exchange_rate)
+                                                <div class="flex justify-between items-center mb-2">
+                                                    <span class="font-mono text-sm">Tasa de cambio</span>
+                                                    <span class="font-mono text-sm">
+                                                        1 {{ auth()->user()->wallet->currency }} =
+                                                        {{ number_format(1 / $transaction->exchange_rate, 3) }}
+                                                        {{ $transaction->currency }}
+                                                    </span>
+                                                </div>
+                                                <hr class="my-2">
+                                                <div class="flex justify-between items-center">
+                                                    <span class="font-mono text-base font-bold">El solicitante recibió</span>
+                                                    <span class="font-mono text-base font-bold text-green-700">
+                                                        {{ $transaction->currency }}
+                                                        {{ number_format($transaction->amount, 2) }}
+                                                    </span>
+                                                </div>
+                                            @endif
+                                        @endif
                                     @else
-                                        <hr class="my-2">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-mono text-base font-bold">Total</span>
-                                            <span class="font-mono text-base font-bold">
-                                                {{ $transaction->currency }}
-                                                {{ number_format($transaction->amount, 2) }}
+                                        {{-- Lógica original para envíos directos --}}
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-mono text-sm">Importe enviado</span>
+                                            <span class="font-mono text-sm font-bold">
+                                                {{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}
                                             </span>
                                         </div>
+                                        @if ($transaction->currency !== $transaction->receiver_currency)
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="font-mono text-sm">Tasa de cambio</span>
+                                                <span class="font-mono text-sm">
+                                                    1 {{ $transaction->currency }} =
+                                                    {{ number_format($transaction->exchange_rate, 2) }}
+                                                    {{ $transaction->receiver_currency }}
+                                                </span>
+                                            </div>
+                                            <hr class="my-2">
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-mono text-base font-bold">Total</span>
+                                                <span class="font-mono text-base font-bold text-green-700">
+                                                    {{ $transaction->receiver_currency }}
+                                                    {{ number_format($transaction->converted_amount, 2) }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            <hr class="my-2">
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-mono text-base font-bold">Importe Total</span>
+                                                <span class="font-mono text-base font-bold">
+                                                    {{ $transaction->currency }}
+                                                    {{ number_format($transaction->amount, 2) }}
+                                                </span>
+                                            </div>
+                                        @endif
                                     @endif
-
                                 </div>
 
                                 <!-- Información del receptor -->
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <h4 class="font-mono text-sm text-gray-600 mb-2">
-                                        @if ($transaction->sender_id === auth()->id())
-                                            Información del receptor
+                                        @if ($transaction->type === 'request')
+                                            {{-- Para solicitudes --}}
+                                            @if ($transaction->receiver_id === auth()->id())
+                                                Información de quien pagó
+                                            @else
+                                                Información de quien solicitó
+                                            @endif
                                         @else
-                                            Información del remitente
+                                            {{-- Para envíos directos --}}
+                                            @if ($transaction->sender_id === auth()->id())
+                                                Información del receptor
+                                            @else
+                                                Información del remitente
+                                            @endif
                                         @endif
                                     </h4>
                                     <div class="font-mono font-bold text-base text-black mb-1">
-                                        @if ($transaction->sender_id === auth()->id())
-                                            {{ $transaction->receiver->name ?? 'Usuario' }}
-                                            {{ $transaction->receiver->lastname ?? '' }}
+                                        @if ($transaction->type === 'request')
+                                            @if ($transaction->receiver_id === auth()->id())
+                                                {{-- Mostrar quien pagó la solicitud --}}
+                                                {{ $transaction->sender->name ?? 'Usuario' }}
+                                                {{ $transaction->sender->lastname ?? '' }}
+                                            @else
+                                                {{-- Mostrar quien solicitó --}}
+                                                {{ $transaction->receiver->name ?? 'Usuario' }}
+                                                {{ $transaction->receiver->lastname ?? '' }}
+                                            @endif
                                         @else
-                                            {{ $transaction->sender->name ?? 'Usuario' }}
-                                            {{ $transaction->sender->lastname ?? '' }}
+                                            @if ($transaction->sender_id === auth()->id())
+                                                {{ $transaction->receiver->name ?? 'Usuario' }}
+                                                {{ $transaction->receiver->lastname ?? '' }}
+                                            @else
+                                                {{ $transaction->sender->name ?? 'Usuario' }}
+                                                {{ $transaction->sender->lastname ?? '' }}
+                                            @endif
                                         @endif
                                     </div>
                                     <div class="font-mono text-sm text-blue-600 mb-4">
-                                        @if ($transaction->sender_id === auth()->id())
-                                            {{ $transaction->receiver->email ?? 'email@ejemplo.com' }}
+                                        @if ($transaction->type === 'request')
+                                            @if ($transaction->receiver_id === auth()->id())
+                                                {{ $transaction->sender->email ?? 'email@ejemplo.com' }}
+                                            @else
+                                                {{ $transaction->receiver->email ?? 'email@ejemplo.com' }}
+                                            @endif
                                         @else
-                                            {{ $transaction->sender->email ?? 'email@ejemplo.com' }}
+                                            @if ($transaction->sender_id === auth()->id())
+                                                {{ $transaction->receiver->email ?? 'email@ejemplo.com' }}
+                                            @else
+                                                {{ $transaction->sender->email ?? 'email@ejemplo.com' }}
+                                            @endif
                                         @endif
                                     </div>
 
                                     <h4 class="font-mono text-sm text-gray-600 mb-2">Teléfono</h4>
                                     <div class="font-mono text-sm text-black mb-4">
-                                        @if ($transaction->sender_id === auth()->id())
-                                            {{ $transaction->receiver->phone ?? 'No registrado' }}
+                                        @if ($transaction->type === 'request')
+                                            @if ($transaction->receiver_id === auth()->id())
+                                                {{ $transaction->sender->phone ?? 'No registrado' }}
+                                            @else
+                                                {{ $transaction->receiver->phone ?? 'No registrado' }}
+                                            @endif
                                         @else
-                                            {{ $transaction->sender->phone ?? 'No registrado' }}
+                                            @if ($transaction->sender_id === auth()->id())
+                                                {{ $transaction->receiver->phone ?? 'No registrado' }}
+                                            @else
+                                                {{ $transaction->sender->phone ?? 'No registrado' }}
+                                            @endif
                                         @endif
                                     </div>
 
                                     {{-- Moneda del usuario --}}
                                     <h4 class="font-mono text-sm text-gray-600 mb-2">Moneda</h4>
                                     <div class="font-mono text-sm font-bold">
-                                        @if ($transaction->sender_id === auth()->id())
-                                            {{ $transaction->receiver_currency ?? $transaction->currency }}
+                                        @if ($transaction->type === 'request')
+                                            @if ($transaction->receiver_id === auth()->id())
+                                                {{-- Mostrar moneda de quien pagó --}}
+                                                {{ $transaction->sender->wallet->currency ?? 'N/A' }}
+                                            @else
+                                                {{-- Mostrar moneda de quien solicitó --}}
+                                                {{ $transaction->receiver->wallet->currency ?? 'N/A' }}
+                                            @endif
                                         @else
-                                            {{ $transaction->currency }}
+                                            @if ($transaction->sender_id === auth()->id())
+                                                {{ $transaction->receiver_currency ?? $transaction->currency }}
+                                            @else
+                                                {{ $transaction->currency }}
+                                            @endif
                                         @endif
                                     </div>
-
-
-
                                 </div>
                             </div>
 
