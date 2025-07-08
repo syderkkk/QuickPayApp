@@ -29,7 +29,7 @@
                         class="w-1/2 rounded-md border-2 border-gray-300 px-4 py-3 font-mono text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                         required maxlength="5" value="{{ old('expiry_month') }}" pattern="^(0[1-9]|1[0-2])\/\d{2}$"
                         oninput="this.value = this.value.replace(/[^0-9\/]/g, '').replace(/(\..*)\./g, '$1').slice(0,5);">
-                    <input type="text" name="cvv" placeholder="Código de segur..."
+                    <input type="text" name="cvv" placeholder="CVV"
                         class="w-1/2 rounded-md border-2 border-gray-300 px-4 py-3 font-mono text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                         required maxlength="4" value="{{ old('cvv') }}" inputmode="numeric" pattern="\d*"
                         oninput="this.value = this.value.replace(/[^0-9]/g, '')">

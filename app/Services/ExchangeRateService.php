@@ -19,6 +19,7 @@ class ExchangeRateService
                     return round($data['rates'][$toCurrency], 4);
                 }
             }
+            
         } catch (Exception $e) {
             Log::error('Error getting exchange rate: ' . $e->getMessage());
         }

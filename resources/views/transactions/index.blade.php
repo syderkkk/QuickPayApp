@@ -204,24 +204,48 @@
                                                 @if ($transaction->card)
                                                     {{ strtoupper($transaction->card->brand) }}
                                                 @else
-                                                    Billetera
+                                                    Billetera {{ $transaction->sender->wallet->currency }}
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
-                                    <hr class="my-10">
-                                    {{-- <div class="text-sm text-gray-600 font-mono mt-2">
-                                        Verá "QuickPay {{ $transaction->sender->name ?? 'USUARIO' }}" En el estado de
-                                        cuenta de su tarjeta.
-                                    </div> --}}
-                                    <div class="text-sm text-gray-600 font-mono mt-1">
-                                        Fecha:
-                                        {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'd \d\e F \d\e Y') }}
+                                    <hr class="my-2">
+
+
+                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Detalles del pago</h4>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-mono text-sm">Importe enviado</span>
+                                        <span class="font-mono text-sm font-bold">
+                                            {{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}
+                                        </span>
                                     </div>
-                                    <div class="text-sm text-gray-600 font-mono mt-1">
-                                        Hora:
-                                        {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'H:i:s') }}
-                                    </div>
+                                    @if (isset($transaction->converted_amount) && isset($transaction->exchange_rate))
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-mono text-sm">Tasa de cambio</span>
+                                            <span class="font-mono text-sm">
+                                                1 {{ $transaction->currency }} = {{ number_format($transaction->exchange_rate, 2) }}
+                                                {{ $transaction->receiver_currency }}
+                                            </span>
+                                        </div>
+                                        <hr class="my-2">
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-mono text-base font-bold">Importe Total</span>
+                                            <span class="font-mono text-base font-bold text-green-700">
+                                                {{ $transaction->receiver_currency }}
+                                                {{ number_format($transaction->converted_amount, 2) }}
+                                            </span>
+                                        </div>
+                                    @else
+                                        <hr class="my-2">
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-mono text-base font-bold">Total</span>
+                                            <span class="font-mono text-base font-bold">
+                                                {{ $transaction->currency }}
+                                                {{ number_format($transaction->amount, 2) }}
+                                            </span>
+                                        </div>
+                                    @endif
+
                                 </div>
 
                                 <!-- Información del receptor -->
@@ -259,26 +283,35 @@
                                         @endif
                                     </div>
 
-                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Detalles del pago</h4>
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="font-mono text-sm">Importe del pago</span>
-                                        <span class="font-mono text-sm font-bold">{{ $transaction->currency }}.
-                                            {{ number_format($transaction->amount, 2) }}</span>
+                                    {{-- Moneda del usuario --}}
+                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Moneda</h4>
+                                    <div class="font-mono text-sm font-bold">
+                                        @if ($transaction->sender_id === auth()->id())
+                                            {{ $transaction->receiver_currency ?? $transaction->currency }}
+                                        @else
+                                            {{ $transaction->currency }}
+                                        @endif
                                     </div>
-                                    <hr class="my-2">
-                                    <div class="flex justify-between items-center">
-                                        <span class="font-mono text-base font-bold">Total</span>
-                                        <span class="font-mono text-base font-bold">{{ $transaction->currency }}.
-                                            {{ number_format($transaction->amount, 2) }}</span>
-                                    </div>
+
+
+
                                 </div>
                             </div>
 
                             <!-- ID de transacción -->
-                            <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                                <h4 class="font-mono text-sm text-gray-600 mb-2">Id. de transacción</h4>
-                                <div class="font-mono text-sm font-bold">
-                                    {{ $transaction->custom_id ?? 'No disponible' }}
+                            <div
+                                class="bg-gray-50 rounded-lg p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Id. de transacción</h4>
+                                    <div class="font-mono text-sm font-bold">
+                                        {{ $transaction->custom_id ?? 'No disponible' }}
+                                    </div>
+                                </div>
+                                <div class="mt-2 sm:mt-0 text-sm text-gray-600 font-mono text-right">
+                                    Fecha:
+                                    {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'd \d\e F \d\e Y') }}<br>
+                                    Hora:
+                                    {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'H:i:s') }}
                                 </div>
                             </div>
 
