@@ -41,7 +41,7 @@
                                     QuickPay</span>
                                 <span class="font-mono text-base sm:text-lg md:text-xl text-black font-bold">
                                     {{ auth()->user()->wallet->currency ?? 'S/.' }}
-                                    {{ number_format(auth()->user()->wallet->balance, 2) }} Disponible
+                                    {{ number_format(auth()->user()->wallet->balance, 2) }}
                                 </span>
                                 <div class="w-auto">
                                     <span class="inline-block mt-1 px-4 py-1 text-xs rounded-full font-mono font-bold"

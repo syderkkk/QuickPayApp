@@ -134,7 +134,7 @@ class TransactionController extends Controller
             ->join('users', 'contacts.contact_id', '=', 'users.id')
             ->where('contacts.user_id', $userId)
             ->select(
-                'contacts.id as contact_relation_id',
+                'contacts.id', // contact_relation_id
                 'contacts.alias',
                 'users.id as user_id',
                 'users.name',

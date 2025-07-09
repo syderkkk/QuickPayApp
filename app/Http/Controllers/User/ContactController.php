@@ -51,7 +51,7 @@ class ContactController extends Controller
             'contact_id' => $contactUser->id,
         ]);
 
-        return redirect()->route('contacts.index')->with('success', 'Contacto agregado correctamente.');
+        return redirect()->back()->with('success', 'Contacto agregado correctamente.');
     }
 
 
@@ -69,13 +69,18 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
+        if ($contact->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para editar este contacto.');
+        }
+
         $request->validate([
             'alias' => 'nullable|string|max:255',
         ]);
-        $contact->alias = $request->alias;
-        $contact->update();
 
-        return redirect()->route('contacts.index')->with('success', 'Alias actualizado correctamente.');
+        $contact->alias = $request->alias;
+        $contact->save();
+
+        return redirect()->back()->with('success', 'Alias actualizado correctamente.');
     }
 
     /**

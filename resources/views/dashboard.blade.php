@@ -30,7 +30,7 @@
                             <div class="flex-shrink-0 flex items-center justify-center mt-2 sm:mt-0">
                                 <span
                                     class="text-2xl sm:text-3xl md:text-5xl font-extrabold text-[#284494] font-mono select-none whitespace-nowrap">
-                                    Q<span class="ml-1">⚡</span>
+                                    <span class="ml-1">⚡</span>
                                 </span>
                             </div>
                         </div>
@@ -274,7 +274,6 @@
             </div>
         </div>
     </div>
-    <!-- Footer -->
     <x-footer />
     <script>
         function sendToContact(email) {

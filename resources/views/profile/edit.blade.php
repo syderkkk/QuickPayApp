@@ -12,7 +12,7 @@
             </div>
 
             <!-- Botón para agregar contactos -->
-            <div class="flex justify-end mb-6">
+            {{-- <div class="flex justify-end mb-6">
                 <a href="{{ route('contacts.store') }}"
                    class="inline-flex items-center gap-2 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-bold py-2 px-6 font-mono text-sm transition shadow">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -20,7 +20,7 @@
                     </svg>
                     Agregar contacto
                 </a>
-            </div>
+            </div> --}}
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Información de perfil -->
