@@ -1,7 +1,7 @@
 <x-app-layout>
     @include('layouts.navigation')
     <div class="max-w-2xl mx-auto py-8 px-2 sm:px-4">
-        <!-- Pestañas Transacciones/Solicitudes -->
+        <!-- Pestañas Transacciones/Solicitudes/Reembolsos -->
         <div class="mb-6">
             <div class="flex border-b border-gray-200">
                 <button onclick="showTab('transacciones')" id="tab-transacciones"
@@ -11,6 +11,10 @@
                 <button onclick="showTab('solicitudes')" id="tab-solicitudes"
                     class="tab-button px-6 py-3 font-mono font-bold text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700">
                     Solicitudes
+                </button>
+                <button onclick="showTab('reembolsos')" id="tab-reembolsos"
+                    class="tab-button active px-6 py-3 font-mono font-bold text-sm border-b-2 border-[#2563eb] text-[#2563eb]">
+                    Reembolsos
                 </button>
             </div>
         </div>
@@ -298,15 +302,23 @@
                                     <span class="font-semibold text-sm">Descargar comprobante</span>
                                 </button>
 
-                                <button onclick="requestRefund({{ $transaction->id }})"
-                                    class="flex items-center gap-2 text-red-600 hover:text-red-800 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="-2 -3 24 24">
-                                        <path fill="currentColor"
-                                            d="m12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.2 3.2 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096M10 14a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0-9a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V6a1 1 0 0 0-1-1" />
-                                    </svg>
-                                    <span class="font-semibold text-sm">Solicitar un reembolso</span>
-                                </button>
+                                @if (
+                                    $transaction->sender_id === auth()->id() &&
+                                    $transaction->status === 'completed' &&
+                                    !$transaction->hasPendingRefund() &&
+                                    !$transaction->hasApprovedRefund() &&
+                                    !$transaction->hasCompletedRefund()
+                                )
+                                    <a href="{{ route('refunds.create', $transaction->id) }}"
+                                        class="flex items-center gap-2 text-red-600 hover:text-red-800 transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="-2 -3 24 24">
+                                            <path fill="currentColor"
+                                                d="m12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.2 3.2 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096M10 14a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0-9a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V6a1 1 0 0 0-1-1" />
+                                        </svg>
+                                        <span class="font-semibold text-sm">Solicitar un reembolso</span>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -524,6 +536,111 @@
                 <div class="text-center text-gray-400 py-8 font-mono">No hay solicitudes de pago.</div>
             @endforelse
         </div>
+
+        <!-- Contenido de Reembolsos -->
+        <div id="content-reembolsos" class="tab-content hidden">
+            <form method="GET" class="mb-4 flex flex-col sm:flex-row gap-2 items-center">
+                <input type="hidden" name="tab" value="reembolsos">
+                <input type="text" name="refund_search" placeholder="Buscar por nombre o correo electrónico"
+                    value="{{ request('refund_search') }}"
+                    class="w-full rounded-full border border-gray-300 px-6 py-3 text-base font-mono text-gray-500 bg-[#f5f7fa] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563eb] shadow">
+                <select name="refund_type" onchange="this.form.submit()"
+                    class="rounded-full border border-gray-300 px-4 py-2 font-mono text-sm text-gray-700 bg-white">
+                    <option value="all" {{ request('refund_type', 'all') == 'all' ? 'selected' : '' }}>Todos</option>
+                    <option value="sent" {{ request('refund_type') == 'sent' ? 'selected' : '' }}>Solicitados</option>
+                    <option value="received" {{ request('refund_type') == 'received' ? 'selected' : '' }}>Recibidos</option>
+                </select>
+                <select name="refund_status" onchange="this.form.submit()"
+                    class="rounded-full border border-gray-300 px-4 py-2 font-mono text-sm text-gray-700 bg-white">
+                    <option value="all" {{ request('refund_status', 'all') == 'all' ? 'selected' : '' }}>Estado</option>
+                    <option value="pending" {{ request('refund_status') == 'pending' ? 'selected' : '' }}>Pendiente</option>
+                    <option value="completed" {{ request('refund_status') == 'completed' ? 'selected' : '' }}>Completado</option>
+                    <option value="rejected" {{ request('refund_status') == 'rejected' ? 'selected' : '' }}>Rechazado</option>
+                </select>
+            </form>
+
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4 font-mono text-black">Reembolsos</h2>
+
+            @forelse($refunds as $refund)
+                <div class="mb-4 bg-[#ede8f6] border border-gray-300 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+                    <div class="flex items-center gap-4 p-4">
+                        <div class="flex-shrink-0">
+                            <div class="bg-green-500 rounded-full w-10 h-10 flex items-center justify-center text-white text-xl font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M5.07 19A9 9 0 1 1 12 21a9 9 0 0 1-6.93-2"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-mono text-base text-black font-bold">
+                                @if($refund->transaction->sender_id === auth()->id())
+                                    Solicitaste a <span class="text-blue-700 font-bold">{{ $refund->transaction->receiver->name ?? 'Usuario' }} {{ $refund->transaction->receiver->lastname ?? '' }}</span>
+                                @else
+                                    Te solicitaron de <span class="text-blue-700 font-bold">{{ $refund->transaction->sender->name ?? 'Usuario' }} {{ $refund->transaction->sender->lastname ?? '' }}</span>
+                                @endif
+                            </div>
+                            <div class="font-mono text-xs text-gray-600 mt-1">
+                                {{ $refund->created_at->format('d M. Y') }} •
+                                @if($refund->status === 'completed')
+                                    <span class="text-green-600 font-bold">Completada</span>
+                                @elseif($refund->status === 'pending')
+                                    <span class="text-yellow-600 font-bold">Pendiente</span>
+                                @elseif($refund->status === 'rejected')
+                                    <span class="text-red-600 font-bold">Rechazada</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="font-mono text-lg font-bold text-green-700">
+                            {{ $refund->currency }} {{ number_format($refund->amount, 2) }}
+                        </div>
+                        @if($refund->status === 'pending' && $refund->transaction->receiver_id === auth()->id())
+                            <div class="flex flex-col gap-2 ml-4">
+                                <form method="POST" action="{{ route('refunds.accept', $refund->id) }}">
+                                    @csrf
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-1 font-bold text-sm">Aceptar</button>
+                                </form>
+                                <form method="POST" action="{{ route('refunds.reject', $refund->id) }}">
+                                    @csrf
+                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white rounded-full px-4 py-1 font-bold text-sm">Rechazar</button>
+                                </form>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <div class="text-center text-gray-400 py-8 font-mono">No hay reembolsos.</div>
+            @endforelse
+
+            <!-- Paginación -->
+            <div class="mt-6 flex justify-center">
+                @if ($refunds->hasPages())
+                    <nav class="inline-flex rounded-full shadow-sm" aria-label="Pagination">
+                        @if ($refunds->onFirstPage())
+                            <span class="px-4 py-2 bg-gray-200 text-gray-400 rounded-l-full font-mono cursor-not-allowed">Anterior</span>
+                        @else
+                            <a href="{{ $refunds->previousPageUrl() }}"
+                                class="px-4 py-2 bg-[#2563eb] text-white rounded-l-full font-mono hover:bg-[#1e40af] transition">Anterior</a>
+                        @endif
+
+                        @foreach ($refunds->getUrlRange(1, $refunds->lastPage()) as $page => $url)
+                            @if ($page == $refunds->currentPage())
+                                <span class="px-4 py-2 bg-[#ede8f6] text-[#2563eb] font-bold font-mono">{{ $page }}</span>
+                            @else
+                                <a href="{{ $url }}"
+                                    class="px-4 py-2 bg-white text-[#2563eb] font-mono hover:bg-[#f5f7fa] transition">{{ $page }}</a>
+                            @endif
+                        @endforeach
+
+                        @if ($refunds->hasMorePages())
+                            <a href="{{ $refunds->nextPageUrl() }}"
+                                class="px-4 py-2 bg-[#2563eb] text-white rounded-r-full font-mono hover:bg-[#1e40af] transition">Siguiente</a>
+                        @else
+                            <span class="px-4 py-2 bg-gray-200 text-gray-400 rounded-r-full font-mono cursor-not-allowed">Siguiente</span>
+                        @endif
+                    </nav>
+                @endif
+            </div>
+        </div>
     </div>
 
     <!-- JavaScript mejorado para transiciones suaves -->
@@ -552,7 +669,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const tab = urlParams.get('tab');
-            if (tab === 'solicitudes') {
+            if (tab === 'reembolsos') {
+                showTab('reembolsos');
+            } else if (tab === 'solicitudes') {
                 showTab('solicitudes');
             } else {
                 showTab('transacciones');
