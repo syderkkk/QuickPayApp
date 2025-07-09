@@ -43,4 +43,24 @@ class Transaction extends Model
             }
         });
     }
+
+    public function refunds()
+    {
+        return $this->hasMany(Refund::class);
+    }
+
+    public function hasPendingRefund()
+    {
+        return $this->refunds()->where('status', 'pending')->exists();
+    }
+
+    public function hasApprovedRefund()
+    {
+        return $this->refunds()->where('status', 'approved')->exists();
+    }
+
+    public function hasCompletedRefund()
+    {
+        return $this->refunds()->where('status', 'completed')->exists();
+    }
 }

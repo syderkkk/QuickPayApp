@@ -1,7 +1,7 @@
 <x-app-layout>
     @include('layouts.navigation')
     <div class="max-w-2xl mx-auto py-8 px-2 sm:px-4">
-        <!-- Pestañas Transacciones/Solicitudes -->
+        <!-- Pestañas Transacciones/Solicitudes/Reembolsos -->
         <div class="mb-6">
             <div class="flex border-b border-gray-200">
                 <button onclick="showTab('transacciones')" id="tab-transacciones"
@@ -11,6 +11,10 @@
                 <button onclick="showTab('solicitudes')" id="tab-solicitudes"
                     class="tab-button px-6 py-3 font-mono font-bold text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700">
                     Solicitudes
+                </button>
+                <button onclick="showTab('reembolsos')" id="tab-reembolsos"
+                    class="tab-button active px-6 py-3 font-mono font-bold text-sm border-b-2 border-[#2563eb] text-[#2563eb]">
+                    Reembolsos
                 </button>
             </div>
         </div>
@@ -132,63 +136,29 @@
                         </div>
                         <div class="ml-0 sm:ml-4 mt-2 sm:mt-0 flex-1 w-full">
                             <div class="font-bold text-base sm:text-lg uppercase tracking-wide font-mono text-[#222]">
-                                @if ($transaction->type === 'request')
-                                    {{-- Para solicitudes --}}
-                                    @if ($transaction->receiver_id === auth()->id())
-                                        {{-- Yo solicité dinero --}}
-                                        {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
-                                    @else
-                                        {{-- Yo pagué una solicitud --}}
-                                        {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario #' . $transaction->receiver_id }}
-                                    @endif
+                                @if ($transaction->sender_id === auth()->id())
+                                    {{-- Yo envié, muestro a quién envié --}}
+                                    {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario #' . $transaction->receiver_id }}
                                 @else
-                                    {{-- Para envíos directos (lógica original) --}}
-                                    @if ($transaction->sender_id === auth()->id())
-                                        {{-- Yo envié, muestro a quién envié --}}
-                                        {{ $transaction->receiver ? $transaction->receiver->name . ' ' . $transaction->receiver->lastname : 'Usuario #' . $transaction->receiver_id }}
-                                    @else
-                                        {{-- Yo recibí, muestro quién me envió --}}
-                                        {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
-                                    @endif
+                                    {{-- Yo recibí, muestro quién me envió --}}
+                                    {{ $transaction->sender ? $transaction->sender->name . ' ' . $transaction->sender->lastname : 'Usuario #' . $transaction->sender_id }}
                                 @endif
                             </div>
                             <div class="text-gray-500 text-xs sm:text-sm font-mono">
                                 {{ $transaction->created_at->format('d M.') }}
-                                @if ($transaction->type === 'request')
-                                    {{-- Para solicitudes --}}
-                                    @if ($transaction->receiver_id === auth()->id())
-                                        Solicitud recibida
-                                    @else
-                                        Solicitud pagada
-                                    @endif
+                                @if ($transaction->sender_id === auth()->id())
+                                    Pago enviado
                                 @else
-                                    {{-- Para envíos directos --}}
-                                    @if ($transaction->sender_id === auth()->id())
-                                        Pago enviado
-                                    @else
-                                        Pago recibido
-                                    @endif
+                                    Pago recibido
                                 @endif
                             </div>
                         </div>
                         <div
-                            class="text-right font-bold text-base sm:text-lg font-mono {{ ($transaction->type === 'request' ? ($transaction->receiver_id === auth()->id() ? 'text-green-600' : 'text-red-500') : ($transaction->sender_id === auth()->id() ? 'text-red-500' : 'text-green-600')) }} w-full sm:w-auto mt-2 sm:mt-0">
-                            @if ($transaction->type === 'request')
-                                {{-- Para solicitudes, mostrar según quién recibe/envía realmente --}}
-                                @if ($transaction->receiver_id === auth()->id())
-                                    {{-- Yo soy quien solicitó (recibo dinero) --}}
-                                    +{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
-                                @else
-                                    {{-- Yo soy quien pagó la solicitud (envío dinero) --}}
-                                    -{{ auth()->user()->wallet->currency }}.{{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
-                                @endif
+                            class="text-right font-bold text-base sm:text-lg font-mono {{ $transaction->sender_id === auth()->id() ? 'text-red-500' : 'text-green-600' }} w-full sm:w-auto mt-2 sm:mt-0">
+                            @if ($transaction->sender_id === auth()->id())
+                                -{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
                             @else
-                                {{-- Lógica original para envíos directos --}}
-                                @if ($transaction->sender_id === auth()->id())
-                                    -{{ $transaction->currency }}.{{ number_format($transaction->amount, 2) }}
-                                @else
-                                    +{{ $transaction->receiver_currency ?? $transaction->currency }}.{{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
-                                @endif
+                                +{{ $transaction->receiver_currency ?? $transaction->currency }}.{{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
                             @endif
                         </div>
                         <div class="ml-3">
@@ -238,206 +208,81 @@
                                                 @if ($transaction->card)
                                                     {{ strtoupper($transaction->card->brand) }}
                                                 @else
-                                                    @if ($transaction->type === 'request')
-                                                        @if ($transaction->receiver_id === auth()->id())
-                                                            Billetera {{ $transaction->sender->wallet->currency ?? 'N/A' }}
-                                                        @else
-                                                            Billetera {{ auth()->user()->wallet->currency }}
-                                                        @endif
-                                                    @else
-                                                        Billetera {{ $transaction->sender->wallet->currency ?? $transaction->currency }}
-                                                    @endif
+                                                    Billetera
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
-                                    <hr class="my-2">
-
-                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Detalles del pago</h4>
-                                    @if ($transaction->type === 'request')
-                                        {{-- Para solicitudes --}}
-                                        @if ($transaction->receiver_id === auth()->id())
-                                            {{-- Yo solicité --}}
-                                            <div class="flex justify-between items-center mb-2">
-                                                <span class="font-mono text-sm">Monto solicitado</span>
-                                                <span class="font-mono text-sm font-bold">
-                                                    {{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}
-                                                </span>
-                                            </div>
-                                        @else
-                                            {{-- Yo pagué la solicitud --}}
-                                            <div class="flex justify-between items-center mb-2">
-                                                <span class="font-mono text-sm">Monto pagado</span>
-                                                <span class="font-mono text-sm font-bold">
-                                                    {{ auth()->user()->wallet->currency }} {{ number_format($transaction->converted_amount ?? $transaction->amount, 2) }}
-                                                </span>
-                                            </div>
-                                            @if ($transaction->currency !== auth()->user()->wallet->currency && $transaction->exchange_rate)
-                                                <div class="flex justify-between items-center mb-2">
-                                                    <span class="font-mono text-sm">Tasa de cambio</span>
-                                                    <span class="font-mono text-sm">
-                                                        1 {{ auth()->user()->wallet->currency }} =
-                                                        {{ number_format(1 / $transaction->exchange_rate, 3) }}
-                                                        {{ $transaction->currency }}
-                                                    </span>
-                                                </div>
-                                                <hr class="my-2">
-                                                <div class="flex justify-between items-center">
-                                                    <span class="font-mono text-base font-bold">El solicitante recibió</span>
-                                                    <span class="font-mono text-base font-bold text-green-700">
-                                                        {{ $transaction->currency }}
-                                                        {{ number_format($transaction->amount, 2) }}
-                                                    </span>
-                                                </div>
-                                            @endif
-                                        @endif
-                                    @else
-                                        {{-- Lógica original para envíos directos --}}
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="font-mono text-sm">Importe enviado</span>
-                                            <span class="font-mono text-sm font-bold">
-                                                {{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}
-                                            </span>
-                                        </div>
-                                        @if ($transaction->currency !== $transaction->receiver_currency)
-                                            <div class="flex justify-between items-center mb-2">
-                                                <span class="font-mono text-sm">Tasa de cambio</span>
-                                                <span class="font-mono text-sm">
-                                                    1 {{ $transaction->currency }} =
-                                                    {{ number_format($transaction->exchange_rate, 2) }}
-                                                    {{ $transaction->receiver_currency }}
-                                                </span>
-                                            </div>
-                                            <hr class="my-2">
-                                            <div class="flex justify-between items-center">
-                                                <span class="font-mono text-base font-bold">Total</span>
-                                                <span class="font-mono text-base font-bold text-green-700">
-                                                    {{ $transaction->receiver_currency }}
-                                                    {{ number_format($transaction->converted_amount, 2) }}
-                                                </span>
-                                            </div>
-                                        @else
-                                            <hr class="my-2">
-                                            <div class="flex justify-between items-center">
-                                                <span class="font-mono text-base font-bold">Importe Total</span>
-                                                <span class="font-mono text-base font-bold">
-                                                    {{ $transaction->currency }}
-                                                    {{ number_format($transaction->amount, 2) }}
-                                                </span>
-                                            </div>
-                                        @endif
-                                    @endif
+                                    <hr class="my-10">
+                                    {{-- <div class="text-sm text-gray-600 font-mono mt-2">
+                                        Verá "QuickPay {{ $transaction->sender->name ?? 'USUARIO' }}" En el estado de
+                                        cuenta de su tarjeta.
+                                    </div> --}}
+                                    <div class="text-sm text-gray-600 font-mono mt-1">
+                                        Fecha:
+                                        {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'd \d\e F \d\e Y') }}
+                                    </div>
+                                    <div class="text-sm text-gray-600 font-mono mt-1">
+                                        Hora:
+                                        {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'H:i:s') }}
+                                    </div>
                                 </div>
 
                                 <!-- Información del receptor -->
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <h4 class="font-mono text-sm text-gray-600 mb-2">
-                                        @if ($transaction->type === 'request')
-                                            {{-- Para solicitudes --}}
-                                            @if ($transaction->receiver_id === auth()->id())
-                                                Información de quien pagó
-                                            @else
-                                                Información de quien solicitó
-                                            @endif
+                                        @if ($transaction->sender_id === auth()->id())
+                                            Información del receptor
                                         @else
-                                            {{-- Para envíos directos --}}
-                                            @if ($transaction->sender_id === auth()->id())
-                                                Información del receptor
-                                            @else
-                                                Información del remitente
-                                            @endif
+                                            Información del remitente
                                         @endif
                                     </h4>
                                     <div class="font-mono font-bold text-base text-black mb-1">
-                                        @if ($transaction->type === 'request')
-                                            @if ($transaction->receiver_id === auth()->id())
-                                                {{-- Mostrar quien pagó la solicitud --}}
-                                                {{ $transaction->sender->name ?? 'Usuario' }}
-                                                {{ $transaction->sender->lastname ?? '' }}
-                                            @else
-                                                {{-- Mostrar quien solicitó --}}
-                                                {{ $transaction->receiver->name ?? 'Usuario' }}
-                                                {{ $transaction->receiver->lastname ?? '' }}
-                                            @endif
+                                        @if ($transaction->sender_id === auth()->id())
+                                            {{ $transaction->receiver->name ?? 'Usuario' }}
+                                            {{ $transaction->receiver->lastname ?? '' }}
                                         @else
-                                            @if ($transaction->sender_id === auth()->id())
-                                                {{ $transaction->receiver->name ?? 'Usuario' }}
-                                                {{ $transaction->receiver->lastname ?? '' }}
-                                            @else
-                                                {{ $transaction->sender->name ?? 'Usuario' }}
-                                                {{ $transaction->sender->lastname ?? '' }}
-                                            @endif
+                                            {{ $transaction->sender->name ?? 'Usuario' }}
+                                            {{ $transaction->sender->lastname ?? '' }}
                                         @endif
                                     </div>
                                     <div class="font-mono text-sm text-blue-600 mb-4">
-                                        @if ($transaction->type === 'request')
-                                            @if ($transaction->receiver_id === auth()->id())
-                                                {{ $transaction->sender->email ?? 'email@ejemplo.com' }}
-                                            @else
-                                                {{ $transaction->receiver->email ?? 'email@ejemplo.com' }}
-                                            @endif
+                                        @if ($transaction->sender_id === auth()->id())
+                                            {{ $transaction->receiver->email ?? 'email@ejemplo.com' }}
                                         @else
-                                            @if ($transaction->sender_id === auth()->id())
-                                                {{ $transaction->receiver->email ?? 'email@ejemplo.com' }}
-                                            @else
-                                                {{ $transaction->sender->email ?? 'email@ejemplo.com' }}
-                                            @endif
+                                            {{ $transaction->sender->email ?? 'email@ejemplo.com' }}
                                         @endif
                                     </div>
 
                                     <h4 class="font-mono text-sm text-gray-600 mb-2">Teléfono</h4>
                                     <div class="font-mono text-sm text-black mb-4">
-                                        @if ($transaction->type === 'request')
-                                            @if ($transaction->receiver_id === auth()->id())
-                                                {{ $transaction->sender->phone ?? 'No registrado' }}
-                                            @else
-                                                {{ $transaction->receiver->phone ?? 'No registrado' }}
-                                            @endif
+                                        @if ($transaction->sender_id === auth()->id())
+                                            {{ $transaction->receiver->phone ?? 'No registrado' }}
                                         @else
-                                            @if ($transaction->sender_id === auth()->id())
-                                                {{ $transaction->receiver->phone ?? 'No registrado' }}
-                                            @else
-                                                {{ $transaction->sender->phone ?? 'No registrado' }}
-                                            @endif
+                                            {{ $transaction->sender->phone ?? 'No registrado' }}
                                         @endif
                                     </div>
 
-                                    {{-- Moneda del usuario --}}
-                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Moneda</h4>
-                                    <div class="font-mono text-sm font-bold">
-                                        @if ($transaction->type === 'request')
-                                            @if ($transaction->receiver_id === auth()->id())
-                                                {{-- Mostrar moneda de quien pagó --}}
-                                                {{ $transaction->sender->wallet->currency ?? 'N/A' }}
-                                            @else
-                                                {{-- Mostrar moneda de quien solicitó --}}
-                                                {{ $transaction->receiver->wallet->currency ?? 'N/A' }}
-                                            @endif
-                                        @else
-                                            @if ($transaction->sender_id === auth()->id())
-                                                {{ $transaction->receiver_currency ?? $transaction->currency }}
-                                            @else
-                                                {{ $transaction->currency }}
-                                            @endif
-                                        @endif
+                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Detalles del pago</h4>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-mono text-sm">Importe del pago</span>
+                                        <span class="font-mono text-sm font-bold">{{ $transaction->currency }}.
+                                            {{ number_format($transaction->amount, 2) }}</span>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-mono text-base font-bold">Total</span>
+                                        <span class="font-mono text-base font-bold">{{ $transaction->currency }}.
+                                            {{ number_format($transaction->amount, 2) }}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- ID de transacción -->
-                            <div
-                                class="bg-gray-50 rounded-lg p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                                <div>
-                                    <h4 class="font-mono text-sm text-gray-600 mb-2">Id. de transacción</h4>
-                                    <div class="font-mono text-sm font-bold">
-                                        {{ $transaction->custom_id ?? 'No disponible' }}
-                                    </div>
-                                </div>
-                                <div class="mt-2 sm:mt-0 text-sm text-gray-600 font-mono text-right">
-                                    Fecha:
-                                    {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'd \d\e F \d\e Y') }}<br>
-                                    Hora:
-                                    {{ \App\Helpers\TimezoneHelper::formatForUser($transaction->created_at, 'H:i:s') }}
+                            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                                <h4 class="font-mono text-sm text-gray-600 mb-2">Id. de transacción</h4>
+                                <div class="font-mono text-sm font-bold">
+                                    {{ $transaction->custom_id ?? 'No disponible' }}
                                 </div>
                             </div>
 
@@ -457,15 +302,22 @@
                                     <span class="font-semibold text-sm">Descargar comprobante</span>
                                 </button>
 
-                                <button onclick="requestRefund({{ $transaction->id }})"
-                                    class="flex items-center gap-2 text-red-600 hover:text-red-800 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="-2 -3 24 24">
-                                        <path fill="currentColor"
-                                            d="m12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.2 3.2 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096M10 14a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0-9a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V6a1 1 0 0 0-1-1" />
-                                    </svg>
-                                    <span class="font-semibold text-sm">Solicitar un reembolso</span>
-                                </button>
+                                @if (
+                                    $transaction->sender_id === auth()->id() &&
+                                        $transaction->status === 'completed' &&
+                                        !$transaction->hasPendingRefund() &&
+                                        !$transaction->hasApprovedRefund() &&
+                                        !$transaction->hasCompletedRefund())
+                                    <a href="{{ route('refunds.create', $transaction->id) }}"
+                                        class="flex items-center gap-2 text-red-600 hover:text-red-800 transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="-2 -3 24 24">
+                                            <path fill="currentColor"
+                                                d="m12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.2 3.2 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096M10 14a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0-9a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V6a1 1 0 0 0-1-1" />
+                                        </svg>
+                                        <span class="font-semibold text-sm">Solicitar un reembolso</span>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -683,8 +535,156 @@
                 <div class="text-center text-gray-400 py-8 font-mono">No hay solicitudes de pago.</div>
             @endforelse
         </div>
+
+        <!-- Contenido de Reembolsos -->
+        <div id="content-reembolsos" class="tab-content hidden">
+            <form method="GET" class="mb-4 flex flex-col sm:flex-row gap-2 items-center">
+                <input type="hidden" name="tab" value="reembolsos">
+                <input type="text" name="refund_search" placeholder="Buscar por nombre o correo electrónico"
+                    value="{{ request('refund_search') }}"
+                    class="w-full rounded-full border border-gray-300 px-6 py-3 text-base font-mono text-gray-500 bg-[#f5f7fa] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563eb] shadow">
+                <select name="refund_type" onchange="this.form.submit()"
+                    class="rounded-full border border-gray-300 px-4 py-2 font-mono text-sm text-gray-700 bg-white">
+                    <option value="all" {{ request('refund_type', 'all') == 'all' ? 'selected' : '' }}>Todos
+                    </option>
+                    <option value="sent" {{ request('refund_type') == 'sent' ? 'selected' : '' }}>Solicitados
+                    </option>
+                    <option value="received" {{ request('refund_type') == 'received' ? 'selected' : '' }}>Recibidos
+                    </option>
+                </select>
+                <select name="refund_status" onchange="this.form.submit()"
+                    class="rounded-full border border-gray-300 px-4 py-2 font-mono text-sm text-gray-700 bg-white">
+                    <option value="all" {{ request('refund_status', 'all') == 'all' ? 'selected' : '' }}>Estado
+                    </option>
+                    <option value="pending" {{ request('refund_status') == 'pending' ? 'selected' : '' }}>Pendiente
+                    </option>
+                    <option value="completed" {{ request('refund_status') == 'completed' ? 'selected' : '' }}>
+                        Completado</option>
+                    <option value="rejected" {{ request('refund_status') == 'rejected' ? 'selected' : '' }}>Rechazado
+                    </option>
+                </select>
+            </form>
+
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4 font-mono text-black">Reembolsos</h2>
+
+            @forelse($refunds as $refund)
+                <div
+                    class="mb-4 bg-[#ede8f6] border border-gray-300 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+                    <div class="flex items-center gap-4 p-4">
+                        <div class="flex-shrink-0">
+                            <div
+                                class="bg-green-500 rounded-full w-10 h-10 flex items-center justify-center text-white text-xl font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none"
+                                    viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M4 4v5h5M20 20v-5h-5M5.07 19A9 9 0 1 1 12 21a9 9 0 0 1-6.93-2" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-mono text-base text-black font-bold">
+                                @if ($refund->transaction->sender_id === auth()->id())
+                                    Solicitaste a <span
+                                        class="text-blue-700 font-bold">{{ $refund->transaction->receiver->name ?? 'Usuario' }}
+                                        {{ $refund->transaction->receiver->lastname ?? '' }}</span>
+                                @else
+                                    Te solicitaron de <span
+                                        class="text-blue-700 font-bold">{{ $refund->transaction->sender->name ?? 'Usuario' }}
+                                        {{ $refund->transaction->sender->lastname ?? '' }}</span>
+                                @endif
+                            </div>
+                            <div class="font-mono text-xs text-gray-600 mt-1">
+                                {{ $refund->created_at->format('d M. Y') }} •
+                                @if ($refund->status === 'completed')
+                                    <span class="text-green-600 font-bold">Completada</span>
+                                @elseif($refund->status === 'pending')
+                                    <span class="text-yellow-600 font-bold">Pendiente</span>
+                                @elseif($refund->status === 'rejected')
+                                    <span class="text-red-600 font-bold">Rechazada</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end gap-2">
+                            <div class="font-mono text-lg font-bold text-green-700">
+                                {{ $refund->currency }} {{ number_format($refund->amount, 2) }}
+                            </div>
+                            @if ($refund->status === 'pending' && $refund->transaction->receiver_id === auth()->id())
+                                <div class="flex gap-2">
+                                    <form method="POST" action="{{ route('refunds.accept', $refund->id) }}"
+                                        class="inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg px-3 py-1.5 font-mono font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98]">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                                Aceptar
+                                            </div>
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('refunds.reject', $refund->id) }}"
+                                        class="inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg px-3 py-1.5 font-mono font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98]">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                                Rechazar
+                                            </div>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center text-gray-400 py-8 font-mono">No hay reembolsos.</div>
+            @endforelse
+
+            <!-- Paginación -->
+            <div class="mt-6 flex justify-center">
+                @if ($refunds->hasPages())
+                    <nav class="inline-flex rounded-full shadow-sm" aria-label="Pagination">
+                        @if ($refunds->onFirstPage())
+                            <span
+                                class="px-4 py-2 bg-gray-200 text-gray-400 rounded-l-full font-mono cursor-not-allowed">Anterior</span>
+                        @else
+                            <a href="{{ $refunds->previousPageUrl() }}"
+                                class="px-4 py-2 bg-[#2563eb] text-white rounded-l-full font-mono hover:bg-[#1e40af] transition">Anterior</a>
+                        @endif
+
+                        @foreach ($refunds->getUrlRange(1, $refunds->lastPage()) as $page => $url)
+                            @if ($page == $refunds->currentPage())
+                                <span
+                                    class="px-4 py-2 bg-[#ede8f6] text-[#2563eb] font-bold font-mono">{{ $page }}</span>
+                            @else
+                                <a href="{{ $url }}"
+                                    class="px-4 py-2 bg-white text-[#2563eb] font-mono hover:bg-[#f5f7fa] transition">{{ $page }}</a>
+                            @endif
+                        @endforeach
+
+                        @if ($refunds->hasMorePages())
+                            <a href="{{ $refunds->nextPageUrl() }}"
+                                class="px-4 py-2 bg-[#2563eb] text-white rounded-r-full font-mono hover:bg-[#1e40af] transition">Siguiente</a>
+                        @else
+                            <span
+                                class="px-4 py-2 bg-gray-200 text-gray-400 rounded-r-full font-mono cursor-not-allowed">Siguiente</span>
+                        @endif
+                    </nav>
+                @endif
+            </div>
+        </div>
     </div>
 
+    <!-- JavaScript mejorado para transiciones suaves -->
     <script>
         function showTab(tabName) {
             // Ocultar todos los contenidos
@@ -710,7 +710,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const tab = urlParams.get('tab');
-            if (tab === 'solicitudes') {
+            if (tab === 'reembolsos') {
+                showTab('reembolsos');
+            } else if (tab === 'solicitudes') {
                 showTab('solicitudes');
             } else {
                 showTab('transacciones');
@@ -812,5 +814,4 @@
             transform: translateY(-2px);
         }
     </style>
-    
 </x-app-layout>

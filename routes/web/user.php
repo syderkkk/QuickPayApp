@@ -6,6 +6,7 @@ use App\Http\Controllers\User\PaymentMethodController;
 use App\Http\Controllers\User\CardController;
 use App\Http\Controllers\User\BankController;
 use App\Http\Controllers\User\ContactController;
+use App\Http\Controllers\User\RefundController;
 use App\Http\Controllers\User\Transactions\NotificationController;
 use App\Http\Controllers\User\Transactions\RequestController;
 use App\Http\Controllers\User\Transactions\SendController;
@@ -70,4 +71,12 @@ Route::middleware('auth')->group(function () {
 
     // Notificaciones
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
+
+
+
+    // Reembolsos
+    Route::get('/transactions/{id}/refund', [RefundController::class, 'create'])->name('refunds.create');
+    Route::post('/transactions/{transactionId}/refund', [RefundController::class, 'store'])->name('refunds.store');
+    Route::post('/refunds/{refund}/accept', [RefundController::class, 'accept'])->name('refunds.accept');
+    Route::post('/refunds/{refund}/reject', [RefundController::class, 'reject'])->name('refunds.reject');
 });

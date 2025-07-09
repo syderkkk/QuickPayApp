@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Transactions;
 
 use App\Http\Controllers\Controller;
+use App\Models\Refund;
 use App\Models\Transaction;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -59,7 +60,7 @@ class TransactionController extends Controller
             });
         }
 
-        
+
 
         if ($request->filled('currency')) {
             $query->where('currency', $request->currency);
@@ -122,7 +123,49 @@ class TransactionController extends Controller
 
         $requests = $requestsQuery->latest()->paginate(10);
 
-        return view('transactions.index', compact('transactions', 'requests'));
+        // --- CONSULTA DE REEMBOLSOS ---
+        $refundsQuery = Refund::whereHas('transaction', function ($q) use ($user) {
+            $q->where('sender_id', $user->id)
+                ->orWhere('receiver_id', $user->id);
+        })->with(['transaction.sender', 'transaction.receiver']);
+
+        // Filtro tipo (solicitados o recibidos)
+        $refundType = $request->input('refund_type', 'all');
+        if ($refundType === 'sent') {
+            $refundsQuery->whereHas('transaction', function ($q) use ($user) {
+                $q->where('sender_id', $user->id);
+            });
+        } elseif ($refundType === 'received') {
+            $refundsQuery->whereHas('transaction', function ($q) use ($user) {
+                $q->where('receiver_id', $user->id);
+            });
+        }
+
+        // Filtro estado
+        $refundStatus = $request->input('refund_status', 'all');
+        if (in_array($refundStatus, ['pending', 'completed', 'rejected'])) {
+            $refundsQuery->where('status', $refundStatus);
+        }
+
+        // Filtro búsqueda
+        if ($request->filled('refund_search')) {
+            $search = $request->refund_search;
+            $refundsQuery->where(function ($q) use ($search) {
+                $q->whereHas('transaction.sender', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%")
+                        ->orWhere('lastname', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%");
+                })->orWhereHas('transaction.receiver', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%")
+                        ->orWhere('lastname', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%");
+                });
+            });
+        }
+
+        $refunds = $refundsQuery->latest()->paginate(10);
+
+        return view('transactions.index', compact('transactions', 'requests', 'refunds'));
     }
 
 
