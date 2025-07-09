@@ -72,8 +72,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="mb-2 text-sm font-bold text-[#284494]">Reembolsos pendientes</p>
-                                <p class="text-lg font-extrabold text-[#ff0c0c]">Proximamente</p>
+                                <p class="mb-2 text-sm font-bold text-[#284494]">Reembolsos</p>
+                                <p class="text-lg font-extrabold text-[#222]">{{ $totalRefunds }}</p>
                             </div>
                         </div>
                     </div>

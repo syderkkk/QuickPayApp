@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\RefundController as AdminRefundController;
 use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\CardController as AdminCardController;
@@ -33,4 +34,7 @@ Route::middleware(['auth', IsAdmin::class])
 
         // Wallet admin
         Route::resource('wallets', AdminWalletController::class);
+
+        // Reembolsos admin
+        Route::resource('refunds', AdminRefundController::class)->only(['index', 'show']);
     });

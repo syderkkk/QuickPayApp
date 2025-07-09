@@ -41,6 +41,17 @@
                     <span class="ml-4">Transacciones</span>
                 </a>
             </li>
+            <li class="relative px-6 py-3">
+                <a class="inline-flex items-center w-full text-base font-bold text-[#e0e7ff] transition-colors duration-150 hover:text-[#2563eb]"
+                    href="{{ route('admin.refunds.index') }}">
+                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 8v4l3 3" />
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                    <span class="ml-4">Reembolsos</span>
+                </a>
+            </li>
             <!-- Nueva sección desplegable -->
             <li class="relative px-6 py-3" x-data="{ open: false }">
                 <button type="button"

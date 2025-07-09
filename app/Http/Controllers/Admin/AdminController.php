@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use App\Models\Refund;
 
 class AdminController extends Controller
 {
@@ -17,12 +18,14 @@ class AdminController extends Controller
         $totalTransactions = Transaction::count();
 
         $transactions = Transaction::with('sender')->latest()->paginate(10);
+        $totalRefunds = Refund::count();
 
         return view('admin.dashboard', compact(
             'totalUsers',
             'totalBalance',
             'totalTransactions',
             'transactions',
+            'totalRefunds',
         ));
     }
 }

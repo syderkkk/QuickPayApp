@@ -31,6 +31,11 @@ class Refund extends Model
         return $this->belongsTo(User::class, 'refunded_by_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     // Scopes
     public function scopePending($query)
     {
