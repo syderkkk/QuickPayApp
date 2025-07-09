@@ -1,6 +1,6 @@
 <x-app-layout>
     @include('layouts.navigation')
-    <div class="flex flex-col items-center justify-center min-h-screen bg-white">
+    <div class="flex flex-col items-center justify-center bg-white">
         <h2 class="text-2xl sm:text-3xl font-black text-center mt-12 mb-8 font-mono">Solicitud de reembolso<br>enviada correctamente</h2>
         <div class="flex items-center justify-center mb-8">
             <div class="rounded-full bg-green-600 w-48 h-48 flex items-center justify-center">
