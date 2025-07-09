@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Notification;
+use App\Models\Refund;
 
 class RefundController extends Controller
 {
@@ -29,7 +30,7 @@ class RefundController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
-        $transaction = \App\Models\Transaction::where('id', $transactionId)
+        $transaction = Transaction::where('id', $transactionId)
             ->where('sender_id', Auth::id())
             ->where('status', 'completed')
             ->firstOrFail();
@@ -48,7 +49,7 @@ class RefundController extends Controller
         ];
         $motivo = $motivos[$request->reason_type] ?? 'Otro';
 
-        $refund = new \App\Models\Refund();
+        $refund = new Refund();
         $refund->transaction_id = $transaction->id;
         $refund->amount = $transaction->amount;
         $refund->currency = $transaction->currency;
@@ -74,7 +75,7 @@ class RefundController extends Controller
 
     public function accept($refundId)
     {
-        $refund = \App\Models\Refund::with('transaction')->findOrFail($refundId);
+        $refund = Refund::with('transaction')->findOrFail($refundId);
         $user = Auth::user();
 
         // Solo el receptor puede aceptar
@@ -109,7 +110,7 @@ class RefundController extends Controller
 
     public function reject($refundId)
     {
-        $refund = \App\Models\Refund::with('transaction')->findOrFail($refundId);
+        $refund = Refund::with('transaction')->findOrFail($refundId);
         $user = Auth::user();
 
         // Solo el receptor puede rechazar
