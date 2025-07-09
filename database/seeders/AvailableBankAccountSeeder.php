@@ -26,6 +26,14 @@ class AvailableBankAccountSeeder extends Seeder
                 'balance' => 3000.00,
                 'status' => 'active',
             ],
+            [
+                'bank_entity_id' => 2, // Interbank
+                'account_number' => '5876241210923',
+                'type' => 'corriente',
+                'currency' => 'PEN',
+                'balance' => 0.00,
+                'status' => 'active',
+            ],
         ]);
     }
 }

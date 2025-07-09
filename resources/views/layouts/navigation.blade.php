@@ -15,9 +15,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         <!-- Logo -->
         <div class="flex items-center gap-3">
-            <span class="flex items-center font-extrabold text-white text-2xl select-none">
+            <a href="{{ route('dashboard') }}"
+                class="flex items-center font-extrabold text-white text-2xl select-none hover:text-yellow-400 transition-colors duration-200 cursor-pointer">
                 Q<span class="ml-1 text-yellow-400 text-3xl -mt-1">⚡</span>
-            </span>
+            </a>
         </div>
 
         <!-- Desktop Menu -->
@@ -340,21 +341,21 @@
                     </button>
 
                     <!-- Mobile Notifications Dropdown -->
-                    <div x-show="mobileNotifOpen" 
-                        x-transition:enter="transition ease-out duration-200"
+                    <div x-show="mobileNotifOpen" x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 scale-95 translate-y-2"
                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                         x-transition:leave="transition ease-in duration-150"
                         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                         x-transition:leave-end="opacity-0 scale-95 translate-y-2"
                         class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4">
-                        
+
                         <!-- Modal contenedor -->
-                        <div @click.away="mobileNotifOpen = false" 
+                        <div @click.away="mobileNotifOpen = false"
                             class="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-md w-full max-h-[80vh] overflow-hidden">
-                            
+
                             <!-- Header con botón de cerrar -->
-                            <div class="bg-gradient-to-r from-primary to-blue-600 px-4 py-3 flex items-center justify-between">
+                            <div
+                                class="bg-gradient-to-r from-primary to-blue-600 px-4 py-3 flex items-center justify-between">
                                 <h3 class="font-bold text-white text-lg">Notificaciones</h3>
                                 <div class="flex items-center gap-3">
                                     @if ($unreadCount > 0)
@@ -362,10 +363,12 @@
                                             {{ $unreadCount }}
                                         </span>
                                     @endif
-                                    <button @click="mobileNotifOpen = false" 
+                                    <button @click="mobileNotifOpen = false"
                                         class="text-white hover:text-gray-200 transition-colors duration-200 p-1">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
                                 </div>
@@ -377,41 +380,49 @@
                                     @forelse($notifications as $notification)
                                         <div class="bg-white hover:bg-gray-50 border border-gray-200 rounded-lg p-3 shadow-sm transition-colors duration-200 
                                             {{ $notification->type === 'request' ? 'cursor-pointer' : '' }}"
-                                            @if ($notification->type === 'request') 
-                                                onclick="handleMobileNotificationClick({{ $notification->id }}, '{{ $notification->data['request_id'] ?? '' }}')" 
-                                            @endif>
-                                            
+                                            @if ($notification->type === 'request') onclick="handleMobileNotificationClick({{ $notification->id }}, '{{ $notification->data['request_id'] ?? '' }}')" @endif>
+
                                             <div class="flex items-start gap-3">
                                                 <!-- Icono -->
                                                 <div class="flex-shrink-0">
                                                     @if ($notification->type === 'request')
-                                                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                        <div
+                                                            class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                                            <svg class="w-5 h-5 text-blue-600" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
                                                                     d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                                                             </svg>
                                                         </div>
                                                     @elseif ($notification->type === 'transaction')
-                                                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                                                        <div
+                                                            class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                                            <svg class="w-5 h-5 text-green-600" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M9 12l2 2 4-4" />
                                                             </svg>
                                                         </div>
                                                     @else
-                                                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                                                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                        <div
+                                                            class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                                                            <svg class="w-5 h-5 text-gray-600" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
                                                                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                             </svg>
                                                         </div>
                                                     @endif
                                                 </div>
-                                                
+
                                                 <!-- Contenido -->
                                                 <div class="flex-1 min-w-0">
                                                     <div class="flex items-start justify-between">
                                                         <div class="flex-1 pr-2">
-                                                            <h4 class="font-semibold text-gray-900 text-sm leading-tight mb-1">
+                                                            <h4
+                                                                class="font-semibold text-gray-900 text-sm leading-tight mb-1">
                                                                 {{ $notification->title }}
                                                             </h4>
                                                             <p class="text-gray-600 text-xs mb-2 leading-relaxed">
@@ -422,18 +433,22 @@
                                                                     {{ $notification->created_at->diffForHumans() }}
                                                                 </span>
                                                                 @if ($notification->type === 'request')
-                                                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                                                    <span
+                                                                        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
                                                                         Solicitud
                                                                     </span>
                                                                 @endif
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <!-- Botón marcar como leída -->
-                                                        <button onclick="event.stopPropagation(); markAsRead({{ $notification->id }})"
+                                                        <button
+                                                            onclick="event.stopPropagation(); markAsRead({{ $notification->id }})"
                                                             class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200 transition-colors duration-200">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                             </svg>
                                                         </button>
                                                     </div>
@@ -442,8 +457,9 @@
                                         </div>
                                     @empty
                                         <div class="py-12 text-center text-gray-500">
-                                            <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                            <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                             </svg>
                                             <p class="text-sm font-medium">No tienes notificaciones nuevas</p>

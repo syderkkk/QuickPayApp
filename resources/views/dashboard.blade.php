@@ -115,7 +115,7 @@
                         <div>
                             <div class="flex items-center justify-between mb-4">
                                 <div class="font-extrabold text-lg sm:text-xl md:text-2xl font-mono text-black">
-                                    Actividad reciente
+                                    Movimientos recientes
                                 </div>
                                 <a href="{{ route('transactions.index') }}"
                                     class="text-[#2563eb] font-mono text-xs sm:text-sm hover:underline">

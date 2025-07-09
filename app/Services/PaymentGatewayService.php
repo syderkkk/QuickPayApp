@@ -99,7 +99,7 @@ class PaymentGatewayService
             }
 
             if ($bankAccount->balance < $amount) {
-                throw new Exception('Fondos insuficientes en la cuenta bancaria.');
+                throw new Exception('Fondos insuficientes en la tarjeta.');
             }
 
             $bankAccount->balance -= $amount;

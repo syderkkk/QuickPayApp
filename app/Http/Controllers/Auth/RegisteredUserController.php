@@ -57,10 +57,27 @@ class RegisteredUserController extends Controller
         ]);
 
         $currency = match ($user->country) {
-            'PE' => 'PEN',
-            'AR' => 'ARS',
-            'CL' => 'CLP',
-            default => 'USD',
+            'AR' => 'ARS', // Argentina - Peso argentino
+            'BO' => 'BOB', // Bolivia - Boliviano
+            'BR' => 'BRL', // Brasil - Real brasileño
+            'CL' => 'CLP', // Chile - Peso chileno
+            'CO' => 'COP', // Colombia - Peso colombiano
+            'CR' => 'CRC', // Costa Rica - Colón costarricense
+            'CU' => 'CUP', // Cuba - Peso cubano
+            'DO' => 'DOP', // República Dominicana - Peso dominicano
+            'EC' => 'USD', // Ecuador - Dólar estadounidense
+            'SV' => 'USD', // El Salvador - Dólar estadounidense 
+            'GT' => 'GTQ', // Guatemala - Quetzal
+            'HN' => 'HNL', // Honduras - Lempira
+            'MX' => 'MXN', // México - Peso mexicano
+            'NI' => 'NIO', // Nicaragua - Córdoba
+            'PA' => 'USD', // Panamá - Dólar estadounidense
+            'PY' => 'PYG', // Paraguay - Guaraní
+            'PE' => 'PEN', // Perú - Sol
+            'PR' => 'USD', // Puerto Rico - Dólar estadounidense
+            'UY' => 'UYU', // Uruguay - Peso uruguayo
+            'VE' => 'VES', // Venezuela - Bolívar soberano
+            default => 'PEN', // Valor por defecto
         };
 
         Wallet::create([

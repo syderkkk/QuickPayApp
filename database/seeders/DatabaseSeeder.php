@@ -26,10 +26,17 @@ class DatabaseSeeder extends Seeder
             'name' => 'Peru',
             'currency' => 'PEN',
         ]);
+
         Country::create([
             'code' => 'AR',
             'name' => 'Argentina',
             'currency' => 'ARS',
+        ]);
+
+        Country::create([
+            'code' => 'MX',
+            'name' => 'México',
+            'currency' => 'MXN',
         ]);
 
         $this->call([

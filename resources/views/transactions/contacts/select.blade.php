@@ -4,8 +4,7 @@
 
     <div class="bg-[#F0F4F4] min-h-screen pb-0">
         <div class="max-w-2xl mx-auto py-8 px-2 sm:px-4">
-            <x-alert-succes />
-            <x-alert-errors />
+            <x-alert />
             <!-- Header con título y botón agregar -->
             <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
                 <h2
@@ -237,9 +236,19 @@
                 </div>
                 <button onclick="closeEditAliasModal()"
                     class="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-2 rounded-full hover:bg-gray-100">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"></path>
+                    <form method="POST" id="deleteContactForm" class="ml-auto" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" title="Eliminar contacto"
+                            onclick="return confirm('¿Seguro que deseas eliminar este contacto?');"
+                            class="p-2 rounded-full hover:bg-red-50 transition-colors">
+                            <svg class="w-6 h-6 text-red-600 hover:text-red-800" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" />
+                            </svg>
+                        </button>
+                    </form>
                     </svg>
                 </button>
             </div>
@@ -355,8 +364,10 @@
             const form = document.getElementById('editAliasForm');
             const aliasInput = document.getElementById('edit_alias');
             const contactNameDiv = document.getElementById('contactName');
+            const deleteForm = document.getElementById('deleteContactForm');
 
             form.action = `/contacts/${contactId}`;
+            deleteForm.action = `/contacts/${contactId}`;
 
             aliasInput.value = currentAlias;
             contactNameDiv.textContent = contactName;

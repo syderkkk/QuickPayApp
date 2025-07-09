@@ -4,31 +4,13 @@
         <div class="flex justify-center items-start w-full px-2 mt-4">
             <div class="bg-white rounded-2xl max-w-lg w-full shadow-[0_6px_12px_0_#2563eb30] border border-[#e0e7ff]">
                 <div class="p-4 sm:p-6">
-                    <x-alert-succes />
+                    <x-alert />
 
                     <!-- Header -->
                     <div class="text-center mb-6">
                         <h1 class="font-mono font-extrabold text-lg sm:text-xl text-[#284494] mb-2">
                             Detalle de Solicitud
                         </h1>
-                        @if ($errors->any())
-                            <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl">
-                                <div class="flex items-start gap-2">
-                                    <svg class="w-4 h-4 text-red-600 mt-0.5" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <div>
-                                        <p class="font-mono text-xs text-red-800 font-semibold">Error al procesar la
-                                            solicitud</p>
-                                        @foreach ($errors->all() as $error)
-                                            <p class="font-mono text-xs text-red-700 mt-1">{{ $error }}</p>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
                         <div class="flex items-center justify-center gap-2">
                             <div
                                 class="w-2 h-2 rounded-full {{ $transaction->status === 'pending' ? 'bg-yellow-500' : ($transaction->status === 'completed' ? 'bg-green-500' : 'bg-red-500') }}">

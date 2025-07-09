@@ -30,6 +30,16 @@ class AvailableCardSeeder extends Seeder
                 'available_bank_account_id'  => 2, // BBVA
                 'status'          => 'active',
             ],
+            [
+                'number'          => '4000000000000000',
+                'brand'           => 'Visa',
+                'last_four'       => '0000',
+                'cvv'             => '123',
+                'expiry_month'    => '12',
+                'expiry_year'     => '2027',
+                'available_bank_account_id'  => 3, // BCP
+                'status'          => 'active',
+            ],
         ]);
     }
 }

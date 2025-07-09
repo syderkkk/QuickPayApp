@@ -6,7 +6,8 @@
         <div class="flex justify-center items-start w-full py-4 mt-1">
             <div class="bg-white rounded-2xl max-w-lg w-full shadow-[0_6px_12px_0_#2563eb30] border border-[#e0e7ff]">
                 <div class="p-3">
-                    <x-step-error />
+                    {{-- <x-step-error /> --}}
+                    <x-alert />
 
                     <!-- Header -->
                     <div class="text-center mb-3">
@@ -125,16 +126,6 @@
 
                         <input type="hidden" name="currency" value="{{ $wallet_currency }}">
 
-                        @error('amount')
-                            <div class="bg-red-50 border border-red-200 rounded-lg p-2">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-3 h-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <span class="font-mono text-xs text-red-600 font-semibold">{{ $message }}</span>
-                                </div>
-                            </div>
-                        @enderror
 
                         <!-- Panel de conversión -->
                         @if (isset($currencies_different) && $currencies_different)
@@ -304,7 +295,6 @@
                     const amount = parseFloat(amountInput.value) || 0;
                     if (amount <= 0) {
                         e.preventDefault();
-                        // Crear notificación visual en lugar de alert
                         showNotification('El monto debe ser mayor a 0', 'error');
                         return;
                     }
