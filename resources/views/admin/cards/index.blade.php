@@ -75,7 +75,7 @@
                                 <tr class="font-bold text-[#284494] uppercase bg-[#ede8f6]">
                                     {{-- <th class="px-3 py-2 text-left">ID</th> --}}
                                     <th class="px-3 py-2 text-left">Usuario</th>
-                                    <th class="px-3 py-2 text-left">Número</th>
+                                    <th class="px-3 py-2 text-left">Token</th>
                                     <th class="px-3 py-2 text-left">Titular</th>
                                     <th class="px-3 py-2 text-left">Últimos 4</th>
                                     <th class="px-3 py-2 text-left">Estado</th> <!-- Nueva columna -->
@@ -88,8 +88,8 @@
                                         {{-- <td class="px-3 py-2 align-middle">{{ $card->id }}</td> --}}
                                         <td class="px-3 py-2 align-middle">{{ $card->user->name ?? '-' }}
                                             {{ $card->user->lastname ?? '-' }}</td>
-                                        <td class="px-3 py-2 align-middle font-mono">**** **** ****
-                                            {{ $card->last_four }}</td>
+                                        <td class="px-3 py-2 align-middle font-mono">
+                                            {{ $card->token }}</td>
                                         <td class="px-3 py-2 align-middle">{{ $card->card_holder }}</td>
                                         <td class="px-3 py-2 align-middle font-mono">{{ $card->last_four }}</td>
                                         <td class="px-3 py-2 align-middle">

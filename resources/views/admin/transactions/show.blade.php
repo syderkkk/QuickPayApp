@@ -21,7 +21,7 @@
                         <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <dt class="font-mono text-xs text-gray-500 mb-1">ID de Transacción</dt>
-                                <dd class="font-mono font-bold text-lg text-[#2563eb]">{{ $transaction->id }}</dd>
+                                <dd class="font-mono font-bold text-lg text-[#2563eb]">{{ $transaction->custom_id }}</dd>
                             </div>
                             <div>
                                 <dt class="font-mono text-xs text-gray-500 mb-1">Estado</dt>

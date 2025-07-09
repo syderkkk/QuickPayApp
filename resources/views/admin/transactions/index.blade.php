@@ -65,7 +65,7 @@
                                 <option value="">Divisa</option>
                                 <option value="PEN" {{ request('currency') == 'PEN' ? 'selected' : '' }}>PEN
                                 </option>
-                                <option value="USD" {{ request('currency') == 'USD' ? 'selected' : '' }}>USD
+                                <option value="ARS" {{ request('currency') == 'ARS' ? 'selected' : '' }}>USD
                                 </option>
                                 <option value="MXN" {{ request('currency') == 'MXN' ? 'selected' : '' }}>MXN
                                 </option>
