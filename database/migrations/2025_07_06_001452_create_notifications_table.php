@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable();
             $table->string('title');
             $table->text('message');
-            $table->enum('type', ['payment', 'request', 'system'])->default('system');
+            $table->enum('type', ['payment', 'request', 'system', 'refund'])->default('system');
             $table->boolean('is_active')->default(true);
             $table->json('data')->nullable();
             $table->timestamps();
