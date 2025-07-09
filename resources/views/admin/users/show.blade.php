@@ -74,11 +74,11 @@
                         <div class="bg-white rounded-3xl shadow-lg border border-[#e0e7ff] p-8">
                             <h4 class="font-bold text-[#284494] mb-6 text-lg">Datos del usuario</h4>
                             <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5">
-                                <div>
+                                {{-- <div>
                                     <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">ID</dt>
                                     <dd class="text-base font-mono text-[#2563eb] bg-[#f5f7fa] rounded px-3 py-1">
                                         {{ $user->id }}</dd>
-                                </div>
+                                </div> --}}
                                 <div>
                                     <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Correo
                                     </dt>
