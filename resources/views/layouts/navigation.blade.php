@@ -140,6 +140,51 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @elseif ($notification->type === 'refund')
+                                    <a href="{{ url('/transactions?tab=reembolsos')}}"
+                                        class="notification-item bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer block"
+                                        id="notif-{{ $notification->id }}">
+                                        <div class="flex items-start gap-3">
+                                            <div class="flex-shrink-0 mt-1">
+                                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M5.07 19A9 9 0 1 1 12 21a9 9 0 0 1-6.93-2"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-start justify-between">
+                                                    <div class="flex-1 pr-2">
+                                                        <h4 class="font-semibold text-gray-900 text-sm leading-5 mb-1">
+                                                            {{ $notification->title }}
+                                                        </h4>
+                                                        <p class="text-gray-600 text-sm mb-2">
+                                                            {{ $notification->message }}
+                                                        </p>
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="text-xs text-gray-500">
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </span>
+                                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                                                Reembolso
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Mark as read button -->
+                                                    <button type="button"
+                                                        class="flex-shrink-0 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200"
+                                                        onclick="event.preventDefault(); event.stopPropagation(); markAsRead({{ $notification->id }})"
+                                                        title="Marcar como leída">
+                                                        <svg class="w-4 h-4 text-gray-500" fill="none"
+                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                 @else
                                     <div class="notification-item bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200"
                                         id="notif-{{ $notification->id }}">
