@@ -27,9 +27,16 @@
                     <li>
                         <a href="{{ route($link['route']) }}"
                             class="px-5 py-2 rounded-full transition-all duration-200 font-bold uppercase tracking-wide text-base
-                            {{ request()->routeIs($link['route'])
-                                ? 'bg-white text-primary shadow-lg transform scale-105'
-                                : 'text-white hover:bg-white hover:text-primary hover:shadow-lg hover:scale-105' }}">
+            @if ($link['route'] === 'transactions.send.step1') {{ request()->routeIs('transactions.send.*') ||
+            request()->routeIs('transactions.request.*') ||
+            request()->routeIs('transactions.contacts.*')
+                ? 'bg-white text-primary shadow-lg transform scale-105'
+                : 'text-white hover:bg-white hover:text-primary hover:shadow-lg hover:scale-105' }}
+            @else
+                {{ request()->routeIs($link['route'])
+                    ? 'bg-white text-primary shadow-lg transform scale-105'
+                    : 'text-white hover:bg-white hover:text-primary hover:shadow-lg hover:scale-105' }} @endif
+            ">
                             {{ $link['name'] }}
                         </a>
                     </li>

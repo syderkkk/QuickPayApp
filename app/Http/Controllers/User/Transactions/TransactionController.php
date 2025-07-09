@@ -92,12 +92,10 @@ class TransactionController extends Controller
             }
         }
 
-        // Filtro de estado
         if ($request->filled('request_status')) {
             $requestsQuery->where('status', $request->request_status);
         }
 
-        // Filtro de búsqueda
         if ($request->filled('request_search')) {
             $search = $request->request_search;
             $requestsQuery->where(function ($q) use ($search) {
@@ -113,7 +111,6 @@ class TransactionController extends Controller
             });
         }
 
-        // Filtro de rango rápido de fechas
         $requestQuickRange = $request->input('request_quick_range', '90');
         if ($requestQuickRange === '10s') {
             $from = now()->subSeconds(10);

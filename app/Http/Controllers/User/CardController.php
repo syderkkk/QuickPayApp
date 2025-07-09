@@ -46,13 +46,14 @@ class CardController extends Controller
         $card_number = preg_replace('/\s+/', '', $request->card_number);
 
         $gateway = app(PaymentGatewayService::class);
+        $user = Auth::user();
         try {
-            $result = $gateway->verifyCard($card_number, $request->cvv, $month, '20' . $year);
+            $result = $gateway->verifyCard($card_number, $request->cvv, $month, '20' . $year, $user->wallet->currency);
         } catch (Exception $e) {
             return back()->withErrors(['card_number' => $e->getMessage()])->withInput();
         }
         
-        $user = Auth::user();
+        
         $card = Card::create([
             'user_id' => $user->id,
             'token' => $result['token'],

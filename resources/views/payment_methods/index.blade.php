@@ -217,7 +217,7 @@
                         draggable="false">
                     <span
                         class="font-mono text-sm sm:text-base md:text-lg text-black font-bold text-center mt-2 block w-full"
-                        style="max-width: 350px;">Sin cuentas bancarias disponibles</span>
+                        style="max-width: 350px;">Sin métodos de pago disponibles.</span>
                 @endif
             </div>
         </div>

@@ -7,7 +7,6 @@
             <h2 class="text-2xl sm:text-3xl font-mono font-extrabold text-black mb-6 text-center">Selecciona un contacto
             </h2>
 
-            <!-- Buscador / Filtros  -->
             <!-- Botón para agregar contactos -->
             <div class="flex justify-end mb-6">
                 <a href="{{ route('contacts.store') }}"
@@ -37,9 +36,12 @@
                                 <div class="font-mono font-bold text-lg text-black break-words">{{ $contact->name }}
                                     {{ $contact->lastname }}</div>
                                 <div class="font-mono text-xs text-gray-500 break-all">{{ $contact->email }}</div>
+                                @if($contact->alias)
+                                    <div class="font-mono text-xs text-gray-400">Alias: {{ $contact->alias }}</div>
+                                @endif
                             </div>
                         </div>
-                        <!-- Formulario oculto para enviar dinero -->
+                        <!-- Formularios ocultos para enviar y solicitar -->
                         <form method="POST" action="{{ route('transactions.send.step2') }}"
                             id="send-form-{{ $contact->user_id }}" style="display:none;">
                             @csrf
@@ -64,6 +66,11 @@
                                 title="Solicitar">
                                 Solicitar
                             </button>
+                            <a href="{{ route('contacts.show', $contact->contact_relation_id) }}"
+                                class="bg-gray-200 hover:bg-gray-300 text-[#2563eb] font-mono font-bold text-base py-2 px-6 rounded-xl transition shadow w-full sm:w-auto text-center"
+                                title="Ver detalles">
+                                Detalles
+                            </a>
                         </div>
                     </div>
                 @empty

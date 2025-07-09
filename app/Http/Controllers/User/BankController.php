@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
 use App\Services\BankService;
 use App\Services\PaymentGatewayService;
+use Exception;
 
 class BankController extends Controller
 {
@@ -44,14 +45,14 @@ class BankController extends Controller
         ]);
 
         $gateway = app(PaymentGatewayService::class);
+        $user = Auth::user();
+
         try {
-            $availableBankAccount = $gateway->verifyBankAccount($request->account_number);
-        } catch (\Exception $e) {
+            $availableBankAccount = $gateway->verifyBankAccount($request->account_number, $user->wallet->currency);
+        } catch (Exception $e) {
             return back()->withErrors(['account_number' => $e->getMessage()])->withInput();
         }
 
-
-        $user = Auth::user();
         Bank::create([
             'user_id' => $user->id,
             'bank_name' => $request->bank_name,

@@ -14,7 +14,7 @@ class PaymentGatewayService
     /**
      * Verifica si la cuenta bancaria existe y está activa.
      */
-    public function verifyBankAccount($accountNumber): AvailableBankAccount
+    public function verifyBankAccount($accountNumber, $userCurrency): AvailableBankAccount
     {
         $query = AvailableBankAccount::where('account_number', $accountNumber)
             ->where('status', 'active');
@@ -25,13 +25,17 @@ class PaymentGatewayService
             throw new Exception('Cuenta bancaria no encontrada o inactiva.');
         }
 
+        if ($bankAccount->currency !== $userCurrency){
+            throw new Exception('Solo puedes asociar cuentas bancarias de tu país.');
+        }
+
         return $bankAccount;
     }
 
     /**
      * Verifica si la tarjeta existe y está activa, validando número, cvv y fecha de expiración.
      */
-    public function verifyCard($cardNumber, $cvv, $expiry_month, $expiry_year)
+    public function verifyCard($cardNumber, $cvv, $expiry_month, $expiry_year, $userCurrency)
     {
         $card = AvailableCard::where('number', $cardNumber)
             ->where('cvv', $cvv)
@@ -42,6 +46,12 @@ class PaymentGatewayService
 
         if (!$card) {
             throw new Exception('La tarjeta no existe o está inhabilitada.');
+        }
+
+        $bankCurrency = $card->availableBankAccount->currency;
+
+        if ($userCurrency !== $bankCurrency) {
+            throw new Exception('Solo puedes asociar tarjetas de tu país.');
         }
 
         $token = 'sim_' . $card->id . '_' . bin2hex(random_bytes(8));
