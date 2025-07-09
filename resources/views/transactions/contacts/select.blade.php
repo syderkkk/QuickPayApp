@@ -136,7 +136,7 @@
                             </path>
                         </svg>
                         <p class="text-gray-400 font-mono text-lg">No tienes contactos guardados</p>
-                        <p class="text-gray-500 font-mono text-sm mt-2">Agrega tu primer contacto para empezar</p>
+                        <p class="text-gray-500 font-mono text-sm mt-2">Agrega tu primer contacto</p>
                     </div>
                 @endforelse
             </div>

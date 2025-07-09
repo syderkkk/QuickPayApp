@@ -538,34 +538,83 @@
 
         <!-- Contenido de Reembolsos -->
         <div id="content-reembolsos" class="tab-content hidden">
-            <form method="GET" class="mb-4 flex flex-col sm:flex-row gap-2 items-center">
-                <input type="hidden" name="tab" value="reembolsos">
+            <form method="GET" class="mb-2">
                 <input type="text" name="refund_search" placeholder="Buscar por nombre o correo electrónico"
                     value="{{ request('refund_search') }}"
-                    class="w-full rounded-full border border-gray-300 px-6 py-3 text-base font-mono text-gray-500 bg-[#f5f7fa] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563eb] shadow">
-                <select name="refund_type" onchange="this.form.submit()"
-                    class="rounded-full border border-gray-300 px-4 py-2 font-mono text-sm text-gray-700 bg-white">
-                    <option value="all" {{ request('refund_type', 'all') == 'all' ? 'selected' : '' }}>Todos
-                    </option>
-                    <option value="sent" {{ request('refund_type') == 'sent' ? 'selected' : '' }}>Solicitados
-                    </option>
-                    <option value="received" {{ request('refund_type') == 'received' ? 'selected' : '' }}>Recibidos
-                    </option>
-                </select>
-                <select name="refund_status" onchange="this.form.submit()"
-                    class="rounded-full border border-gray-300 px-4 py-2 font-mono text-sm text-gray-700 bg-white">
-                    <option value="all" {{ request('refund_status', 'all') == 'all' ? 'selected' : '' }}>Estado
-                    </option>
-                    <option value="pending" {{ request('refund_status') == 'pending' ? 'selected' : '' }}>Pendiente
-                    </option>
-                    <option value="completed" {{ request('refund_status') == 'completed' ? 'selected' : '' }}>
-                        Completado</option>
-                    <option value="rejected" {{ request('refund_status') == 'rejected' ? 'selected' : '' }}>Rechazado
-                    </option>
-                </select>
+                    class="w-full rounded-full border border-gray-300 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-mono text-gray-500 bg-[#f5f7fa] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563eb] shadow"
+                    style="font-family: 'JetBrains Mono', monospace;">
+                <input type="hidden" name="refund_type" value="{{ request('refund_type') }}">
+                <input type="hidden" name="refund_status" value="{{ request('refund_status') }}">
+                <input type="hidden" name="tab" value="reembolsos">
             </form>
+            <div class="mb-8">
+                <div class="text-xs sm:text-sm font-mono text-[#222] mb-2">Filtrar por</div>
+                <div class="flex flex-wrap gap-2 items-center text-xs sm:text-sm font-mono text-[#222]">
+                    <!-- Botón de fecha solo con "Todos" -->
+                    <span
+                        class="bg-[#2563eb] text-white px-3 sm:px-4 py-1 rounded-full font-bold font-mono inline-flex items-center select-none cursor-default">
+                        Fecha: Todos
+                        <svg class="inline w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </span>
+                    <!-- Filtro tipo (Solicitados/Recibidos) -->
+                    <form method="GET" class="inline">
+                        <input type="hidden" name="refund_search" value="{{ request('refund_search') }}">
+                        <input type="hidden" name="refund_status" value="{{ request('refund_status') }}">
+                        <input type="hidden" name="tab" value="reembolsos">
+                        <div x-data="{ open: false }" class="relative inline-block">
+                            <button type="button" @click="open = !open"
+                                class="bg-gray-100 px-3 sm:px-4 py-1 rounded-full border border-gray-300 hover:bg-gray-200 transition min-w-[70px]">
+                                {{ request('refund_type') ? (request('refund_type') == 'sent' ? 'Solicitados' : (request('refund_type') == 'received' ? 'Recibidos' : 'Tipo')) : 'Tipo' }}
+                            </button>
+                            <div x-show="open" @click.away="open = false"
+                                class="absolute z-10 mt-2 bg-white border rounded shadow text-xs sm:text-sm w-32">
+                                <button type="submit" name="refund_type" value=""
+                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100">Todos</button>
+                                <button type="submit" name="refund_type" value="sent"
+                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100">Solicitados</button>
+                                <button type="submit" name="refund_type" value="received"
+                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100">Recibidos</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Filtro Estado -->
+                    <form method="GET" class="inline">
+                        <input type="hidden" name="refund_search" value="{{ request('refund_search') }}">
+                        <input type="hidden" name="refund_type" value="{{ request('refund_type') }}">
+                        <input type="hidden" name="tab" value="reembolsos">
+                        <div x-data="{ open: false }" class="relative inline-block">
+                            <button type="button" @click="open = !open"
+                                class="bg-gray-100 px-3 sm:px-4 py-1 rounded-full border border-gray-300 hover:bg-gray-200 transition min-w-[70px]">
+                                {{ request('refund_status')
+                                    ? (request('refund_status') == 'completed'
+                                        ? 'Completado'
+                                        : (request('refund_status') == 'pending'
+                                            ? 'Pendiente'
+                                            : (request('refund_status') == 'rejected'
+                                                ? 'Rechazado'
+                                                : 'Estado')))
+                                    : 'Estado' }}
+                            </button>
+                            <div x-show="open" @click.away="open = false"
+                                class="absolute z-10 mt-2 bg-white border rounded shadow text-xs sm:text-sm w-32">
+                                <button type="submit" name="refund_status" value=""
+                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100">Todos</button>
+                                <button type="submit" name="refund_status" value="pending"
+                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100">Pendiente</button>
+                                <button type="submit" name="refund_status" value="completed"
+                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100">Completado</button>
+                                <button type="submit" name="refund_status" value="rejected"
+                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100">Rechazado</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-            <h2 class="text-2xl sm:text-3xl font-bold mb-4 font-mono text-black">Reembolsos</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4 font-mono text-black">Solicitudes de Reembolso</h2>
 
             @forelse($refunds as $refund)
                 <div
