@@ -42,7 +42,7 @@
                             </div>
                             <div>
                                 <p class="mb-2 text-sm font-bold text-[#284494]">Balance Plataforma</p>
-                                <p class="text-lg font-extrabold text-[#222]">$ {{ number_format($totalBalance, 2) }}
+                                <p class="text-lg font-extrabold text-[#222]">S/. {{ number_format($totalBalancePEN, 2) }}
                                 </p>
                             </div>
                         </div>
