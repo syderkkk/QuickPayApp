@@ -5,7 +5,8 @@ namespace App\Http\Controllers\User\Transactions;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Refund;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -125,7 +126,49 @@ class TransactionController extends Controller
 
         $requests = $requestsQuery->latest()->paginate(10);
 
-        return view('transactions.index', compact('transactions', 'requests'));
+        // --- CONSULTA DE REEMBOLSOS ---
+        $refundsQuery = Refund::whereHas('transaction', function ($q) use ($user) {
+            $q->where('sender_id', $user->id)
+              ->orWhere('receiver_id', $user->id);
+        })->with(['transaction.sender', 'transaction.receiver']);
+
+        // Filtro tipo (solicitados o recibidos)
+        $refundType = $request->input('refund_type', 'all');
+        if ($refundType === 'sent') {
+            $refundsQuery->whereHas('transaction', function ($q) use ($user) {
+                $q->where('sender_id', $user->id);
+            });
+        } elseif ($refundType === 'received') {
+            $refundsQuery->whereHas('transaction', function ($q) use ($user) {
+                $q->where('receiver_id', $user->id);
+            });
+        }
+
+        // Filtro estado
+        $refundStatus = $request->input('refund_status', 'all');
+        if (in_array($refundStatus, ['pending', 'completed', 'rejected'])) {
+            $refundsQuery->where('status', $refundStatus);
+        }
+
+        // Filtro búsqueda
+        if ($request->filled('refund_search')) {
+            $search = $request->refund_search;
+            $refundsQuery->where(function ($q) use ($search) {
+                $q->whereHas('transaction.sender', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%")
+                        ->orWhere('lastname', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%") ;
+                })->orWhereHas('transaction.receiver', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%")
+                        ->orWhere('lastname', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%") ;
+                });
+            });
+        }
+
+        $refunds = $refundsQuery->latest()->paginate(10);
+
+        return view('transactions.index', compact('transactions', 'requests', 'refunds'));
     }
 
 
@@ -174,22 +217,10 @@ class TransactionController extends Controller
             ->with(['sender', 'receiver'])
             ->firstOrFail();
 
-        // Generar el PDF
-        $pdf = Pdf::loadView('transactions.receipt', compact('transaction'));
-
-        // Configurar el PDF
-        $pdf->setPaper('A4', 'portrait');
-        $pdf->setOptions([
-            'defaultFont' => 'DejaVu Sans',
-            'isRemoteEnabled' => true,
-            'isHtml5ParserEnabled' => true,
-        ]);
-
-        // Generar nombre del archivo
-        $fileName = 'comprobante-' . $transaction->id . '-' . date('Y-m-d') . '.pdf';
-
-        // Descargar el PDF
-        return $pdf->download($fileName);
+        // TODO: Implementar generación de PDF cuando se solucione el problema de importación
+        // Por ahora, redirigimos a la vista de transacciones
+        return redirect()->route('transactions.index')
+            ->with('info', 'Funcionalidad de descarga de PDF temporalmente deshabilitada.');
     }
 
     public function requestRefund(Request $request, $id)

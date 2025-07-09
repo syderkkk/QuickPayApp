@@ -32,6 +32,26 @@ class Transaction extends Model
         return $this->belongsTo(User::class, 'receiver_id');
     }
 
+    public function refunds()
+    {
+        return $this->hasMany(\App\Models\Refund::class);
+    }
+
+    public function hasPendingRefund()
+    {
+        return $this->refunds()->where('status', 'pending')->exists();
+    }
+
+    public function hasApprovedRefund()
+    {
+        return $this->refunds()->where('status', 'approved')->exists();
+    }
+
+    public function hasCompletedRefund()
+    {
+        return $this->refunds()->where('status', 'completed')->exists();
+    }
+
     protected static function booted()
     {
         static::creating(function ($transaction) {
