@@ -12,7 +12,8 @@
                     <input type="hidden" name="type"
                         value="send"><!-- Campo oculto para el tipo de transacción -->
                     <h2 class="text-2xl sm:text-3xl font-mono font-extrabold text-black mb-6 ">Solicitar Dinero</h2>
-                    <x-step-error />
+                    {{-- <x-step-error /> --}}
+                    <x-alert />
                     <div class="mb-8">
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">

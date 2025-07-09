@@ -11,12 +11,21 @@ export default {
 
     theme: {
         extend: {
+            screens: {
+                'xs': '475px',
+                '3xl': '1600px',
+            },
             fontFamily: {
                 primary: ['"Source Code Pro"', 'monospace'],
                 secondary: ['"JetBrains Mono"', 'monospace'],
             },
+            spacing: {
+                '18': '4.5rem',
+                '88': '22rem',
+            },
             colors: {
-                primary: '#0F68E2',
+                'primary': '#0F68E2',
+                'secondary': '#f59e0b',
                 'background': '#F0F4F4',
             },
         },

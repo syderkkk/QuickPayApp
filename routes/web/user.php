@@ -67,7 +67,6 @@ Route::middleware('auth')->group(function () {
 
     // Contactos
     Route::resource('contacts', ContactController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
 
     // Notificaciones
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');

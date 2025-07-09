@@ -8,6 +8,7 @@ use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\ExchangeRateService;
+use App\Services\PaymentGatewayService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -238,8 +239,8 @@ class RequestController extends Controller
                 return back()->withErrors(['from_account' => 'Tarjeta no encontrada o no asociada a tu cuenta.']);
             }
 
-            // Simula el cobro a la tarjeta (puedes usar tu PaymentGatewayService aquí)
-            $gateway = app(\App\Services\PaymentGatewayService::class);
+
+            $gateway = app(PaymentGatewayService::class);
             try {
                 $gateway->charge($card->token, $convertedAmount);
             } catch (\Exception $e) {
