@@ -275,15 +275,4 @@
         </div>
     </div>
     <x-footer />
-    <script>
-        function sendToContact(email) {
-            document.getElementById('contactEmailSend').value = email;
-            document.getElementById('sendToContactForm').submit();
-        }
-
-        function requestFromContact(email) {
-            document.getElementById('contactEmailRequest').value = email;
-            document.getElementById('requestFromContactForm').submit();
-        }
-    </script>
 </x-app-layout>

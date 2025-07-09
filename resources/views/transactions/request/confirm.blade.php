@@ -11,7 +11,7 @@
                     Has solicitado 
                     @if($currency === 'PEN')
                         S/.
-                    @elseif($currency === 'USD')
+                    @elseif($currency === 'ARS')
                         $
                     @elseif($currency === 'EUR')
                         €

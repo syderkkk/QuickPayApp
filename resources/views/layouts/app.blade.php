@@ -9,10 +9,7 @@
     <meta name="keywords" content="transferencias, pagos, dinero, finanzas, QuickPay">
     <meta name="author" content="QuickPay">
     <meta name="robots" content="index, follow">
-
-
-
-
+    
     <!-- Optimización para dispositivos móviles -->
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">

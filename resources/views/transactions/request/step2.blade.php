@@ -8,7 +8,7 @@
                 <div class="p-3">
                     <x-step-error />
 
-                    <!-- Header compacto -->
+                    <!-- Header -->
                     <div class="text-center mb-3">
                         <h2 class="font-mono font-extrabold text-base text-[#284494] mb-1">
                             Solicitar Dinero
@@ -18,7 +18,7 @@
                         </p>
                     </div>
 
-                    <!-- Información del destinatario compacta -->
+                    <!-- Información del destinatario -->
                     <div class="bg-gradient-to-r from-[#ede8f6] to-[#f8f9ff] rounded-xl p-2 mb-2 border border-[#e0e7ff]">
                         <div class="flex items-center gap-2">
                             <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-full w-8 h-8 flex items-center justify-center text-white shrink-0">
@@ -47,7 +47,7 @@
                         <input type="hidden" name="type" value="request">
                         <input type="hidden" name="receiver_id" value="{{ $receiver->id }}">
 
-                        <!-- Campo de monto compacto -->
+                        <!-- Campo de monto -->
                         <div class="space-y-0.5">
                             <label class="font-mono text-xs font-semibold text-[#284494] flex items-center gap-1">
                                 <svg class="w-3 h-3 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@
                             </div>
                         @enderror
 
-                        <!-- Campo de descripción compacto -->
+                        <!-- Campo de descripción -->
                         <div class="space-y-0.5">
                             <label class="font-mono text-xs font-semibold text-[#284494] flex items-center gap-1">
                                 <svg class="w-3 h-3 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@
                                 placeholder="Añade una descripción de tu solicitud..."></textarea>
                         </div>
 
-                        <!-- Botones compactos -->
+                        <!-- Botones -->
                         <div class="space-y-1.5 pt-1.5">
                             <button type="submit"
                                 class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-mono font-bold text-sm py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.01] active:scale-[0.99]">
@@ -130,7 +130,7 @@
                         </div>
                     </form>
 
-                    <!-- Información adicional compacta -->
+                    <!-- Información adicional -->
                     <div class="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                         <div class="flex items-start gap-2">
                             <svg class="w-3 h-3 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

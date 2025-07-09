@@ -1,10 +1,10 @@
 <x-app-layout>
     @include('layouts.navigation')
     <div class="bg-[#F0F4F4] min-h-screen pb-0">
-        <!-- Tabs Enviar/Solicitar arriba y separadas -->
+        <!-- Tabs Enviar/Solicitar -->
         <x-tabs-transacciones activo="solicitar" />
         
-        <!-- Formulario centrado más abajo -->
+        <!-- Formulario -->
         <div class="w-full flex justify-center">
             <div class="w-full max-w-2xl px-2 sm:px-4 pt-16 sm:pt-20">
                 <form method="POST" action="{{ route('transactions.request.step2') }}">

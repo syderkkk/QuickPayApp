@@ -15,12 +15,10 @@ class TransactionController extends Controller
     {
         $query = Transaction::with(['sender', 'receiver']);
 
-        // Filtro por estado
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filtro por tipo: recibido o enviado
         if ($request->filled('type')) {
             if ($request->type === 'receive') {
                 // Solo mostrar transacciones donde el usuario buscado es receiver

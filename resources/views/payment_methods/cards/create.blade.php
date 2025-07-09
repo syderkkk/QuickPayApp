@@ -23,7 +23,7 @@
                 @enderror
 
 
-                <!-- Fecha de vencimiento y código de seguridad en la misma fila -->
+                <!-- Fecha de vencimiento y código de seguridad -->
                 <div class="flex gap-2">
                     <input type="text" name="expiry_month" placeholder="MM/AA"
                         class="w-1/2 rounded-md border-2 border-gray-300 px-4 py-3 font-mono text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"

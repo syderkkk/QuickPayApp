@@ -685,7 +685,6 @@
         </div>
     </div>
 
-    <!-- JavaScript mejorado para transiciones suaves -->
     <script>
         function showTab(tabName) {
             // Ocultar todos los contenidos
@@ -813,4 +812,5 @@
             transform: translateY(-2px);
         }
     </style>
+    
 </x-app-layout>

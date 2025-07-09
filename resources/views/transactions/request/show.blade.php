@@ -230,7 +230,6 @@
                     </div>
 
                     {{-- Botones solo para el PAGADOR y si está pendiente --}}
-                    {{-- Botones solo para el PAGADOR y si está pendiente --}}
                     @if ($isPayer && $transaction->status === 'pending')
                         <div class="space-y-4">
                             <!-- Formulario para aceptar solicitud -->

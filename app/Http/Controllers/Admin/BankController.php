@@ -16,7 +16,6 @@ class BankController extends Controller
     {
         $query = Bank::with('user');
 
-        // Filtro por nombre o correo del usuario
         if ($request->filled('search')) {
             $search = $request->search;
             $query->whereHas('user', function ($q) use ($search) {
@@ -25,7 +24,6 @@ class BankController extends Controller
             });
         }
 
-        // Filtro por estado (habilitada/inhabilitada)
         if ($request->filled('is_enabled')) {
             $query->where('is_enabled', $request->is_enabled);
         }

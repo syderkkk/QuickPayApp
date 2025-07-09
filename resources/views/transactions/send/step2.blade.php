@@ -8,14 +8,14 @@
                 <div class="p-3">
                     <x-step-error />
 
-                    <!-- Header compacto -->
+                    <!-- Header -->
                     <div class="text-center mb-3">
                         <h2 class="font-mono font-extrabold text-base text-[#284494] mb-1">
                             Enviar Dinero
                         </h2>
                     </div>
 
-                    <!-- Información del destinatario compacta -->
+                    <!-- Información del destinatario -->
                     <div class="bg-gradient-to-r from-[#ede8f6] to-[#f8f9ff] rounded-xl p-2 mb-2 border border-[#e0e7ff]">
                         <div class="flex items-center gap-2">
                             <div class="bg-gradient-to-br from-[#2563eb] to-[#1d4ed8] rounded-full w-8 h-8 flex items-center justify-center text-white shrink-0">
@@ -39,7 +39,7 @@
                         </div>
                     </div>
 
-                    <!-- Aviso de conversión compacto -->
+                    <!-- Aviso de conversión -->
                     @if (isset($currencies_different) && $currencies_different)
                         <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-1.5 mb-2">
                             <div class="flex items-center gap-2">
