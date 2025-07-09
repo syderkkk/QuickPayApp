@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\TransactionController as AdminTransactionControll
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\CardController as AdminCardController;
 use App\Http\Controllers\Admin\BankController as AdminBankController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\WalletController as AdminWalletController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
@@ -33,4 +34,7 @@ Route::middleware(['auth', IsAdmin::class])
 
         // Wallet admin
         Route::resource('wallets', AdminWalletController::class);
+
+        Route::resource('notifications', NotificationController::class)->only(['index', 'store', 'show', 'destroy']);
+        Route::patch('/notifications/{notification}/status', [NotificationController::class, 'updateStatus'])->name('notifications.updateStatus');
     });

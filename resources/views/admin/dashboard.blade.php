@@ -14,7 +14,7 @@
                         Panel de Administración
                     </h2>
                     <!-- Cards -->
-                    <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+                    <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3 justify-center">
                         <!-- Card -->
                         <div
                             class="flex items-center p-4 bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] border border-[#e0e7ff]">
@@ -42,7 +42,8 @@
                             </div>
                             <div>
                                 <p class="mb-2 text-sm font-bold text-[#284494]">Balance Plataforma</p>
-                                <p class="text-lg font-extrabold text-[#222]">S/. {{ number_format($totalBalancePEN, 2) }}
+                                <p class="text-lg font-extrabold text-[#222]">S/.
+                                    {{ number_format($totalBalancePEN, 2) }}
                                 </p>
                             </div>
                         </div>
@@ -62,7 +63,7 @@
                             </div>
                         </div>
                         <!-- Card -->
-                        <div
+                        {{-- <div
                             class="flex items-center p-4 bg-[#ede8f6] rounded-2xl shadow-[0_6px_12px_0_#2563eb30] border border-[#e0e7ff]">
                             <div class="p-3 mr-4 text-teal-500 bg-teal-100 rounded-full shadow">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -75,7 +76,7 @@
                                 <p class="mb-2 text-sm font-bold text-[#284494]">Reembolsos pendientes</p>
                                 <p class="text-lg font-extrabold text-[#ff0c0c]">Proximamente</p>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <!-- Tabla -->
